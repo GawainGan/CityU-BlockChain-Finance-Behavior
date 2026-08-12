@@ -7,16 +7,16 @@
 
 ## 1. Overview of This Week's Work
 
-The core work this week was: **conducting a systematic construct validity review of Paper 1 ([Qualifying Report v1](../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf)), identifying and correcting 11 problems, verifying the feasibility of data required for the research, and producing a comprehensive revision report.**
+The core work this week was: **conducting a systematic construct validity review of Paper 1 ([Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf)), identifying and correcting 11 problems, verifying the feasibility of data required for the research, and producing a comprehensive revision report.**
 
-The work originated from a conversation on August 9 with an industry contact (regarding the blockchain payment dilemma), which revealed deep semantic and conceptual problems in [Qualifying Report v1](../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf). The central question that guided all subsequent work was: *"How can we ensure that our research claims remain consistent with our data capabilities?"* Four major tasks were completed around this question:
+The work originated from a conversation on August 9 with an industry contact (regarding the blockchain payment dilemma), which revealed deep semantic and conceptual problems in [Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf). The central question that guided all subsequent work was: *"How can we ensure that our research claims remain consistent with our data capabilities?"* Four major tasks were completed around this question:
 
 | # | Task | Output | File Location |
 |---|------|--------|---------------|
-| 1 | Identified semantic problems; built a constraint framework | Six-layer matrix framework (13 concepts × 6 layers + literature + technical docs + non-claims list + terminology table) | [Six_Layer_Matrix](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix) |
-| 2 | Diagnosed Report v1 problems using the constraint framework | Diagnosis and correction plans for 11 problems | [Diagnosis_and_Fix](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_诊断改进映射_Paper1_Diagnosis_and_Fix) |
-| 3 | Verified research data feasibility | Item-by-item verification of data availability on the Dune platform | [Data_Feasibility](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_数据可行性验证_Paper1_Data_Feasibility) |
-| 4 | Consolidated revision content | Complete revision report (with before/after comparisons, literature changes, terminology changes) | [Revision_Report](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_Report_v1修订报告_Revision_Report.md) |
+| 1 | Identified semantic problems; built a constraint framework | Six-layer matrix framework (13 concepts × 6 layers + literature + technical docs + non-claims list + terminology table) | [Six_Layer_Matrix](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix) |
+| 2 | Diagnosed Report v1 problems using the constraint framework | Diagnosis and correction plans for 11 problems | [Diagnosis_and_Fix](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_诊断改进映射_Paper1_Diagnosis_and_Fix) |
+| 3 | Verified research data feasibility | Item-by-item verification of data availability on the Dune platform | [Data_Feasibility](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_数据可行性验证_Paper1_Data_Feasibility) |
+| 4 | Consolidated revision content | Complete revision report (with before/after comparisons, literature changes, terminology changes) | [Revision_Report](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_Report_v1修订报告_Revision_Report.md) |
 
 ---
 
@@ -46,17 +46,17 @@ Definition → Construct → Measurement
 
 **Core Principle**: If the claim at Layer 6 exceeds what Layer 4 (Observable) can support, it constitutes over-claiming.
 
-**Outputs** (paths relative to [`2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix)):
+**Outputs** (paths relative to [`2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix)):
 
 | File | Content |
 |------|---------|
-| [`00_说明_README.md`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/00_说明_README.md) | Framework navigation and usage instructions |
-| [`01_六层矩阵总表_Master_Matrix_Table.md`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/01_六层矩阵总表_Master_Matrix_Table.md) | Master table of 12 in-scope concepts + 6 boundary concepts |
-| [`02_逐概念六层矩阵_Per_Concept_Matrices/`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/02_逐概念六层矩阵_Per_Concept_Matrices) | 13 per-concept files (Collateral, Position Risk, Health Factor, Distance to Liquidation, Borrow, Repay, Supply vs Collateral-Enabled, Borrower Adjustment, Active vs Passive, Liquidation Eligibility, Realized Liquidation, Borrower Identity, Boundary Concepts) |
-| [`03_技术文档_Technical_Docs/`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/03_技术文档_Technical_Docs) | 7 protocol/infrastructure documents (Aave V3, Compound III, MakerDAO, Chainlink, Ethereum Finality, Dune Analytics) |
-| [`04_文献_Literature/`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/04_文献_Literature) | Literature organized under 5 themes (Blockchain Foundation, Collateral & Credit, DeFi Lending, Alternative Data & Credit Scoring, Payment & Settlement), totaling 31 newly added references |
-| [`05_不可声称清单_Non_Claims_List.md`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/05_不可声称清单_Non_Claims_List.md) | 9 categories of non-claims (40+ items) |
-| [`06_术语边界对照表_Terminology_Boundary_Reference.md`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/06_术语边界对照表_Terminology_Boundary_Reference.md) | Term ≠ mapping + cross-protocol mapping + correct wording substitutions |
+| [`00_说明_README.md`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/00_说明_README.md) | Framework navigation and usage instructions |
+| [`01_六层矩阵总表_Master_Matrix_Table.md`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/01_六层矩阵总表_Master_Matrix_Table.md) | Master table of 12 in-scope concepts + 6 boundary concepts |
+| [`02_逐概念六层矩阵_Per_Concept_Matrices/`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/02_逐概念六层矩阵_Per_Concept_Matrices) | 13 per-concept files (Collateral, Position Risk, Health Factor, Distance to Liquidation, Borrow, Repay, Supply vs Collateral-Enabled, Borrower Adjustment, Active vs Passive, Liquidation Eligibility, Realized Liquidation, Borrower Identity, Boundary Concepts) |
+| [`03_技术文档_Technical_Docs/`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/03_技术文档_Technical_Docs) | 7 protocol/infrastructure documents (Aave V3, Compound III, MakerDAO, Chainlink, Ethereum Finality, Dune Analytics) |
+| [`04_文献_Literature/`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/04_文献_Literature) | Literature organized under 5 themes (Blockchain Foundation, Collateral & Credit, DeFi Lending, Alternative Data & Credit Scoring, Payment & Settlement), totaling 31 newly added references |
+| [`05_不可声称清单_Non_Claims_List.md`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/05_不可声称清单_Non_Claims_List.md) | 9 categories of non-claims (40+ items) |
+| [`06_术语边界对照表_Terminology_Boundary_Reference.md`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/06_术语边界对照表_Terminology_Boundary_Reference.md) | Term ≠ mapping + cross-protocol mapping + correct wording substitutions |
 
 The six-layer matrix totals approximately 3,900 lines, ensuring that every layer of every concept has a clear definition and that boundaries between concepts are unambiguous.
 
@@ -125,7 +125,7 @@ To answer this, I conducted an item-by-item verification of Dune Analytics (the 
 
 ### 2.5 Producing the Complete Revision Report
 
-Finally, I consolidated all of the above work into a comprehensive revision report ([Report_v1修订报告_Revision_Report.md](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_Report_v1修订报告_Revision_Report.md), approximately 2,080 lines), containing:
+Finally, I consolidated all of the above work into a comprehensive revision report ([Report_v1修订报告_Revision_Report.md](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_Report_v1修订报告_Revision_Report.md), approximately 2,080 lines), containing:
 
 1. **Overview and Background**: Explains construct validity issues; provides foundational concept explanations for readers without a blockchain finance background
 2. **Problem Overview**: Classification and relationship diagram of the 11 problems
@@ -138,7 +138,7 @@ Finally, I consolidated all of the above work into a comprehensive revision repo
 
 ## 3. Summary of This Week's Output Files
 
-All output files are organized under the [2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification) folder:
+All output files are organized under the [2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification) folder:
 
 ```
 2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/
@@ -170,7 +170,7 @@ All output files are organized under the [2026-08-11_构念效度审查与数据
 
 ## 4. Overall Changes After Revision
 
-| Dimension | [Qualifying Report v1](../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf) | After Revision |
+| Dimension | [Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf) | After Revision |
 |-----------|---------|--------|
 | Core claim | "Borrower behavior provides credit signals" | "Protocol-observable position management behavior provides incremental information on liquidation propensity" |
 | Theoretical positioning | Prospect Theory as confirmed theory anchor | Prospect Theory as a compelling competing explanation (HF=1.0 is both a psychological reference point and a mechanical protocol discontinuity) |

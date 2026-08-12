@@ -7,16 +7,16 @@
 
 ## 一、本周工作概述
 
-本周的核心工作是：**对 Paper 1（[Qualifying Report v1](../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf)）进行系统性的构念效度审查，发现并修正了 11 个问题，验证了研究所需数据的可行性，并生成了完整的修订报告。**
+本周的核心工作是：**对 Paper 1（[Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf)）进行系统性的构念效度审查，发现并修正了 11 个问题，验证了研究所需数据的可行性，并生成了完整的修订报告。**
 
-工作起点是 8 月 9 日与内部人士的沟通（关于区块链支付困境），由此发现 [Qualifying Report v1](../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf) 中存在深层的语义和概念问题。随后围绕"如何让研究声称与数据能力保持一致"这一核心问题，完成了以下四项工作：
+工作起点是 8 月 9 日与内部人士的沟通（关于区块链支付困境），由此发现 [Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf) 中存在深层的语义和概念问题。随后围绕"如何让研究声称与数据能力保持一致"这一核心问题，完成了以下四项工作：
 
 | # | 工作 | 产出 | 文件位置 |
 |---|------|------|---------|
-| 1 | 发现语义问题，构建约束范围 | 六层矩阵框架（13 个概念 × 6 层 + 文献 + 技术文档 + 不可声称清单 + 术语对照） | [六层矩阵_Paper1_Six_Layer_Matrix](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix) |
-| 2 | 基于约束框架诊断 Report v1 问题 | 11 个问题的诊断与修正方案 | [诊断改进映射_Paper1_Diagnosis_and_Fix](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_诊断改进映射_Paper1_Diagnosis_and_Fix) |
-| 3 | 验证研究数据可行性 | Dune 平台数据可用性逐项验证 | [数据可行性验证_Paper1_Data_Feasibility](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_数据可行性验证_Paper1_Data_Feasibility) |
-| 4 | 汇总修订内容 | 完整修订报告（含修改前后对比、文献变更、术语变更） | [Report_v1修订报告_Revision_Report](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_Report_v1修订报告_Revision_Report.md) |
+| 1 | 发现语义问题，构建约束范围 | 六层矩阵框架（13 个概念 × 6 层 + 文献 + 技术文档 + 不可声称清单 + 术语对照） | [六层矩阵_Paper1_Six_Layer_Matrix](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix) |
+| 2 | 基于约束框架诊断 Report v1 问题 | 11 个问题的诊断与修正方案 | [诊断改进映射_Paper1_Diagnosis_and_Fix](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_诊断改进映射_Paper1_Diagnosis_and_Fix) |
+| 3 | 验证研究数据可行性 | Dune 平台数据可用性逐项验证 | [数据可行性验证_Paper1_Data_Feasibility](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_数据可行性验证_Paper1_Data_Feasibility) |
+| 4 | 汇总修订内容 | 完整修订报告（含修改前后对比、文献变更、术语变更） | [Report_v1修订报告_Revision_Report](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_Report_v1修订报告_Revision_Report.md) |
 
 ---
 
@@ -46,17 +46,17 @@ Definition（定义）→ Construct（构念）→ Measurement（度量）
 
 **核心原则**：如果第 6 层的声称超出了第 4 层（可观测）能够支撑的范围，就是 over-claiming（过度声称）。
 
-**产出内容**（路径相对于 [`04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix)）：
+**产出内容**（路径相对于 [`04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix)）：
 
 | 文件 | 内容 |
 |------|------|
-| [`00_说明_README.md`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/00_说明_README.md) | 框架导航与使用说明 |
-| [`01_六层矩阵总表_Master_Matrix_Table.md`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/01_六层矩阵总表_Master_Matrix_Table.md) | 12 个在范围内概念 + 6 个边界概念的总表 |
-| [`02_逐概念六层矩阵_Per_Concept_Matrices/`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/02_逐概念六层矩阵_Per_Concept_Matrices) | 13 个逐概念文件（Collateral, Position Risk, Health Factor, Distance to Liquidation, Borrow, Repay, Supply vs Collateral-Enabled, Borrower Adjustment, Active vs Passive, Liquidation Eligibility, Realized Liquidation, Borrower Identity, Boundary Concepts） |
-| [`03_技术文档_Technical_Docs/`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/03_技术文档_Technical_Docs) | 7 个协议/基础设施文档（Aave V3, Compound III, MakerDAO, Chainlink, Ethereum Finality, Dune Analytics） |
-| [`04_文献_Literature/`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/04_文献_Literature) | 5 个主题的文献整理（Blockchain Foundation, Collateral & Credit, DeFi Lending, Alternative Data & Credit Scoring, Payment & Settlement），共 31 篇新增文献 |
-| [`05_不可声称清单_Non_Claims_List.md`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/05_不可声称清单_Non_Claims_List.md) | 9 类不可声称（40+ 条目） |
-| [`06_术语边界对照表_Terminology_Boundary_Reference.md`](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/06_术语边界对照表_Terminology_Boundary_Reference.md) | 术语 ≠ 对照 + 协议间映射 + 正确措辞替换 |
+| [`00_说明_README.md`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/00_说明_README.md) | 框架导航与使用说明 |
+| [`01_六层矩阵总表_Master_Matrix_Table.md`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/01_六层矩阵总表_Master_Matrix_Table.md) | 12 个在范围内概念 + 6 个边界概念的总表 |
+| [`02_逐概念六层矩阵_Per_Concept_Matrices/`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/02_逐概念六层矩阵_Per_Concept_Matrices) | 13 个逐概念文件（Collateral, Position Risk, Health Factor, Distance to Liquidation, Borrow, Repay, Supply vs Collateral-Enabled, Borrower Adjustment, Active vs Passive, Liquidation Eligibility, Realized Liquidation, Borrower Identity, Boundary Concepts） |
+| [`03_技术文档_Technical_Docs/`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/03_技术文档_Technical_Docs) | 7 个协议/基础设施文档（Aave V3, Compound III, MakerDAO, Chainlink, Ethereum Finality, Dune Analytics） |
+| [`04_文献_Literature/`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/04_文献_Literature) | 5 个主题的文献整理（Blockchain Foundation, Collateral & Credit, DeFi Lending, Alternative Data & Credit Scoring, Payment & Settlement），共 31 篇新增文献 |
+| [`05_不可声称清单_Non_Claims_List.md`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/05_不可声称清单_Non_Claims_List.md) | 9 类不可声称（40+ 条目） |
+| [`06_术语边界对照表_Terminology_Boundary_Reference.md`](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_六层矩阵_Paper1_Six_Layer_Matrix/06_术语边界对照表_Terminology_Boundary_Reference.md) | 术语 ≠ 对照 + 协议间映射 + 正确措辞替换 |
 
 六层矩阵共约 3,900 行，确保了每个概念的每一层都有明确定义，且概念之间的边界清晰。
 
@@ -125,7 +125,7 @@ Definition（定义）→ Construct（构念）→ Measurement（度量）
 
 ### 2.5 生成完整修订报告
 
-最后，我将以上所有工作整合为一份完整的修订报告（[Report_v1修订报告_Revision_Report.md](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_Report_v1修订报告_Revision_Report.md)，约 2,080 行），包含：
+最后，我将以上所有工作整合为一份完整的修订报告（[Report_v1修订报告_Revision_Report.md](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/2026-08-11_Report_v1修订报告_Revision_Report.md)，约 2,080 行），包含：
 
 1. **概述与背景**：解释构念效度问题，为非区块链金融读者提供基础概念解释
 2. **问题总览**：11 个问题的分类和关系图
@@ -138,7 +138,7 @@ Definition（定义）→ Construct（构念）→ Measurement（度量）
 
 ## 三、本周产出文件汇总
 
-所有产出文件统一放在 [2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification](../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification) 文件夹中：
+所有产出文件统一放在 [2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification](../../04_阶段成果_Milestone_Deliverables/2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification) 文件夹中：
 
 ```
 2026-08-11_构念效度审查与数据验证_Construct_Validity_Review_and_Data_Verification/
@@ -170,7 +170,7 @@ Definition（定义）→ Construct（构念）→ Measurement（度量）
 
 ## 四、修订后的整体变化
 
-| 维度 | [Qualifying Report v1](../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf) | 修订后 |
+| 维度 | [Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf) | 修订后 |
 |------|---------|--------|
 | 核心声称 | "借款人行为提供信用信号" | "协议可观测的仓位管理行为提供清算倾向的增量信息" |
 | 理论定位 | Prospect Theory 是已确认的理论锚 | Prospect Theory 是有吸引力的竞争性解释（HF=1.0 既是心理参考点也是机械协议不连续点） |
