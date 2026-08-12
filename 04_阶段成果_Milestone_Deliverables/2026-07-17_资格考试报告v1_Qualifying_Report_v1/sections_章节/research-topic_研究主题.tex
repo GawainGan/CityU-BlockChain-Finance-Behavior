@@ -1,0 +1,52 @@
+\section{Identification of the Research Topic}
+
+\subsection{Research Context and Motivation}
+
+The preceding literature review identifies a specific, underexplored research question that sits at the intersection of DeFi lending risk, behavioral finance, and on-chain credit assessment. This section articulates the specific research topic that the proposed study seeks to address, including its scope, its research questions, and the falsifiable hypotheses that would guide empirical testing.
+
+The proposed research is motivated by the following observation: DeFi lending protocols generate a comprehensive, time-stamped record of every action taken by every participant, yet the existing literature has predominantly treated these data as a source of static features for cross-sectional risk classification rather than as a window into the dynamic process through which borrowers manage, or fail to manage, mounting risk exposure. This is a missed opportunity because the temporal dimension of borrower behavior—the sequence, timing, and magnitude of active adjustments relative to changes in position health—may contain credit-relevant information that is not captured by point-in-time snapshots of collateralization ratios, health factors, or other conventional risk indicators.
+
+The research topic is therefore defined as follows: \textbf{The empirical relationship between borrowers' active behavioral adjustments in response to rising position risk in DeFi lending protocols and the subsequent likelihood of liquidation or other adverse risk outcomes.} This topic is situated within the broader domain of financial risk assessment but distinguishes itself through its emphasis on behavioral process variables rather than state variables, its use of publicly verifiable on-chain data, and its grounding in the theoretical frameworks of behavioral finance.
+
+\subsection{Research Questions}
+
+The proposed study addresses two hierarchically organized research questions:
+
+\begin{description}[leftmargin=*,labelindent=\parindent, itemindent=0pt]
+\item[RQ1 (Behavioral Layer).] When a DeFi borrower's position approaches the protocol-defined liquidation threshold, do borrowers exhibit systematic, non-random patterns of active adjustment—in the form of collateral additions, debt repayment, position closure, or continued risk-taking—that are distinguishable from the mechanical effects of price movements and liquidation bot activity?
+
+\item[RQ2 (Credit Layer).] Controlling for conventional on-chain risk indicators, including current health factor, collateral ratio, account activity, asset concentration, and market volatility, do behavioral process variables capturing the \emph{trajectory} of active adjustments provide statistically and economically significant incremental predictive power for future liquidation events?
+\end{description}
+
+RQ1 asks whether there is a behavioral phenomenon worth explaining: a question about the existence, magnitude, and structure of active borrower responses to risk accumulation. This question is primarily descriptive and has value in its own right, even in the absence of credit prediction results. RQ2 asks whether that phenomenon has practical relevance for risk assessment: a question about the added value of behavioral information beyond what is already available from simpler, more direct risk indicators. The hierarchical structure of the research questions means that RQ2 is conditional on RQ1: if there is no systematic behavioral response to position risk, the question of whether such responses predict outcomes is moot.
+
+\subsection{Hypotheses}
+
+The research questions translate into the following falsifiable hypotheses:
+
+\subsubsection*{RQ1: Behavioral Hypotheses}
+
+\begin{description}[leftmargin=*,labelindent=\parindent, itemindent=0pt]
+\item[H1a (Active Adjustment Occurrence).] The probability of observing a borrower-initiated collateral addition or debt repayment increases monotonically as the health factor approaches the liquidation threshold from above, after controlling for contemporaneous price movements of the underlying collateral assets.
+
+\item[H1b (Loss Aversion Asymmetry).] The magnitude of borrower-initiated risk-reducing actions (collateral additions, debt repayment) per unit deterioration in health factor is larger in absolute value than the magnitude of additional borrowing or collateral withdrawal per unit improvement in health factor, consistent with the loss aversion prediction of prospect theory.
+
+\item[H1c (Reference-Point Discontinuity).] There is a discontinuity in the probability of observing active risk-reducing behavior at the health factor value corresponding to the liquidation threshold, above and beyond the smooth relationship that would be predicted by a model using only collateral price movements.
+\end{description}
+
+\subsubsection*{RQ2: Credit Prediction Hypotheses}
+
+\begin{description}[leftmargin=*,labelindent=\parindent, itemindent=0pt]
+\item[H2a (Incremental Predictive Power).] A model that includes behavioral process variables—specifically, the presence, timing, and magnitude of active adjustments made as the position approaches the liquidation threshold—achieves significantly better out-of-sample prediction of liquidation events than a model using only conventional on-chain risk indicators.
+
+\item[H2b (Temporal Precedence).] Behavioral adjustment variables measured in period \(t-1\) to \(t\) improve the prediction of liquidation events in period \(t\) to \(t+k\) even after controlling for the health factor and its recent trajectory up to time \(t\).
+\end{description}
+
+\subsection{Positioning and Novelty}
+
+The proposed study contributes to the existing literature in three distinct ways. First, it shifts the analytical focus of DeFi lending research from protocol-level risk to borrower-level behavior, introducing a micro-foundation for understanding how the participants in DeFi markets respond to the incentive structures created by smart contract parameters. Second, it bridges the largely separate literatures on DeFi risk modeling and behavioral finance by testing prospect theory predictions in a naturalistic financial setting where the reference point—the liquidation threshold—is objective, observable, and identical for all participants, thereby addressing a key measurement challenge that has limited the external validity of many behavioral finance studies~\cite{barberis2013thirty}. Third, it introduces a process-based perspective on credit risk assessment that complements the static, feature-based approaches that have dominated the on-chain credit risk literature to date~\cite{ghosh2024onchain}, potentially opening new avenues for the construction of behavioral early warning indicators in DeFi lending protocols.
+
+It is important to be precise about what this study does \emph{not} claim. It does not claim that DeFi borrowers are irrational or that their behavior necessarily deviates from the predictions of rational expectations models. The empirical approach is designed to test whether behavioral variables \emph{add information} beyond conventional risk indicators, not to adjudicate between competing models of rationality. It does not claim that behavioral process variables are better predictors of liquidation than conventional indicators; the hypotheses are framed explicitly in terms of \emph{incremental} predictive power rather than absolute accuracy. And it does not claim that any observed behavioral patterns necessarily generalize to other DeFi protocols, time periods, or market conditions; external validity is a matter for subsequent replication and extension.
+
+\input{figures_图示/图3_fig3}
+\vspace{4pt}

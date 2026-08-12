@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Branch E · Cusp RAT 动力系统框架 — 完整文档</title>
+    <style>
+      :root {
+        --bg: #0d1117; --bg-secondary: #161b22; --border: #303d63;
+        --text: #c9d1d9; --text-secondary: #8b949e; --accent: #58a6ff;
+        --accent-hover: #79c0ff; --green: #3fb950; --orange: #d2991d;
+        --red: #f85149; --purple: #a371f7; --code-bg: #1c2128;
+        --heading: #f0f6fc; --link: #58a6ff; --table-header: #1c2128;
+        --table-row-alt: #161b22; --teal: #39d2c0;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+        background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px;
+      }
+      #sidebar {
+        position: fixed; top: 0; left: 0; width: 320px; height: 100vh;
+        background: var(--bg-secondary); border-right: 1px solid var(--border);
+        overflow-y: auto; z-index: 100; padding: 20px;
+      }
+      #sidebar h2 {
+        color: var(--heading); font-size: 18px; margin-bottom: 16px;
+        padding-bottom: 12px; border-bottom: 1px solid var(--border);
+      }
+      #sidebar .nav-section-title {
+        color: var(--accent); font-size: 12px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px; margin: 16px 0 8px 0;
+      }
+      #sidebar nav a {
+        display: block; color: var(--text-secondary); text-decoration: none;
+        padding: 4px 0; font-size: 13px; transition: color 0.15s;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      #sidebar nav a:hover { color: var(--accent-hover); }
+      #content { margin-left: 340px; padding: 40px 60px; max-width: 1000px; }
+      .doc-section {
+        border: 1px solid var(--border); border-radius: 8px; padding: 32px;
+        margin-bottom: 24px; background: var(--bg-secondary);
+      }
+      .doc-section h1 { font-size: 28px; color: var(--heading); margin-bottom: 8px; }
+      .doc-section h2 { font-size: 22px; color: var(--heading); margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+      .doc-section h3 { font-size: 18px; color: var(--heading); margin: 24px 0 8px; }
+      .doc-section h4 { font-size: 16px; color: var(--text); margin: 16px 0 6px; }
+      .doc-section p { margin: 8px 0; }
+      .doc-section a { color: var(--link); text-decoration: none; }
+      .doc-section a:hover { text-decoration: underline; }
+      .doc-section ul, .doc-section ol { margin: 8px 0 8px 24px; }
+      .doc-section li { margin: 4px 0; }
+      .doc-section hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+      .doc-section code {
+        background: var(--code-bg); padding: 2px 6px; border-radius: 4px;
+        font-size: 0.9em; font-family: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, Consolas, monospace;
+      }
+      .doc-section pre {
+        background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
+        padding: 16px; overflow-x: auto; margin: 12px 0; font-size: 13px; line-height: 1.5;
+      }
+      .doc-section pre code { background: none; padding: 0; }
+      .doc-section table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+      .doc-section th { background: var(--table-header); padding: 8px 12px; text-align: left; border: 1px solid var(--border); color: var(--heading); }
+      .doc-section td { padding: 8px 12px; border: 1px solid var(--border); }
+      .doc-section tr:nth-child(even) td { background: var(--table-row-alt); }
+      .doc-section strong { color: var(--heading); }
+      .doc-section em { color: var(--orange); }
+      .file-path {
+        color: var(--text-secondary); font-size: 12px; font-family: monospace;
+        margin-bottom: 16px; padding: 6px 10px; background: var(--code-bg);
+        border-radius: 4px; display: inline-block;
+      }
+      .branch-badge {
+        display: inline-block; padding: 2px 8px; border-radius: 4px;
+        font-size: 12px; font-weight: 600; margin-right: 8px;
+      }
+      .badge-a { background: rgba(88,166,255,0.15); color: var(--accent); }
+      .badge-b { background: rgba(163,113,247,0.15); color: var(--purple); }
+      .badge-c { background: rgba(63,185,80,0.15); color: var(--green); }
+      .badge-d { background: rgba(210,153,29,0.15); color: var(--orange); }
+      .badge-e { background: rgba(57,210,192,0.15); color: var(--teal); }
+      .page-header {
+        border-left: 3px solid var(--accent); padding: 16px 24px; margin-bottom: 32px;
+        background: var(--bg-secondary); border-radius: 0 8px 8px 0;
+      }
+      .page-header.branch-b { border-left-color: var(--purple); }
+      .page-header.branch-c { border-left-color: var(--green); }
+      .page-header.branch-d { border-left-color: var(--orange); }
+      .page-header.branch-e { border-left-color: var(--teal); }
+      .page-header h1 { font-size: 28px; margin-bottom: 4px; }
+      .page-header p { color: var(--text-secondary); margin: 0; }
+      .nav-toggle {
+        display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+        background: var(--bg-secondary); border: 1px solid var(--border);
+        color: var(--text); font-size: 20px; padding: 8px 12px;
+        border-radius: 6px; cursor: pointer;
+      }
+      @media (max-width: 900px) {
+        #sidebar { transform: translateX(-100%); transition: transform 0.3s; width: 280px; }
+        #sidebar.open { transform: translateX(0); }
+        #content { margin-left: 0; padding: 20px; }
+        .nav-toggle { display: block; }
+      }
+    </style>
+</head>
+<body>
+<div id="top"></div>
+<button class="nav-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+<aside id="sidebar"><h2>四分支探索文档</h2><nav>
+<div class="nav-section-title">导航</div>
+    <a href="../00_总览/总览_完整文档.html">返回总览</a>
+    <a href="../0A_Branch_A_RAT/RAT_完整文档.html">Branch A · RAT 轨迹框架</a>
+    <a href="../0B_Branch_B_本体论/本体论_完整文档.html">Branch B · 决策本体论</a>
+    <a href="../0C_Branch_C_HAM/HAM_完整文档.html">Branch C · 异质预期演化</a>
+    <a href="../0D_Branch_D_数据驱动/数据驱动_完整文档.html">Branch D · 数据驱动安全网</a>
+    <a href="#top">本页文档</a>
+    <a href="#doc_1">  文档 1</a>
+</nav></aside>
+<main id="content">
+<div class="page-header branch-e">
+<h1>Branch E · Cusp RAT 动力系统框架</h1>
+<p>1 篇文档</p>
+</div>
+<div id="doc_1">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-e">Branch E</span><span class="file-path">05_Branch_E_CuspRAT/文献/E1_完整研究计划书_CuspRAT.md</span>
+    <h1>Branch E：Cusp Catastrophe RAT — 四路径类型与动力系统框架</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08 | <strong>性质</strong>：独立博士论文候选方向 | <strong>与 Branch A（序列分析RAT）的关系</strong>：互补，非替代
+
+<hr>
+
+<h2>摘要</h2>
+
+<p>现有 Branch A（序列分析RAT）从社会学序列分析传统出发，通过 OM/DTW + 聚类识别轨迹类型。该框架的方法是严谨的，但其&quot;数据驱动的聚类&quot;逻辑存在一个理论缺口：<strong>轨迹类型为什么是这些而不是那些？如果换一组借款人，轨迹类型会改变吗？</strong> 方向一升级版通过引入<strong>Cusp Catastrophe 模型</strong>（Thom, 1975）和动力系统理论（dynamical systems theory），为 RAT 提供一个<strong>生成性的数学模型</strong>——不是从数据中聚类发现轨迹类型，而是从模型的几何结构<strong>导出</strong>轨迹类型。四路径类型（早期出清型、阈值跳变型、持续加杠杆型、惰性漂移型）是从 Cusp 控制曲面的几何性质中自然产生的。</p>
+
+<hr>
+
+<h2>1. 核心直觉：为什么Cusp模型比序列分析更精确</h2>
+
+<h3>1.1 序列分析 RAT 的局限</h3>
+
+<p>序列分析RAT（A1-A4）的强大之处在于描述——它能发现数据中存在的结构。但它的理论中的因果机制是薄弱的： - 为什么借款人会展现出某种轨迹形态？ - 轨迹类型是性格特质（stable trait）还是状态依赖（state-dependent）？ - 如果市场条件改变，轨迹类型如何发生变化？</p>
+
+<p>这些问题序列分析只能回答&quot;存在&quot;而不能回答&quot;为什么&quot;。</p>
+
+<h3>1.2 Cusp Catastrophe 模型的核心优势</h3>
+
+<p>Cusp catastrophe model 是 René Thom (1975) 提出的七个基本突变模型中最常用、最直观的一个。它的数学形式简单但行为复杂：</p>
+
+<strong>模型的几何结构</strong>：
+<p>- <strong>一个行为变量 $y$</strong>：借款人的风险调整行为强度（从&quot;不作为&quot;到&quot;紧急补仓&quot;的连续谱系） - <strong>两个控制变量</strong>： - $\alpha$：<strong>不对称因子</strong>（normal factor）——HF 的绝对水平，决定行为位于曲面的哪个&quot;区域&quot; - $\beta$：<strong>分岔因子</strong>（splitting factor）——HF 下降速度 + 抵押品波动率，决定行为曲面是否存在&quot;折叠&quot;（fold）</p>
+
+<strong>关键行为特征</strong>：
+<p>- 当 $\beta &lt; 0$ 时，控制曲面平滑，行为随 HF 下降而线性增加——这是标准的前景理论预测 - 当 $\beta &gt; 0$ 时，曲面存在一个<strong>不可达区域</strong>（折叠），两个稳定平衡态之间发生非连续跳变——这是 Cusp 的独特预测：<strong>行为在某一临界点上发生突跳</strong>（catastrophic jump），从&quot;低行为强度&quot;直接跳变到&quot;高行为强度&quot;</p>
+
+<strong>在 DeFi 上下文中的含义</strong>：
+<p>- $\beta &gt; 0$ 的情境对应&quot;抵押品高波动 + HF 快速下降&quot;——这正是市场恐慌的典型场景 - Cusp 模型预测：在恐慌市场中，借款人的风险调整行为<strong>不应该</strong>是线性的——它在某个临界 HF 值的附近会发生跳变 - 这种跳变模式与金融数据中常见的&quot;非线性&quot;现象相吻合——但传统行为经济学模型（前景理论）无法自然产生这种非连续性</p>
+
+<h3>1.3 与前景理论的本质区别</h3>
+
+<table>
+<tr><td>维度</td><td>前景理论</td><td>Cusp RAT</td></tr>
+<tr><th>行为假设</th><th>损失厌恶（$\lambda &gt; 1$）导致对风险下倾的反应</th><th>行为反应是一个动力系统——HF（$\alpha$）+ 变量（$\beta$）共同决定反应曲面的形状</th></tr>
+<tr><td>非线性来源</td><td>参考点效应——在参考点附近价值函数更陡</td><td>几何上——控制曲面中的折叠导致非连续跳变</td></tr>
+<tr><td>模型性质</td><td>描述性（descriptive）：描述<strong>为什么</strong>反应不对称</td><td>生成性（generative）：描述<strong>怎么</strong>反应的，并从几何结构中产生预测</td></tr>
+<tr><td>实证预测</td><td>反应在 HF&lt;1.1 时尤其强</td><td>反应在 HF 进入折叠区间的瞬间发生跳变——不连续</td></tr>
+</table>
+
+<strong>Cusp RAT 不推翻前景理论——它包含前景理论作为特殊情形（当 $\beta &lt; 0$ 或当折叠尚未触达时）。</strong> 这意味着 Cusp RAT 是一个更具一般性的理论框架，前景理论是其子集。
+
+<hr>
+
+<h2>2. 四路径类型：从Cusp几何结构导出的自然类型</h2>
+
+<p>Cusp 模型的控制曲面自然地将行为空间划分为四个区域。这四个区域不依赖于聚类，而是由模型几何导出的<strong>穷举的</strong>类型体系：</p>
+
+<h3>类型一：早期出清型（Early Clearance）—— 对应于低$\beta$的线性响应区域</h3>
+
+<strong>HF特征</strong>：HF 刚跌至 1.5 就大规模补仓
+<strong>Cusp 对应的几何位置</strong>：行为变量 $y$ 位于控制曲面的<strong>下层稳定叶</strong>（lower stable sheet）的左侧边缘——在折叠之前就已完成响应
+
+<strong>行为特征</strong>：
+<p>- 在 HF 仍然较高时（&gt;1.3）就开始系统性加抵押 - HF 的下降与加抵押行为几乎呈线性关系 - 反应幅度大但反应时机早——在折叠到达之前就过渡到高行为强度状态 - 从不在 HF&lt;1.1 时紧急操作——因为&quot;紧急&quot;的需求已在早期被消解</p>
+
+<strong>信用含义</strong>：稳健者。这些借款人将&quot;预防性仓位管理&quot;作为一种主动策略。他们不是在&quot;逃避损失&quot;（损失厌恶）——而是在策略性地将 HF 维持在高位以满足再投资或杠杆限制。
+
+<strong>在V4框架中的映射</strong>：这些借款人表现出高 BDM-补救超配度，但超配度的来源是早期预防性行为，而非恐慌驱动的紧急补仓。
+
+<hr>
+
+<h3>类型二：阈值跳变型（Threshold Jump）—— 对应于Cusp的非连续跳变</h3>
+
+<strong>HF特征</strong>：HF 从 1.3 骤降至 1.05 时才紧急操作
+<strong>Cusp 对应的几何位置</strong>：轨迹从控制曲面的<strong>上层稳定叶</strong>（upper stable sheet）穿过<strong>折叠线</strong>（fold line），发生一次非连续跳变（jump）——$y$ 从低值瞬间跃升至高值
+
+<strong>行为特征</strong>：
+<p>- 在 HF 从 1.8 到 1.3 的区间内，反应性行为强度极低 - 当 HF 穿越某个阈值（通常是 1.1-1.05）时，行为强度<strong>不连续地</strong>跳升 - 跳变的幅度取决于 HF 下降速率的快慢 - 跳变后的行为模式是&quot;全量响应&quot;——一次性大量加抵押以将 HF 推回安全区间</p>
+
+<strong>信用含义</strong>：恐慌驱动。这些借款人并非没有能力管理仓位——他们有足够的抵押品来加，但他们没有在日常中主动监控头寸。这种行为模式的根本驱动力是<strong>疏忽</strong>而非风险的主动寻求——但准备金不足时可能无法完成跳变（即被清算）。
+
+<strong>与前景理论的差异化预测</strong>：
+<p>- 前景理论预测：借贷人越接近 HF=1，反应越强（参考点效应 + 损失厌恶） - Cusp 预测：反应不仅随 HF 接近 1 变强——它在某个临界值<strong>不连续地跳变</strong>。连续模型无法捕获这一点</p>
+
+<hr>
+
+<h3>类型三：持续加杠杆型（Continuous Leverage-Taking）—— 对应于Cusp控制曲面上的持续下降</h3>
+
+<strong>HF特征</strong>：HF 下降过程中不断增借
+<strong>Cusp 对应的几何位置</strong>：轨迹在控制曲面上持续向下移动——不仅没有跳变，反而继续远离高行为强度区域
+
+<strong>行为特征</strong>：
+<p>- 在 HF 下降期间，借款人<strong>增加</strong>杠杆而非降低——从抵押品中借款更多 - 行为的方向性（direction）与 Cusp 模型的线性预期相反——模型预测 HF↓ 应导致加抵押↑，但观测结果是 HF↓ 导致借款↑ - 这种行为不能通过 Cusp 模型中的&quot;正常&quot;参数值（$\alpha, \beta$）解释——需要引入一个新的不对称性：借款人对 HF 下降的<strong>反应符号反转</strong></p>
+
+<strong>信用含义</strong>：可能性偏好（probability preference）。这些借款人可能是：
+<p>- <strong>赌博型</strong>：将杠杆视为&quot;翻本&quot;的工具（disposition effect 在 DeFi 中的表现） - <strong>套利型</strong>：在进行某种市场中性策略（如对冲），需要借款来保持 delta 中性 - <strong>信息驱动型</strong>：根据某个信号认为市场价格会回升，因此不应该平仓</p>
+
+<strong>与异质预期（Branch C）的连接</strong>：持续加杠杆型对应 Branch C 中的&quot;损失追求者（Loss-Chaser）&quot;类型——在损失域中继续冒险。Cusp RAT 解释&quot;为什么&quot;这种类型存在：借款人的控制变量（$\alpha, \beta$）使行为曲面的形状发生变化——原来应该起稳定作用的机制被抑制了。
+
+<hr>
+
+<h3>类型四：惰性漂移型（Inertial Drift）—— 对应于Cusp折叠区域内的&quot;挂起&quot;状态</h3>
+
+<strong>HF特征</strong>：长期不操作直到被清算
+<strong>Cusp 对应的几何位置</strong>：轨迹在折叠区域内<strong>但不跳变</strong>——原因可能是控制变量 $\beta$ 的波动率不足，以至于不能将行为强度推过折叠
+
+<strong>行为特征</strong>：
+<p>- 借款人在数周甚至数月内无任何主动行为 - HF 因市场波动而自然下降——没有主动加杠杆，纯粹是抵押品价值侵蚀 - 清算不是由于&quot;冒险&quot;而是由于&quot;疏忽&quot;——借款人可能已经丢失了私钥、忘记了头寸存在、或完全不用这个地址 - 当联系人试图联系时（如 Etherscan 上的消息），无响应</p>
+
+<strong>信用含义</strong>：信息不完全或完全疏忽。这些借款人不是&quot;坏借款人&quot;——他们只是不存在于 DeFi 中作为<strong>监控实体</strong>。信用判断在这种情况下面临的根本性限制是：DeFi 不能强制关键信息的更新，只能等待行为。
+
+<strong>实证可操作化</strong>：
+<p>- 行为变量 $y$ = 0 的连续期数 &gt; N 周（$N=4$ 作为诊断阈值） - 结合&quot;地址活跃度&quot;特征——如果该地址在 DeFi 之外有其他交互（如发送 ETH），惰性漂移更可能是疏忽导致，而非真正遗忘</p>
+
+<hr>
+
+<h2>3. 动力系统框架：Cusp模型的形式化</h2>
+
+<h3>3.1 势函数</h3>
+
+<p>Cusp 行为的背后是一个双势的势函数：</p>
+
+<p>$$V(y; \alpha, \beta) = \frac{1}{4}y^4 + \frac{1}{2}\beta y^2 + \alpha y$$</p>
+
+<p>其中： - $y$ 是风险调整行为强度的连续变量 - $\alpha$ 是对称断裂参数（HF 水平的线性函数） - $\beta$ 是分岔参数（HF 下降速度 + 抵押品波动率的函数）</p>
+
+<p>势函数具有以下性质： - 当 $27\alpha^2 + 4\beta^3 &lt; 0$ 时，势函数有两个稳定平衡点（双稳态）——行为可以在&quot;高行为强度&quot;和&quot;低行为强度&quot;之间选择 - 在折叠线上（$27\alpha^2 + 4\beta^3 = 0$），这两个平衡态合为一个——系统变得对扰动极敏感 - 在折叠区域外（$27\alpha^2 + 4\beta^3 &gt; 0$），只有一个稳定平衡点——行为随 $\alpha, \beta$ 平滑变化</p>
+
+<h3>3.2 平衡面方程</h3>
+
+<p>在准静态近似下（假设行为比控制变量变化得更快），$y$ 调整到平衡点满足：</p>
+
+<p>$$\frac{\partial V}{\partial y} = y^3 + \beta y + \alpha = 0$$</p>
+
+<p>这是一个三次方程。当判别式 $\Delta = (\alpha/2)^2 + (\beta/3)^3 &gt; 0$ 时，只有一个实根（单稳态）。当 $\Delta &lt; 0$ 时，有三个实根——两个稳定，一个不稳定。</p>
+
+<strong>在 DeFi 中的翻译</strong>：
+<p>- $\Delta &gt; 0$：市场平静期（HF 缓慢变化、波动低）→ 行为平滑 → 早期出清型或惰性漂移型 - $\Delta &lt; 0$：市场压力期（HF 快速下降、波动高）→ 行为双稳态 → 阈值跳变型</p>
+
+<h3>3.3 控制参数的微观基础</h3>
+
+<p>$\alpha$ 和 $\beta$ 不是&quot;自由参数&quot;——它们可以从借款人的持仓特征和市场状态中构造：</p>
+
+<p>- $\alpha_i(t) = \gamma_0 + \gamma_1 \cdot HF_i(t) + \gamma_2 \cdot \Delta HF_i(t)$ - $\beta_i(t) = \delta_0 + \delta_1 \cdot \sigma_c(t) + \delta_2 \cdot |\Delta HF_i(t)|$</p>
+
+<p>其中： - $\sigma_c(t)$ 是抵押品组合的波动率 - $\Delta HF_i(t)$ 是 HF 的即时变化率</p>
+
+<p>这些参数可以通过<strong>面板数据</strong>估计——为每个借款人在每个时间点估计其所在的 Cusp 区域。</p>
+
+<hr>
+
+<h2>4. 与V4的衔接：RQ1b的设计</h2>
+
+<h3>4.1 保留RQ1的静态前景理论检验</h3>
+
+<p>V4 的核心 RQ1 保持不变： - <strong>RQ1（静态）</strong>：DeFi 借款人是否表现出前景理论预测的行为模式（损失厌恶、参考点效应、递减敏感性）？</p>
+
+<p>方向一升级版<strong>不推翻</strong>这个检验。如果 RQ1 通过，它为 V4 提供了静态的行为基础。如果 RQ1 不通过，方向一升级版提供了备选解释——不是行为不偏离理性，而是偏离采用了一种非线性的、非连续的形式。</p>
+
+<h3>4.2 新增RQ1b：动力系统扩展</h3>
+
+<strong>RQ1b（动态扩展）</strong>：在控制了前景理论的静态预测后，借款人的 Cusp 轨迹类型是否能解释 HF 动态和 BDM 无法解释的清算风险方差？
+
+<p>具体操作： 1. 为每个借款人估计 Cusp 模型（$y_i(t), \alpha_i(t), \beta_i(t)$ 的参数） 2. 识别每个借款人在每次状态（spell）中的轨迹类型（早期出清/阈值跳变/持续加杠杆/惰性漂移） 3. 在清算预测模型中进行层次化赛马： - M0：HF 动态特征 - M1：M0 + BDM 五维度（V4 的静态偏差指数） - M2：M1 + 前景理论参数（$\lambda$, 参考点等） - M_RAT：M0 + Cusp 路径类型虚拟变量 - M_full：M1 + M2 + M_RAT</p>
+
+<strong>关键检验</strong>：M_RAT 的 $\Delta$AUC 是否 &gt; 0，并且 M_RAT 系数的符号是否与 Cusp 预测一致？
+
+<hr>
+
+<h2>5. 实证操作：如何估计Cusp模型</h2>
+
+<h3>5.1 数据需求</h3>
+
+<p>与序列分析RAT相同的基础数据：Aave V2/Compound 的完整交互记录。额外需要： - 每个地址每个时间点（小时或天级别）的 HF 值 - 抵押品组合的时变波动率（可从去中心化交易所的价格源计算） - 主动行为的时间点（加抵押、还款、增贷、取款的精确时间戳）</p>
+
+<h3>5.2 估计策略</h3>
+
+<strong>阶段一：降维</strong>
+<p>- 对每个借款人行为计算行为强度 $y_i(t)$：标准化为[0,1]的主动交易强度（数量×频率）</p>
+
+<strong>阶段二：参数估计</strong>
+<p>- 对于每个借款人的每个 spell，展演非线性回归： $$y_i(t) = g(\alpha_i(t), \beta_i(t); \theta) + \epsilon_{it}$$ 其中 $g$ 是 Cusp 密度函数（隐式定义，因为 $y$ 受制于平衡面方程）</p>
+
+<p>- 估计方法：最大似然法（Cobb, 1981）或最小绝对偏差法（Guastello, 1982）</p>
+
+<strong>阶段三：类型分配</strong>
+<p>- 根据估计的 $\alpha_i, \beta_i$ 路径在控制曲面上的位置，分配每个 spell 到四种类型之一 - <strong>不使用聚类</strong>——类型从模型几何中导出</p>
+
+<h3>5.3 可选的简化方法（如果全解析估计不可行）</h3>
+
+<p>Cusp 的全极大似然估计对数据密度要求极高。一个更易行且仍能捕获核心动态的简化方法是：</p>
+
+<p>- 不估计完整的 Cusp 模型（复杂的非线性似然） - 而是：对每个借款人计算&quot;HF-行为&quot;函数的局部曲率（可用局部多项式回归） - 通过曲率分布的多峰性（bimodality）来诊断 Cusp 行为：如果在控制曲面的某些区域观测到&quot;双稳态&quot;（某些借款人行为高，某些低，没有中间地带），这是 Cusp 几何存在性的强证据</p>
+
+<hr>
+
+<h2>6. 理论支撑：Cusp在社会科学中的应用先例</h2>
+
+<h3>6.1 组织行为学中的Cusp模型</h3>
+
+<p>Cusp 已被成功应用于社会科学的多个领域： - <strong>工作态度与行为</strong>：Sheridan (1985) 使用 Cusp 模型解释护士流失——工作满意度的中小变化可以导致离职倾向的急剧跳变，而线性模型无法捕获 - <strong>消费者行为</strong>：Oliva, Oliver &amp; MacMillan (1992) 将 Cusp 应用于品牌切换——小价格下降不会马上引发品牌切换，但当价格下降到某个阈值时，行为发生灾难性跳变 - <strong>金融恐慌</strong>：Zeeman (1974) 的开创性工作——证券市场中的恐慌与贪婪可由 Cusp 模型描述</p>
+
+<h3>6.2 与DeFi行为的类比</h3>
+
+<p>DeFi 借款人与上述模型存在关键的结构性类比： - <strong>护士离职</strong> ↔ <strong>借款人不补救→被清算</strong>：线性模型预测满足度每降低一个单位，离职概率增加一个常数。Cusp 预测存在一个&quot;不快也不Loyal&quot;的双稳态区间。类比——HF 在 1.05-1.15 时，借款人处于双稳态：可去可不去。 - <strong>品牌切换</strong> ↔ <strong>从 Aave 迁移到 Compound</strong>：当 Aave 的提供利率下降一点时，线性模型预测少量用户流失。Cusp 预测：没有大幅变化直到某个阈值，然后是灾难性流出。 - <strong>金融恐慌</strong> ↔ <strong>DeFi 银行为何需要&quot;保险&quot;</strong>：恐慌不是线性的——它是在某个信息触发下由 stasis 跳转到 panic。传统风险指标（线性预测）会低估极端事件的风险。</p>
+
+<h3>6.3 相对于前景理论的认识论优势</h3>
+
+<p>Cusp RAT 不要求你选择&quot;损失域还是风险域&quot;——前景理论关心的是行为对价值的响应。Cusp RAT 关心的是行为<strong>作为控制参数的函数</strong>的几何结构。这个区别似乎微妙，但却是根本的：前者假设了&quot;一个价值函数&quot;的普遍性；后者只假设&quot;一个动力系统的存在&quot;，而其参数可以是异质的（连接 Branch C）。</p>
+
+<hr>
+
+<h2>7. 失败判据与降级方案</h2>
+
+<table>
+<tr><td>失败模式</td><td>判据</td><td>行动</td></tr>
+<tr><th>Cusp模型不收敛</th><th>EM算法不收敛到合理的参数向量</th><th>拒绝Cusp——使用更简单的非线性模型（如logistic with threshold），但四路径分类保留</th></tr>
+<tr><td>路径分类中无&quot;阈值跳变型&quot;</td><td>第2类型分配数为0（样本中无此类型）</td><td>报告DeFi借款人行为的连续性质——Cusp不必要，简化动力系统分析</td></tr>
+<tr><td>$\beta$的效应不显著</td><td>$\beta$ 的估计系数在所有合理水平上不显著</td><td>折叠不存在→行为是线性的→回到串行分析RAT（A1-A4）</td></tr>
+<tr><td>即使Cusp有效，无信用增量</td><td>M_RAT相对M2的AUC差异不显著</td><td>动力系统方法在预测上没有超过线性方法——但可发表在方法学期刊</td></tr>
+<tr><td>惰性漂移型占比过高（&gt;40%）</td><td>称为4种类型中的支配性类型</td><td>重新分类为&quot;二类型模型&quot;——有行为-监控组 vs 惰性-遗忘组</td></tr>
+</table>
+
+<hr>
+
+<h2>8. 与Branch A现有内容的关系</h2>
+
+<table>
+<tr><td>维度</td><td>A1-A4 序列分析RAT</td><td>A5 Cusp RAT（本文档）</td></tr>
+<tr><th>方法基础</th><th>序列分析（OM/DTW）</th><th>动力系统（Cusp Catastrophe）</th></tr>
+<tr><td>类型来源</td><td>数据驱动聚类</td><td>模型几何导出</td></tr>
+<tr><td>思想认识论</td><td>描述主义（typology via clustering）</td><td>生成主义（types from model structure）</td></tr>
+<tr><td>优点</td><td>方法可迁移（社会学+金融交叉），易于解释</td><td>因果性（回答&quot;为什么&quot;有这些类型），更易推导</td></tr>
+<tr><td>弱点</td><td>不具有生成性（为什么是这些类型？）</td><td>数据要求高，估计复杂（Cusp的全ML估计是技术难点）</td></tr>
+</table>
+
+<strong>两个不互斥。</strong> 实际上，理想的工作流是：
+<p>1. 先使用 A1-A4 的序列分析进行<strong>探索性发现</strong>——从数据中发现&quot; 2. 然后利用 Cusp RAT 进行<strong>验证性建模</strong>——检验这四类类型是否可以由 Cusp 的几何结构产生，从而给予类型&quot;理论基础&quot;</p>
+
+<hr>
+
+<h2>9. 期刊与发表战略</h2>
+
+<p>- <strong>主攻</strong>： - <em>Journal of Economic Behavior &amp; Organization (JEBO)</em>：如果强调Cusp作为行为经济学的&quot;元理论&quot;——它比前景理论更一般 - <em>Quantitative Finance</em>：如果强调非连续价格动态的微观证据 - <strong>次选</strong>： - <em>Physica A</em>：如果Cusp的统计证据非常强——跳到物理学/复杂系统视角 - <em>Journal of Financial Stability</em>：如果强调Cusp在治理上的应用（早期检测阈值跳变用户）</p>
+
+<strong>与A1-A4的发表分工</strong>：
+<p>- A1-A4 投社会学期刊或 J. Econometrics（方法论贡献） - A5 投行为经济学期刊（理论贡献 + 实证应用）</p>
+
+<hr>
+
+<em>本方向为Branch A的理论升级子变体，与A1-A4互补而非替代。在正式写作前，所有文献需经过paper_search确认。</em>
+
+  </div>
+</div>
+</main>
+<script>
+  document.querySelectorAll('#sidebar a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body></html>

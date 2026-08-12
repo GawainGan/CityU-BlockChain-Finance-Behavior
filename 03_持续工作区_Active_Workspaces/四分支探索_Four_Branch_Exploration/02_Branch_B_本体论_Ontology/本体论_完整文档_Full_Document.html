@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Branch B · DeFi 决策本体论 — 完整文档</title>
+    <style>
+      :root {
+        --bg: #0d1117; --bg-secondary: #161b22; --border: #303d63;
+        --text: #c9d1d9; --text-secondary: #8b949e; --accent: #58a6ff;
+        --accent-hover: #79c0ff; --green: #3fb950; --orange: #d2991d;
+        --red: #f85149; --purple: #a371f7; --code-bg: #1c2128;
+        --heading: #f0f6fc; --link: #58a6ff; --table-header: #1c2128;
+        --table-row-alt: #161b22; --teal: #39d2c0;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+        background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px;
+      }
+      #sidebar {
+        position: fixed; top: 0; left: 0; width: 320px; height: 100vh;
+        background: var(--bg-secondary); border-right: 1px solid var(--border);
+        overflow-y: auto; z-index: 100; padding: 20px;
+      }
+      #sidebar h2 {
+        color: var(--heading); font-size: 18px; margin-bottom: 16px;
+        padding-bottom: 12px; border-bottom: 1px solid var(--border);
+      }
+      #sidebar .nav-section-title {
+        color: var(--accent); font-size: 12px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px; margin: 16px 0 8px 0;
+      }
+      #sidebar nav a {
+        display: block; color: var(--text-secondary); text-decoration: none;
+        padding: 4px 0; font-size: 13px; transition: color 0.15s;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      #sidebar nav a:hover { color: var(--accent-hover); }
+      #content { margin-left: 340px; padding: 40px 60px; max-width: 1000px; }
+      .doc-section {
+        border: 1px solid var(--border); border-radius: 8px; padding: 32px;
+        margin-bottom: 24px; background: var(--bg-secondary);
+      }
+      .doc-section h1 { font-size: 28px; color: var(--heading); margin-bottom: 8px; }
+      .doc-section h2 { font-size: 22px; color: var(--heading); margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+      .doc-section h3 { font-size: 18px; color: var(--heading); margin: 24px 0 8px; }
+      .doc-section h4 { font-size: 16px; color: var(--text); margin: 16px 0 6px; }
+      .doc-section p { margin: 8px 0; }
+      .doc-section a { color: var(--link); text-decoration: none; }
+      .doc-section a:hover { text-decoration: underline; }
+      .doc-section ul, .doc-section ol { margin: 8px 0 8px 24px; }
+      .doc-section li { margin: 4px 0; }
+      .doc-section hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+      .doc-section code {
+        background: var(--code-bg); padding: 2px 6px; border-radius: 4px;
+        font-size: 0.9em; font-family: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, Consolas, monospace;
+      }
+      .doc-section pre {
+        background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
+        padding: 16px; overflow-x: auto; margin: 12px 0; font-size: 13px; line-height: 1.5;
+      }
+      .doc-section pre code { background: none; padding: 0; }
+      .doc-section table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+      .doc-section th { background: var(--table-header); padding: 8px 12px; text-align: left; border: 1px solid var(--border); color: var(--heading); }
+      .doc-section td { padding: 8px 12px; border: 1px solid var(--border); }
+      .doc-section tr:nth-child(even) td { background: var(--table-row-alt); }
+      .doc-section strong { color: var(--heading); }
+      .doc-section em { color: var(--orange); }
+      .file-path {
+        color: var(--text-secondary); font-size: 12px; font-family: monospace;
+        margin-bottom: 16px; padding: 6px 10px; background: var(--code-bg);
+        border-radius: 4px; display: inline-block;
+      }
+      .branch-badge {
+        display: inline-block; padding: 2px 8px; border-radius: 4px;
+        font-size: 12px; font-weight: 600; margin-right: 8px;
+      }
+      .badge-a { background: rgba(88,166,255,0.15); color: var(--accent); }
+      .badge-b { background: rgba(163,113,247,0.15); color: var(--purple); }
+      .badge-c { background: rgba(63,185,80,0.15); color: var(--green); }
+      .badge-d { background: rgba(210,153,29,0.15); color: var(--orange); }
+      .badge-e { background: rgba(57,210,192,0.15); color: var(--teal); }
+      .page-header {
+        border-left: 3px solid var(--accent); padding: 16px 24px; margin-bottom: 32px;
+        background: var(--bg-secondary); border-radius: 0 8px 8px 0;
+      }
+      .page-header.branch-b { border-left-color: var(--purple); }
+      .page-header.branch-c { border-left-color: var(--green); }
+      .page-header.branch-d { border-left-color: var(--orange); }
+      .page-header.branch-e { border-left-color: var(--teal); }
+      .page-header h1 { font-size: 28px; margin-bottom: 4px; }
+      .page-header p { color: var(--text-secondary); margin: 0; }
+      .nav-toggle {
+        display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+        background: var(--bg-secondary); border: 1px solid var(--border);
+        color: var(--text); font-size: 20px; padding: 8px 12px;
+        border-radius: 6px; cursor: pointer;
+      }
+      @media (max-width: 900px) {
+        #sidebar { transform: translateX(-100%); transition: transform 0.3s; width: 280px; }
+        #sidebar.open { transform: translateX(0); }
+        #content { margin-left: 0; padding: 20px; }
+        .nav-toggle { display: block; }
+      }
+    </style>
+</head>
+<body>
+<div id="top"></div>
+<button class="nav-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+<aside id="sidebar"><h2>四分支探索文档</h2><nav>
+<div class="nav-section-title">导航</div>
+    <a href="../00_总览/总览_完整文档.html">返回总览</a>
+    <a href="../0A_Branch_A_RAT/RAT_完整文档.html">Branch A · RAT 轨迹框架</a>
+    <a href="../0C_Branch_C_HAM/HAM_完整文档.html">Branch C · 异质预期演化</a>
+    <a href="../0D_Branch_D_数据驱动/数据驱动_完整文档.html">Branch D · 数据驱动安全网</a>
+    <a href="../0E_Branch_E_CuspRAT/CuspRAT_完整文档.html">Branch E · Cusp RAT 动力系统</a>
+    <a href="#top">本页文档</a>
+    <a href="#doc_1">  文档 1</a>
+    <a href="#doc_2">  文档 2</a>
+    <a href="#doc_3">  文档 3</a>
+    <a href="#doc_4">  文档 4</a>
+</nav></aside>
+<main id="content">
+<div class="page-header branch-b">
+<h1>Branch B · DeFi 决策本体论</h1>
+<p>4 篇文档</p>
+</div>
+<div id="doc_1">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-b">Branch B</span><span class="file-path">02_Branch_B_本体论/文献/B1_完整研究计划书_本体论.md</span>
+    <h1>Branch B：DeFi 决策本体论 — 完整研究计划书</h1>
+
+<strong>版本</strong>：v2.0（融合方向六锐利表述） | <strong>日期</strong>：2026-07-08 | <strong>性质</strong>：博士论文候选方向
+
+<hr>
+
+<h2>0. 定位声明：为什么不是&quot;第N个前景理论检验&quot;？</h2>
+
+<p>在展开本体论框架之前，需要明确一个定位选择：<strong>Branch B 选择放弃&quot;前景理论&quot;这个过于拥挤的理论空间，转向更具原创性的理论框架。</strong></p>
+
+<p>2019 年以来，行为经济学在 DeFi 中的应用论文增长迅速。如果 V4 只做&quot;前景理论的第 N 个场景检验&quot;，创新空间非常有限。但 V4 的核心洞察——&quot;将一个静态的风险状态测量，推进到一个动态的风险行为过程测量&quot;——不需要前景理论来承载。事实上，如果把这个逻辑推到底，V4 应该提出的不是一个行为金融学理论，而是一个关于<strong>&quot;在透明、去中心化金融系统中如何产生信用信息&quot;</strong>的经济学理论。我们把这个理论称为：</p>
+
+<p>&gt; <strong>透明性信用生成理论 (A Theory of Credit-Relevant Information Production in Transparent Systems)</strong></p>
+
+<strong>核心命题</strong>：
+
+<p>1. 在<strong>传统金融</strong>中，信用信息产生于：(a) 机构<strong>审核</strong>（screening）——银行审查借款人申请材料和信用历史；(b) 监管<strong>报告</strong>（reporting）——征信机构和监管披露提供信用事件的标准化信息；(c) 市场<strong>约束</strong>（monitoring）——债权人通过价格和合同条款对借款人施加纪律。 2. 在<strong>DeFi</strong>中，信用信息产生于<strong>用户的行为过程本身</strong>——不是因为协议在&quot;评估&quot;他，而是因为他在可观测环境中的连续决策<strong>暴露了他的风险管理类型</strong>。 3. <strong>关键不是&quot;行为是否偏离理性&quot;</strong>（这是前景理论回答的问题），<strong>而是&quot;行为差异在统计上是否包含风险信息、这些信息是否在聚合层面可被提取&quot;</strong>。</p>
+
+<p>这一重新定位将理论锚定从&quot;一个具体心理学理论&quot;（前景理论）切换为&quot;一个关于信息产生机制的经济学理论&quot;（信息生产函数 + 本体论）。这对 ISR/MISQ 来说理论贡献更充足，同时也保留了行为金融的方法论（行为特征 → 风险预测）。</p>
+
+<hr>
+
+<h2>摘要</h2>
+
+<p>DeFi 的&quot;透明性&quot;被视为其相对于传统金融的核心优势——所有交易在链上公开可见。但本研究计划指出，&quot;交易透明&quot;不等于&quot;信用透明&quot;：能够看到借款人的每一个链上行为，不等于能够判断这些行为对偿付能力的含义。这一区分——&quot;看得到&quot;vs&quot;看得懂&quot;——构成了 DeFi 借贷中<strong>信用信息生产</strong>的核心问题。本研究计划提出一个两层理论框架：(1) 信息经济学层——将 Stiglitz-Weiss 的信息不对称框架扩展到 DeFi 语境，论证信用信息不是行为的自然属性，而是分析框架作用于原始行为数据的产物；(2) 决策本体论层——借鉴知识工程中的本体方法论（Gruber 1995; Gómez-Pérez et al. 2004），系统化构建 DeFi 信用判断的显式知识结构，将&quot;偿付意愿&quot;和&quot;偿付能力&quot;这两个不可直接观测的构念，通过可观测的链上行为证据进行操作性定义。研究通过两阶段混合方法设计——先构建本体（概念层），再验证本体（实证层）——来检验&quot;使用本体组织的链上行为数据是否比未组织的原始数据包含更多信用信息&quot;这一核心假说。</p>
+
+<hr>
+
+<h2>1. 问题陈述：DeFi 透明性的信息悖论</h2>
+
+<h3>1.1 透明性的两个分析层次</h3>
+
+<p>DeFi 的支持者和批评者共享一个隐含前提：<strong>如果信息透明，信用问题就解决了</strong>。但这一论述混淆了两个完全不同的概念层次：</p>
+
+<p>- <strong>交易透明（Transactional Transparency）</strong>：所有链上交互（存款、借款、还款、清算）对任何人可见。这是 DeFi 的独有特征——在传统金融中，只有银行能看到你的交易历史。 - <strong>信用透明（Credit Transparency）</strong>：借款人的偿付能力（ability to repay）和偿付意愿（willingness to repay）对这些交易事实的观察者是可见的。这是一个更强的、且不一定为真的声明。</p>
+
+<p>这两个层次的区别可以通过一个简单的例子说明：一个地址在过去 6 个月里按时还款了 12 次 Aave 上的 ETH 贷款。<strong>交易透明</strong>让你知道这 12 次还款的发生事实。<strong>信用透明</strong>则要求你判断&quot;这个地址在未来 6 个月是否会继续还款&quot;。前者是后者的<strong>必要但绝不充分</strong>的条件。</p>
+
+<h3>1.2 从信息不对称到信息生产</h3>
+
+<p>Stiglitz &amp; Weiss (1981) 的经典信贷配给模型的核心洞察是：由于银行无法完全观察借款人特征（逆向选择）或行为（道德风险），信贷市场无法通过纯粹的价格（利率）机制出清。银行因此发展出一整套&quot;信息生产&quot;机制——抵押品、合同条款、关系借贷——来部分解决这个问题。</p>
+
+<p>在 DeFi 中，这些信息生产机制在表面上已经&quot;被代码化&quot;——超额抵押代替了信用评估，清算自动化代替了催收。但这一替代并没有解决信息生产的根本问题——它只是将其从&quot;银行调查&quot;转变为&quot;用户自我选择&quot;（用户决定抵押多少、是否监控头寸）。关键是：<strong>这些自我选择的模式是否由协议有效地处理，取决于协议如何从自我选择中提取信息</strong>。</p>
+
+<h3>1.3 传统金融的三位一体信息生产机制 vs DeFi 的行为即信号</h3>
+
+<p>为了理解 DeFi 中信用信息生产的独特性，有必要系统对比传统金融的三种信息生产机制在 DeFi 中的对应物：</p>
+
+<table>
+<tr><td>信息生产机制</td><td>传统金融（TradFi）</td><td>DeFi（当前状态）</td><td>DeFi（本体增强后）</td></tr>
+<tr><th><strong>审核 (Screening)</strong></th><th>银行审查征信报告、收入证明、抵押物估值 → 信用评分</th><th>超额抵押率（LTV）是唯一的&quot;审查&quot;——纯抵押品驱动，无信用评估</th><th>本体框架检查&quot;偿付能力证据&quot;——不仅看抵押品，还看历史行为是否提供偿付意愿信号</th></tr>
+<tr><td><strong>报告 (Reporting)</strong></td><td>征信机构（Equifax）和监管机构强制披露信用事件（逾期、违约）→ 信用局</td><td>不存在征信报告——清算事件发生在链上但未被&quot;解释&quot;为信用事件</td><td>本体分类&quot;清算&quot;的性质：是被动型清算（市场下跌）还是主动型清算（借款人放弃了）？这类分解是&quot;信用报告&quot;的雏形</td></tr>
+<tr><td><strong>约束 (Monitoring)</strong></td><td>贷款合同条款（covenants）限制借款人行为（如禁止额外担保），银行持续监控</td><td>智能合约只在 HF&lt;1 时执行强制清仓，不存在中间约束</td><td>基于本体的治理规则：当本体检测到&quot;持续加杠杆&quot;类型时，协议可以动态调整清算参数</td></tr>
+</table>
+
+<strong>核心洞察</strong>：DeFi 不需要&quot;建立一个新的征信机构&quot;来复制传统金融的信息生产。它的独特性在于——<strong>行为本身就包含信用信号</strong>，只要有一个框架（本体）来解码它。在传统金融中，信用信号和信用事件是分离的（你每月报告一次逾期状态，即使你每天都在滥用贷款额度）。在 DeFi 中，所有行为都是实时可观测的——产生了一个<strong>连续信用信号流</strong>。这是根本性的结构优势，但前提是你有工具来&quot;阅读&quot;这个信号流。
+
+<h3>1.4 核心研究问题</h3>
+
+<p>1. <strong>RQ1（概念分析）</strong>：在 DeFi 中，可以观测到哪些与偿付意愿和偿付能力相关的链上行为证据？ 2. <strong>RQ2（本体构建）</strong>：如何将这些证据组织成一个显式的、可操作的信用判断本体？ 3. <strong>RQ3（增量信息）</strong>：使用本体衍生的特征进行信用预测，是否比使用&quot;纯行为特征&quot;（即不依据本体的分析框架）更具预测力？ 4. <strong>RQ4（可迁移性）</strong>：在 Aave 上定义的本体是否可以迁移到 Compound 而不显著损失信息性？</p>
+
+<hr>
+
+<h2>2. 理论框架</h2>
+
+<h3>2.1 信息生产函数 (IPF)</h3>
+
+<p>我们提出&quot;信息生产函数&quot;（Information Production Function, IPF）作为对 DeFi 信用判断问题的统一分析框架：</p>
+
+<p>$$\text{Signal}(x_t; \mathcal{F}) = f_{\mathcal{F}}(x_t)$$</p>
+
+<p>其中： - $x_t$ 是时间 t 时某地址的全部链上可观测行为 - $\mathcal{F}$ 是用于&quot;阅读&quot;这些行为的信息治理框架（信息生产的镜头） - $f_{\mathcal{F}}$ 是框架 $\mathcal{F}$ 将行为转化为信用信号的信息生产函数</p>
+
+<strong>核心论题</strong>：$x_t$ 本身不包含任何信用信号——只有当分析者使用某个 $\mathcal{F}$ 去&quot;阅读&quot;它时，$x_t$ 才产生信用含义。同一个行为（如&quot;在 HF=1.02 时加抵押&quot;），在&quot;偿付意愿的证据&quot;框架下和&quot;市场压力的机械反应&quot;框架下，得出完全不同的信用含义。
+
+<p>这个论点有三层含义： 1. <strong>信息是可构造的，不是被发现的</strong>：信用信号不是&quot;隐藏在数据中等着被发现&quot;——它是在分析数据和框架的交互中<strong>被构造</strong>的 2. <strong>没有优框架，但有较有生产性的框架</strong>：不存在一个&quot;完美的&quot;信息生产函数；但有一些框架允许从 $x_t$ 中提取出比其他的框架更多的信号 3. <strong>DeFi 的独特之处在于，它让框架的试验成为可能的</strong>：因为 $x_t$ 完全可见且形式标准化（全部在Ethereum上），可以系统地比较不同框架的&quot;信息产出&quot;</p>
+
+<h3>2.2 从分析框架到本体</h3>
+
+<p>如果一个分析框架用于信用判断，它需要回答以下问题： - 什么构成信用证据？（类/Class的定义） - 证据之间的关系是什么？它们如何组合成一个整体的信用画像？（关系/Relations的定义） - 用这些证据可以做出什么逻辑推论？（公理/Axioms的定义）</p>
+
+<p>这些正是<strong>知识本体</strong>（Ontology）所系统化的东西。工程本体论（Gruber, 1995; Borst, 1997; Studer et al., 1998）提供了严格的定义：</p>
+
+<strong>定义</strong>：一个本体是一个共享概念化的明确的形式化规格。
+
+<p>- <strong>概念化（Conceptualization）</strong>：对关注领域（DeFi 信用判断）中实体及其关系的抽象描述 - <strong>显式的（Explicit）</strong>：概念和约束被明确地定义，不留解读空间 - <strong>形式的（Formal）</strong>：本体是机器可读的（在信任粒度的信用判断中，这是根本的） - <strong>共享的（Shared）</strong>：本体是由共同体认同的——在一个去中心化协议中，是否需要全协议就&quot;什么构成信用证据&quot;达成共识？</p>
+
+<p>在 DeFi 信用判断的语境中： - <strong>类</strong>：借款人类型（高风险/低风险）、行为类型（偿付型行为/冒险型行为）、能力型证据（偿付能力）vs 意愿型证据（偿付意愿） - <strong>关系</strong>：行为 A <strong>是</strong> 偿付意愿的证据；行为 B <strong>由</strong> 偿付能力限制；地址 X <strong>拥有</strong> 某种可观测模式；地址 X <strong>不同于</strong> 地址 Y 的本体类型 - <strong>公理</strong>：如果一个地址有多次拥有 &gt;3 个同时开放头寸中的借款且很少被清算 → 该地址可能是&quot;复杂型&quot;而不是&quot;冒险型&quot;</p>
+
+<h3>2.3 偿付意愿 vs 偿付能力</h3>
+
+<p>这个区分是从古典信用判断文献（Jaffee &amp; Russell, 1976; Stiglitz &amp; Weiss, 1981）中借用的，但可以系统地在 DeFi 中进行本体编码：</p>
+
+<strong>偿付能力</strong>：借款人是否有资源满足债务义务？
+
+<p>在 DeFi 中可观测到的间接证据包括： - 该地址的整体链上组合——持有多少 ETH、USDC、stETH 的总和在负债以上吗？ - HF 是否能被主动的行为稳定地维持在高水平（&quot;能力信号&quot;——能够维持高位 HF，说明有持续的资源分配到抵押品管理）？ - 该地址是长期大户还是短期投机者（从全链交互历史看）？</p>
+
+<strong>偿付意愿</strong>：借款人是否<strong>选择</strong>满足债务义务，即使当偿付在经济上不是&quot;强迫的&quot;？
+
+<p>在 DeFi 中可观测到的间接证据包括： - 当 HF 尚处于安全区间（如 HF=2.0），地址 仍然在主动管理抵押品吗？（意愿信号——即使没有直接的压力，仍在维护债务） - 在 HF 接近 1.0 时，地址会加抵押还是会增贷？（意愿信号——前者是&quot;维护债务&quot;，后者是&quot;赌博翻本&quot;） - 地址是否显示一种&quot;厌清算&quot;模式——在其历史中，它是否多次在清算发生前采取防御行动？</p>
+
+<p>这个区分是基本的，因为偿付能力和偿付意愿可能正交： - 高能力 + 高意愿：良好的信用 - 高能力 + 低意愿：愿意违约而保有资源 - 低能力 + 高意愿：目前可靠但外部冲击时脆弱 - 低能力 + 低意愿：传统的高风险借款</p>
+
+<p>对于 DeFi 协议，未来坏账可能正是由&quot;高能力+低意愿&quot;的借款人产生的——他们有资源偿还但选择不偿还，因为他们可以利用 DeFi 的匿名性和无追索权性质。</p>
+
+<hr>
+
+<h2>3. 操作化方案</h2>
+
+<h3>3.1 两阶段设计</h3>
+
+<strong>阶段一：本体构建（概念设计 + 知识获取）</strong>
+
+<strong>第一步</strong>：实体与关系的提取
+<p>- 从 Aave V2 的完整交互日志中，提取所有可观测的实体类型及其关系 - 这包括： - <strong>实体</strong>：EOA 地址、合约地址、Token 地址 - <strong>行为</strong>：存款、借款、还款、取款、清算 - <strong>关系</strong>：拥有抵押品、欠债、与...交互、被...清算、授权</p>
+
+<strong>第二步</strong>：信用概念到链上证据的映射（核心概念工程师的专题）
+<p>- 为每个信用概念（偿付能力/偿付意愿）构建一个&quot;证据清单&quot;——哪些账上行为可以作为这个概念的可操作化证据 - 示例： - <strong>偿付意愿的证据</strong>： - EVI-1：该地址历史上是否在 HF 仍然安全时（&gt;1.5）就已开始维护头寸？$\to$ 如果是，强意愿信号 - EVI-2：该地址在遇到短暂的 HF 低下后是否立即加抵押？$\to$ 如果是，中等意愿信号 - EVI-3：该地址最近一次交互距今多久？$\to$ 如果超过 3 个月，弱意愿信号（可能是遗忘地址） - <strong>偿付能力的证据</strong>： - EVI-4：该地址是否拥有足以全额偿还的闲置资产（check 整体ETH/USDC余额）？$\to$ 如果是，强能力信号 - EVI-5：该地址的资产组合是否过度集中在单一资产？$\to$ 如果是，弱能力信号（由于波动性高）</p>
+
+<strong>第三步</strong>：本体编码
+<p>- 使用标准的本体编辑语言（OWL Web Ontology Language）来形式化第二步的映射 - 结构：类-子类层次结构 + 对象属性（关系）+ 数据属性（值约束） - 工具：Protégé（开源本体编辑器）</p>
+
+<strong>阶段二：实证验证——本体是否产生增量信息？</strong>
+
+<strong>第四步</strong>：从本体到预测特征
+<p>- 对于每个地址的每个时间点，使用本体来生成一个&quot;信用特征向量&quot; - 这包括： - 偿付能力/意愿的二值标志（根据本体逻辑规则） - 本体树的深度（地址在本体中被分类为多具体的类型） - 本体证据的覆盖度（可用的本体证据类型中，有多少是为该地址可获得的）</p>
+
+<strong>第五步</strong>：赛马——本体特征预测清算
+<p>- 模型：同 Branch D 的 M0/M1/M2 结构 - M0：传统链上风险特征（HF 动态、抵押率） - M1：行为特征（BDM 五维） - M_B：M0 + 本体衍生特征 - M_B_all：M1 + 本体衍生特征 - 检验：M_B 的 AUC 是否显著高于 M0 和 M1？ - 与方法论文献的关联：如果本体特征不预测清算 → 反思&quot;信息生产是否有赖于信用隐知识——DeFi 的本体不能外化&quot;。</p>
+
+<strong>第六步</strong>：可迁移性检验
+<p>- 在 Aave 上定义的本体被重新应用于 Compound 的数据 - 在同一种本体规则的映射下，本体特征的信用预测力是否在 Compound 上保持？ - 如果下降显著 → 说明 DeFi 的信用本体具有协议特化性——透明度不是跨协议的</p>
+
+<hr>
+
+<h2>4. 与其他分支的关系</h2>
+
+<table>
+<tr><td>维度</td><td>Branch B vs A (RAT)</td><td>Branch B vs C (HAM)</td></tr>
+<tr><th>时间维度</th><th>A 处理时间动态——RAT 将 B 的本体证据在时间上展开</th><th>C 处理异质——不同类型的人可能使用完全不同的&quot;信息生产镜头&quot;</th></tr>
+<tr><td>信用概念</td><td>B 为 A 的&quot;轨迹类型的信用含义&quot;提供了理论解释——为什么&quot;预防型&quot;段落比&quot;慢性冒险型&quot;信号好？因为前者的本体证据更丰富</td><td>B 为 C 的&quot;哪些行为策略类型应被预期为&#x27;信息性&#x27;&quot;提供标准——偿付能力+意愿框架分析哪些行为有意义</td></tr>
+<tr><td>互补性</td><td>A 的实证如果成功（RAT 有增量信息），B 就可以解释&quot;为什么&quot;——它把这个增量归于&quot;信息生产函数&quot;而非&quot;行为偏差&quot;</td><td>C 如果发现行为类型有差异化的结果，B 为它提供&quot;为什么这些类型有不同结果&quot;的本体解释</td></tr>
+</table>
+
+<strong>理想的&quot;概念-实证对&quot;</strong>：B 提供一个信用判断的本体框架 → A 用这个框架在时间上展开为&quot;轨迹中的本体信号&quot; → C 研究这些本体信号的不同类型在种群中的分布和竞争 → D 提供一个最小的经验基线来检查这些主张是否成立。
+
+<hr>
+
+<h2>5. 失败判据与降级方案</h2>
+
+<table>
+<tr><td>失败模式</td><td>判据</td><td>降级行动</td></tr>
+<tr><th>本体特征不预测清算</th><th>AUC(M_B) ≯ AUC(M0) 在统计上显著</th><th>退化为理论文章——&quot;DeFi中的信用本体论：一个概念框架&quot;——这将发表在 MIS Quarterly 或 Organization Science</th></tr>
+<tr><td>本体不可跨协议迁移</td><td>Aave 上的本体模型在 Compound 上 ΔAUC &lt; 0</td><td>论证 DeFi 信用本体的协议特化性——这也是一个重要发现</td></tr>
+<tr><td>本体构建过于抽象，委员会不接受</td><td>论文被拒</td><td>缩减 B 的篇幅，将其作为后续研究的&quot;理论灵感&quot;部分而不是独立章节</td></tr>
+<tr><td>信息生产函数被误认为&quot;太过哲学&quot;</td><td>审稿人质疑</td><td>添加实证锚——展示两个具有相同 BDM 但不同本体解释的合成例子</td></tr>
+</table>
+
+<hr>
+
+<h2>6. 期刊与学术定位</h2>
+
+<p>- <strong>主攻</strong>： - <em>MIS Quarterly</em>：IS 领域顶刊，欢迎&quot;概念-实证&quot;混合文章，尤其是重新概念化已有现象（&quot;信用的信息生产&quot;就是重新概念化&quot;DeFi透明性&quot;） - <em>Organization Science</em>：如果强调&quot;共享概念化如何影响制度/治理&quot;——本体作为协议的共同认知框架必须在去中心化组织中达成共识 - <strong>次选</strong>： - <em>Journal of the AIS</em>：信息系统学者同样会欣赏该问题——&quot;透明性如何产生信息&quot;是 IS 的核心问题 - <em>Journal of Financial Intermediation</em>：如果强调与传统银行的信息不对称对比</p>
+
+<hr>
+
+<em>本计划书的全部文献均需经过实际的 <code>paper_search</code> 确认后才可写入正式论文的 .bib 文件。</em>
+
+  </div>
+</div>
+<div id="doc_2">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-b">Branch B</span><span class="file-path">02_Branch_B_本体论/文献/B2_文献支撑与理论溯源_本体论.md</span>
+    <h1>Branch B 文献支撑与理论溯源：信息经济学 × 本体论 × DeFi</h1>
+
+<strong>版本</strong>：v2.0（融合方向六锐利表述） | <strong>日期</strong>：2026-07-08
+
+<hr>
+
+<h2>文献支撑体系概览</h2>
+
+<p>Branch B 跨越三个学术传统：(1) 信息经济学——信用信息生产的基础理论，特别是&quot;筛查+报告+监控&quot;三位一体的信息生产机制与DeFi市场中的行为即信号之间的对比；(2) 知识本体与工程——提供&quot;如何形式化地组织领域知识&quot;的工具传统；(3) DeFi 的&quot;透明性&quot;讨论——B 要解构的对象。文献支撑按这三条线组织，并指示每篇文献在 B 框架中的具体作用。</p>
+
+<strong>关键理论定位（方向六核心）</strong>：Branch B 放弃将&quot;前景理论&quot;作为理论锚——不是因为前景理论错误，而是因为&quot;前景理论的第N个应用场景&quot;创新空间有限。B 所做的是将行为金融的方法论（可观测行为特征→风险预测）重新锚定在一个关于<strong>信息产生机制的经济学理论</strong>上。这个理论的核心是：在传统金融中，信用信息通过机构筛查（screening）、第三方报告（reporting）和市场监控（monitoring）三种机制产生；在 DeFi 中，行为本身就是信用信号的连续生成器——前提是存在一个解码框架（本体）来从行为流中提取信号。
+
+<hr>
+
+<h2>第一部分：信息经济学——提供&quot;信息生产&quot;的理论基础</h2>
+
+<h3>1.1 信用信息生产的经典起源</h3>
+
+<strong>Stiglitz, J.E. &amp; Weiss, A. (1981). Credit Rationing in Markets with Imperfect Information. <em>American Economic Review</em>, 71(3), 393-410.</strong>
+
+<p>- <strong>核心论点</strong>：信息不对称导致均衡中可能出现信贷配给——利率的有利效应（增加偿付概率，如果项目成功的话）被逆向选择效应（安全借款人退出借贷市场）所超过。 - <strong>对 Branch B 的支持</strong>：<strong>最核心的支撑</strong>。该文提供了 B 所依赖的&quot;信息生产&quot;问题的基础。在 DeFi 中，超额抵押 + 自动清算是传统金融的&quot;信贷配给&quot;的功能等价——但是否同样存在不同的信息生产？S&amp;W 论证了&quot;为什么没有信息生产的信贷市场会失败&quot;，B 在此基础上问&quot;但信息生产在 DeFi 可以是什么？&quot;</p>
+
+<strong>Stiglitz, J.E. &amp; Weiss, A. (1988). Banks as Social Accountants and Screening Devices. NBER Working Paper No. 2710.</strong>
+
+<p>- <strong>核心论点</strong>：将银行重新概念化为&quot;信息生产装置&quot;——银行通过对借款人的持续账户监控（&quot;社会记账&quot;）来生产私人信用信息。这里的&quot;社会记账&quot;与 DeFi 交易历史的可追溯性有类比关系。 - <strong>对 Branch B 的支撑</strong>：为 B 的核心概念——&quot;谁的信息生产装置？&quot;——提供了理论对比。在传统金融中，银行是信息生产装置；在 DeFi 中，信息生产的&quot;装置&quot;在哪里？智能合约不是——它只执行逻辑。协议不是——它没有独立的计算/信息职能。可能的装置是：<strong>本体框架</strong>——它可以处理原始行为数据并输出信用信号。</p>
+
+<h3>1.2 信息生产函数的经验证据</h3>
+
+<strong>Karlan, D. &amp; Zinman, J. (2009). Observing Unobservables: Identifying Information Asymmetries with a Consumer Credit Field Experiment. <em>Econometrica</em>, 77(6), 1993-2008.</strong>
+
+<p>- <strong>核心论点</strong>：通过随机化银行贷款发放决策中的&quot;软信息&quot;（如面谈经理的主观评估）来识别非对称信息的作用——软信息显著预测偿付，甚至超越了硬信息（信用局分数）。 - <strong>对 Branch B 的支撑</strong>：&quot;软信息&quot;在信用判断中的作用类似于 B 的&quot;本体证据&quot;——不能被简单的量化指标（如 HF）所捕获，但能预测清算。&quot;软信息&quot;本质上是前本体的——它是在本体化之前不形式化的判断。</p>
+
+<strong>Iyer, R., Khwaja, A.I., Luttmer, E.F.P. &amp; Shue, K. (2016). Screening Peers Softly: Inferring the Quality of Small Borrowers. <em>Management Science</em>, 62(6), 1554-1577.</strong>
+
+<p>- <strong>核心论点</strong>：非专业人士——其他社区成员——能够通过软信息（可信度、个人品质），而不是信用局分数来判断小额借款者的偿付意愿。这种判断确实提高了偿付率。 - <strong>对 Branch B 的支撑</strong>：如果非结构化的人 脑判断可以提取信用信息，那么显式形式化的本体——它使&quot;判断&quot;外显和可操作化——在 DeFi 领域中可以被用于编码化的信用评估。这是&quot;为什么本体在 DeFi 中有价值&quot;的最直接的经验支持（通过类比）。</p>
+
+<h3>1.3 基本理论来源</h3>
+
+<strong>Holmström, B. (1979). Moral Hazard and Observability. <em>Bell Journal of Economics</em>, 10(1), 74-91.</strong>
+
+<p>- <strong>核心论点</strong>：道德风险的强度取决于哪些信息是可合同化的——如果努力不能被完美地观察，那么最优薪酬需要基于不完整的产出信号。 - <strong>对 Branch B 的支撑</strong>：为 B 的信息生产视角提供了另一个锚点：在 DeFi 中，借款人的&quot;努力&quot;（仓位管理）是链上可观测的，但&quot;努力的质量&quot;需要被区分——&quot;加抵押&quot;需要被解释为&quot;偿付意愿&quot;才能有合同价值。这正好需要一个本体。</p>
+
+<strong>Crawford, G.S., Pavanini, N. &amp; Schivardi, F. (2018). Asymmetric Information and Imperfect Competition in Lending Markets. <em>American Economic Review</em>, 108(7), 1659-1701.</strong>
+
+<p>- <strong>核心论点</strong>：在意大利企业信贷市场中，信息不对称的严重程度取决于借贷双方的竞争结构——信息生产者可以有市场力。 - <strong>对 Branch B 的支撑</strong>：在 DeFi 中，不存在单一的信息生产垄断者（无银行），但存在<strong>信息生产的机会</strong>——谁先建立本体并用于治理，谁就有先发优势。</p>
+
+<hr>
+
+<h2>第二部分：知识本体与工程——提供&quot;概念化&quot;的操作工具</h2>
+
+<h3>2.1 知识本体的经典文献</h3>
+
+<strong>Gruber, T.R. (1995). Toward Principles for the Design of Ontologies Used for Knowledge Sharing. <em>International Journal of Human-Computer Studies</em>, 43(5-6), 907-928.</strong>
+
+<p>- <strong>核心论点</strong>：为&quot;本体&quot;提供了一个影响深远的工程定义：本体是一个概念化的形式化显式规约。同时提出了本体设计原则——清晰性（clarity）、一致性（coherence）、可扩展性（extendibility）、最小编码偏差和最小本体承诺。 - <strong>对 Branch B 的支撑</strong>：<strong>B 的方法论基础</strong>。此定义直接指导 B 中的本体构建： - 清晰性：每一个信用概念都需要有可验证的链上行为证据，并且关系必须被明确定义 - 一致性：从偿付意愿/能力到具体的可操作化规则之间的推理必须有效 - 最小本体承诺：只有那些对于信用判断最基本的（而不是工程上方便的）概念才被包含</p>
+
+<strong>Gómez-Pérez, A., Fernández-López, M. &amp; Corcho, O. (2004). <em>Ontological Engineering: With Examples from the Areas of Knowledge Management, e-Commerce and the Semantic Web</em>. Springer.</strong>
+
+<p>- <strong>核心论点</strong>：提供了本体构建的完整方法论（METHONTOLOGY框架），包括活动（规约、概念化、形式化、整合、实施）、生命周期模型和本体评估标准。 - <strong>对 Branch B 的支撑</strong>：B 的本体构建参考 METHONTOLOGY 框架——例如，在阶段一（本体构建）中：规约 = 定义&quot;信用评估本体&quot;的目标和范围；概念化 = 将偿付意愿/能力映射到具体的链上行为证据；形式化 = 使用 OWL 将概念转化为形式公理。</p>
+
+<strong>Borst, W.N. (1997). <em>Construction of Engineering Ontologies for Knowledge Sharing and Reuse</em>. PhD Thesis, University of Twente.</strong>
+
+<p>- <strong>核心论点</strong>：扩展了 Gruber 的定义，增加了&quot;共享&quot;的重要性——本体必须代表一个共同体的共识（例如，&quot;什么构成&#x27;好&#x27;的借款人&quot;必须在跨协议层面可复制，而不仅仅取决于个人观点）。 - <strong>对 Branch B 的支撑</strong>：为 B 的&quot;可跨协议迁移&quot;提供了一个知识论基础：如果 Aave 上定义的本体不能被 Compound 社区接受（因为&quot;共享的必要&quot;），那么本体在 DeFi 中就不是一个共同的知识结构。</p>
+
+<h3>2.2 领域本体的设计方法</h3>
+
+<strong>Guarino, N. (1998). Formal Ontology in Information Systems. In <em>Proceedings of FOIS&#x27;98</em>, 3-15.</strong>
+
+<p>- <strong>核心论点</strong>：提出了&quot;本体层次的区分&quot;——顶层本体（非常一般）、领域本体（特定领域中的）、任务/应用本体（更具体的）。在 DeFi 的信用问题中，需要使用一个&quot;中层&quot;（任务型）本体（&quot;信用判断本体&quot;），它的通用层（顶层）有偿付能力/意愿的区分，领域层有 DeFi 特定的行为证据，应用层有针对特定协议的规则。 - <strong>对 Branch B 的支撑</strong>：B 中的本体是一个<strong>中层领域本体</strong>——不是太抽象以致于无用，但也不是太具体以致于不能跨协议泛化。</p>
+
+<strong>Ganter, B. &amp; Wille, R. (1999). <em>Formal Concept Analysis: Mathematical Foundations</em>. Springer.</strong>
+
+<p>- <strong>核心论点</strong>：FCA 是一个从数据中推导出概念层次（从对象-属性表到概念格）的方法。概念格自然可视化了&quot;泛化-特化&quot;关系。 - <strong>对 Branch B 的支撑</strong>：一种构建本体概念层次的可操作方法（如果从数据驱动开始，而非自上而下的设计）——先有实体（地址）和他们的属性（行为），再通过 FCA 发现概念层次。</p>
+
+<strong>Noy, N.F. &amp; McGuinness, D.L. (2001). Ontology Development 101: A Guide to Creating Your First Ontology. <em>Stanford Knowledge Systems Laboratory Technical Report</em>.</strong>
+
+<p>- <strong>核心论点</strong>：提供了一套极强的操作指南——确定范围、复用已有本体、枚举术语、定义类-子类、定义属性-切面-关系。 - <strong>对 Branch B 的支撑</strong>：B 中构建本体的实用手册。</p>
+
+<h3>2.3 知识图谱与金融制度</h3>
+
+<strong>Joshi, K.P., Elluri, L. &amp; Nagar, A. (2020). An Integrated Knowledge Graph to Automate Cloud Data Compliance. <em>IEEE Access</em>, 8, 134567-134587.</strong>
+
+<p>- <strong>核心论点</strong>：展示了一个使用知识图谱来整合跨域合规数据的实际案例——在云审计与金融合规领域，知识图谱自动将不同规制映射到共享概念。 - <strong>对 Branch B 的支撑</strong>：为 B 的核心直觉——&quot;在 DeFi 中信用判断需要语义整合&quot;——提供一个已实现的工程类比。如果云合规可以通过知识图谱实现，那么 DeFi 的信用评估也可以。</p>
+
+<hr>
+
+<h2>第三部分：DeFi 透明性讨论——提供&quot;要解构的对象&quot;</h2>
+
+<h3>3.1 DeFi 透明性的理性讨论</h3>
+
+<strong>Harvey, C.R., Ramachandran, A. &amp; Santoro, J. (2021). <em>DeFi and the Future of Finance</em>. Wiley.</strong>
+
+<p>- <strong>核心论点</strong>：提供了 DeFi 优势的权威陈述——全透明性、不可篡改性、可编程性、可组合性等。但也指示了关键模糊地带——当&quot;透明&quot;不能同化为&quot;理解&quot;时，DeFi 的优势只是潜在的。 - <strong>对 Branch B 的支撑</strong>：为 B 的&quot;要解构的对象&quot;提供了权威的陈述——不是质疑 DeFi 成长的价值，而是探究&quot;透明性如何变得真正有用&quot;。如果透明性不能提升信用判断，它的价值何在？</p>
+
+<strong>Qin, K. et al. (2021). An Empirical Study of DeFi Liquidations: Incentives, Risks, and Instabilities. <em>Financial Cryptography &amp; Data Security</em>.</strong>
+
+<p>- <strong>核心论点</strong>：DeFi 的清算机制在微观上是有效的，但在市场压力下会产生不稳定性——清算者都在抢着 gas 竞争，导致不经济的清算。透明性使这些动态可观察，但没有预先修复不稳定性。 - <strong>对 Branch B 的支撑</strong>：透明性允许观察不稳定性，但没有解决它——正如看到所有交易不等于理解信用。这是 B 的核心论点的经验证据。</p>
+
+<h3>3.2 DeFi 治理与信用</h3>
+
+<strong>Klages-Mundt, A. &amp; Minca, A. (2021). (In)Stable DEXe: From Mechanism Design to Instability. <em>Working Paper</em>.</strong>
+
+<p>- <strong>核心论点</strong>：DeFi 中的 (in)stability 不仅来自外部冲击，还来自内部机制——协议参数的设置（如清算阈值）内生了参与者的行为，并可能导致反馈循环。 - <strong>对 Branch B 的支撑</strong>：B 的信息生产视角为&quot;清算阈值&quot;增加了一个新的维度——&quot;它是如何被设定的？基于什么信息的？&quot;如果阈值是基于本体的信用生产，那么阈值的调整是信息增强的；如果阈值纯粹基于市场数据，那么 DeFi 的信用能力与传统金融一样有限。</p>
+
+<hr>
+
+<h2>第四部分：各文献在 Branch B 中的具体角色映射</h2>
+
+<table>
+<tr><td>文献</td><td>在 B 的意见中的角色</td></tr>
+<tr><th>Stiglitz &amp; Weiss (1981)</th><th>提供&quot;为什么信用信息生产是必要&quot;的基础——如果信息不对称是根本问题，B 问&quot;DeFi 是否解决了它&quot;</th></tr>
+<tr><td>Stiglitz &amp; Weiss (1988)</td><td>&quot;信息生产装置&quot;的概念——在 DeFi 中，什么装置量产信用信息？</td></tr>
+<tr><td>Gruber (1995)</td><td>本体的工程定义——&quot;一个概念化的显式的形式化规约&quot;</td></tr>
+<tr><td>Gómez-Pérez et al. (2004)</td><td>本体的构建方法论——METHONTOLOGY 框架</td></tr>
+<tr><td>Guarino (1998)</td><td>本体层次区分——B 的本体是一个中层领域任务本体</td></tr>
+<tr><td>Ganter &amp; Wille (1999)</td><td>FCA 提供&quot;从数据中推导概念层次&quot;的工具</td></tr>
+<tr><td>Karlan &amp; Zinman (2009)</td><td>经验证据——&quot;软信息&quot;能预测偿付（本体试图将&quot;软信息&quot;形式化）</td></tr>
+<tr><td>Iyer et al. (2016)</td><td>非专业人的软信息可用于信贷判断（支持&quot;本体可以是去中心化的信用评估工具&quot;</td></tr>
+<tr><td>Harvey et al. (2021)</td><td>DeFi 透明性的理性陈述——B 要解构的对象</td></tr>
+<tr><td>Qin et al. (2021)</td><td>透明性观察不稳定性但未解决它——支持 B 的&quot;观察的不等于理解的&quot;核心论点</td></tr>
+</table>
+
+<hr>
+
+<em>所有文献在正式写入 .bib 文件前必须经过实际的 <code>paper_search</code> 确认。</em>
+
+  </div>
+</div>
+<div id="doc_3">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-b">Branch B</span><span class="file-path">02_Branch_B_本体论/文献/B3_技术方案_本体论.md</span>
+    <h1>Branch B 技术方案：决策本体的构建、形式化与验证</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08
+
+<hr>
+
+<h2>1. 技术栈概览</h2>
+
+<p>B 的技术方案不同于 A/C/D ——它不仅是&quot;数据分析管线&quot;，更是&quot;知识工程 + 数据分析&quot;的混合。</p>
+
+<table>
+<tr><td>阶段</td><td>主要活动</td><td>工具 / 方法</td></tr>
+<tr><th>本体设计</th><th>定义领域概念、映射到链上证据、编写公理</th><th>手动分析（专家判断） + Protégé</th></tr>
+<tr><td>本体编码</td><td>形式化 OWL/RDF 表示</td><td>Protégé OWL 编辑器</td></tr>
+<tr><td>数据标注</td><td>用本体规则对链上数据做半自动标注</td><td>Python + SPARQL 查询</td></tr>
+<tr><td>特征工程</td><td>从本体标注中派生数值特征</td><td>Python (pandas, numpy)</td></tr>
+<tr><td>赛马验证</td><td>逻辑回归 / XGBoost 与 M0/M1 比较</td><td>R (glm + pROC) 或 Python (sklearn)</td></tr>
+<tr><td>跨协议检验</td><td>本体规则的重新应用</td><td>Python (重复步骤 3-4)</td></tr>
+</table>
+
+<h3>1.1 为什么不用更复杂的技术？</h3>
+
+<p>在概念阶段，B 的价值是概念的——它问的是&quot;哪些行为可被解释为信用证据?&quot;而不是&quot;哪个算法能从行为中提取更多信息?&quot;。因此，数据预处理应该是一个简单的规则引擎而非深度学习模型。<strong>本体在此是社会科学的解释工具，不是机器学习的特征生成器。</strong></p>
+
+<hr>
+
+<h2>2. 阶段一：本体设计（概念层）</h2>
+
+<h3>2.1 本体范围与需求</h3>
+
+<strong>目标</strong>：定义一个信用评估本体，用意在生产从 DeFi 借贷数据中的信用特征。
+<strong>范围</strong>：通用（足够抽象以跨协议），但包含 DeFi 特定概念（如 HF、清算、闪电贷）。
+<strong>输出</strong>：一个 OWL 格式的知识库，包含：
+<p>- 偿付能力（AbilityToRepay）与偿付意愿（WillingnessToRepay）的根类 - 定义子类（具体的类型，如&quot;SavvyBorrower&quot;, &quot;NeglectfulBorrower&quot;, &quot;RiskTaker&quot;） - 对象属性（&quot;hasEvidence&quot;, &quot;hasPattern&quot;, &quot;isClassifiedAs&quot;） - 公理（逻辑规则，如：&quot;All borrowers who repay before due date and have HF &gt; 2.0 are Class X&quot;）</p>
+
+<h3>2.2 类的定义（知识概念化）</h3>
+
+<strong>步骤 1：信用概念 $\to$ 可观测的证据映射</strong>
+
+<p>为每个根概念（能力/意愿）定义一套可观测的链上证据。这不是一个任意的列表——证据的质量有层次：</p>
+
+<table>
+<tr><td>层次</td><td>证据类型</td><td>信用含义</td><td>记入本体的方式</td></tr>
+<tr><th>强意愿</th><th>在 HF 安全时（&gt;1.5）仍持续加抵押</th><th>主动管理债务，不只是应对危机</th><th>hasEvidence (strong_willingness)</th></tr>
+<tr><td>中意愿</td><td>在 HF 接近 1.0 时加抵押（但不是被清算）</td><td>有认知地维护仓位</td><td>hasEvidence (moderate_willingness)</td></tr>
+<tr><td>弱意愿</td><td>最近一次交互距今 &lt; 2 周</td><td>至少是活跃的 — 不是遗忘账户</td><td>hasEvidence (active)</td></tr>
+<tr><td>强能力</td><td>HF 从 &gt;2.0 跳下来到 &gt;1.5</td><td>拥有资源去加抵押</td><td>hasAbility (high_capacity)</td></tr>
+<tr><td>中能力</td><td>HF 从 &gt;1.5 跳下来到 &gt;1.2</td><td>有预算但不宽裕</td><td>hasAbility (moderate_capacity)</td></tr>
+<tr><td>弱能力</td><td>在 14 天内被清算过</td><td>能力确实不足</td><td>hasAbility (low_capacity)</td></tr>
+</table>
+
+<strong>步骤 2：识别实体类型</strong>
+
+<p>- <strong>AssetType</strong>：波动型 vs 稳定型 - <strong>InteractionType</strong>：主动交互、被动交互、与特定协议交互 - <strong>TemporalPattern</strong>：周期性、聚集性、突发性 - <strong>RiskAttitude</strong>：来源—抵押品波动倾向（GamblingRisk） vs 偿付态度（WillingnessDeficit）</p>
+
+<strong>步骤 3：定义层次</strong>
+
+<p>``<code> CreditSignal ├── AbilityToRepay │   ├── HighCapacity │   ├── ModerateCapacity │   └── LowCapacity ├── WillingnessToRepay │   ├── StrongWillingness │   ├── ModerateWillingness │   └── WeakWillingness └── RiskProfile ├── RiskNeglecter (从不管理 — 不反映任何能力或意愿) ├── RiskGambler (加杠杆 + 接受高风险) └── RiskAvoider (保守头寸管理)</p>
+</code>`<code>
+
+<h3>2.3 公理设计（逻辑规则）</h3>
+
+<p>为了将证据映射到类，需要一阶逻辑规则的公理。以下为Protege</p>
+
+<p>(OWL) 的伪规则：</p>
+
+</code>`<code>
+<p>Rule: HighCapacity IF (hasEvidence, strong_capacity) AND (NOT hasEvidence, recently_liquidated)</p>
+
+<p>Rule: StrongWillingness IF (hasEvidence, active_management_when_safe) OR (hasEvidence, frequent_small_repayments AND hasEvidence, active_trader_flag = false)</p>
+
+<p>Rule: RiskGambler IF (hasEvidence, increased_leverage_during_decline) OR (hasEvidence, frequent_switches_to_volatile_assets)</p>
+</code>`<code>
+
+<p>这些规则可以用SWRL（Semantic Web Rule Language）直接在Protégé中编码——允许推理引擎自动对新地址进行分类。</p>
+
+<hr>
+
+<h2>3. 阶段二：本体自动标注（数据级）</h2>
+
+<h3>3.1 半自动标注流水线</h3>
+
+<p>概念层的规则（如&quot;StrongWillingness&quot;的定义）需要被转化为一个批处理程序，可以自动从原始交易日志中为每个地址-月生成标注。流程如下：</p>
+
+<p>1. <strong>输入</strong>：包含每个地址-月的原始数据框（Deposit/Borrow/Repay/Withdraw表） 2. <strong>规则引擎</strong>：对每个地址-月，逐条运行本体规则：</p>
+</code>`<code>python
+<p>for _, row in df.iterrows(): if row[&#x27;n_repay_when_hf_safe_30d&#x27;] &gt; 0: row[&#x27;signal_strong_willingness&#x27;] = True if row[&#x27;n_borrow_when_hf_danger_30d&#x27;] &gt; 0: row[&#x27;signal_risk_gambler&#x27;] = True</p>
+</code>``
+<p>3. <strong>输出</strong>：一个包含本体衍生特征的数据框</p>
+
+<h3>3.2 本体特征列表</h3>
+
+<table>
+<tr><td>特征</td><td>定义</td><td>类型</td><td>信用含义</td></tr>
+<tr><th>signal_strong_willingness</th><th>在HF&gt;1.5时加抵押/还款的次数</th><th>binary</th><th>主动债务管理</th></tr>
+<tr><td>signal_moderate_willingness</td><td>在HF∈(1.1, 1.5]时加抵押</td><td>binary</td><td>有认知的维护</td></tr>
+<tr><td>signal_weak_willingness</td><td>最近一次交互距今 &gt; 90天</td><td>binary</td><td>忽略/遗忘账户</td></tr>
+<tr><td>signal_high_capacity</td><td>全链余额 &gt; 当前债务</td><td>binary</td><td>拥有足够资源</td></tr>
+<tr><td>signal_capacity_change</td><td>log(全链余额_t / 全链余额_{t-1})</td><td>continuous</td><td>财务趋势</td></tr>
+<tr><td>signal_risk_gambler</td><td>在HF下降的30天内增贷</td><td>binary</td><td>冒险/杠杆追求</td></tr>
+<tr><td>signal_collateral_switch_to_volatility</td><td>最近将稳定币转变为波动资产</td><td>binary</td><td>增加市场敞口</td></tr>
+</table>
+
+<p>注意：这些特征是<strong>二阶</strong>的——它们不是原始的Deposit/Borrow事件，而是对这些事件进行本体解释（即：意义赋值）后的特征。比如，&quot;一个Deposit事件&quot;是原始数据，而&quot;在HF安全时的Deposit&quot;是需要本体规则的加工特征。</p>
+
+<h3>3.3 处理缺失的&quot;能力证据&quot;</h3>
+
+<p>偿付能力的一个根本问题是：在超额抵押的DeFi中，大多数人的HF &gt; 1.0，那么怎么知道谁真正缺乏能力？（毕竟他们永远不会出现&quot;余额不足&quot;的错误——因为他们不可能借款更多。）</p>
+
+<p>解决方案：使用<strong>逆证据</strong>——哪些行为是能力不足的表现？ - 虽然HF &gt; 1.0，但从未加抵押，HF在一段时间后自然回落 → 能力不足的信号（无法持续提供缓冲） - 从被清算的地址接收资金 → 可能是个体经济困难 - 与其他 DeFi 智能体的交互模式是&quot;总接收&quot;，而不是&quot;总转出&quot; → 可能是个被动的资金流动节点（不是积极策略）</p>
+
+<hr>
+
+<h2>4. 阶段三：实证验证（赛马设计）</h2>
+
+<h3>4.1 赛马预测模型</h3>
+
+<strong>因变量</strong>：在随后的 T 个月（T = 1, 3, 6 作为敏感度分析）内是否被清算。
+
+<strong>模型序列</strong>：
+
+<table>
+<tr><td>模型</td><td>特征集</td><td>含义</td></tr>
+<tr><th>M0</th><th>HF指标（min、mean、sd）、抵押率、债务价值、利用率</th><th>纯传统风险模型</th></tr>
+<tr><td>M1</td><td>M0 + BDM五维度（V4行为特征——无本体）</td><td>&quot;行为偏差&quot;是否已被传统特征编码</td></tr>
+<tr><td>M_B</td><td>M0 + 本体衍生特征（signal_*）</td><td><strong>主模型：本体是否产生增量信息？</strong></td></tr>
+<tr><td>M_B_all</td><td>M0 + BDM + 本体特征</td><td>完整模型</td></tr>
+</table>
+
+<h3>4.2 关键检验</h3>
+
+<p>1. <strong>AUC 比较</strong>：DeLong检验 AUC(M_B) vs AUC(M0) 2. <strong>特征重要性</strong>：使用 SHAP 分解哪个本体特征贡献最大 3. <strong>似然比检验</strong>：比较嵌套模型 (M0 vs M_B) 的 -2LL 差异 4. <strong>正则化后的稳健性</strong>：使用 elastic-net 逻辑回归（l1 比率 = 0.5），观察哪些本体特征被选入最优模型</p>
+
+<h3>4.3 脆弱性分析</h3>
+
+<strong>&quot;但如果本体特征不预测清算，概念框架还有用吗？&quot;</strong>
+
+<p>有。论文仍然成立作为——&quot;DeFi中的信用本体不能从纯链上数据中有效导出——这说明信息生产需要一个观察者的隐性知识&quot;。这是同等重要的结论，可发表在 MISQ 或 Organization Science 上。</p>
+
+<hr>
+
+<h2>5. 跨协议检验</h2>
+
+<h3>5.1 可迁移性检验</h3>
+
+<strong>Aave → Compound</strong>：将本体的类定义和规则从 Aave 复制到 Compound 的数据上，重新应用规则引擎生成特征。
+
+<strong>检验</strong>：在 Compound 数据上运行相同的逻辑回归（M0 vs M_B）：
+<p>- 如果本体特征的系数方向和大小与 Aave 相似 → 证明 DeFi 的信用本体具有跨协议通用性 - 如果特征不显著 → 信用本体可能是协议特定的（&quot;通用 DeFi 信用本体&quot;的观念可能被过度简化了）</p>
+
+<h3>5.2 定性比较</h3>
+
+<p>除了定量的系数比较，还可以进行定性的比较：本体规则在两个协议上识别到相同比例的地址各信用类型吗？ 如果没有，是什么协议特有的特性（清算阈值、支持的抵押品、gas 模型）造成了差异？</p>
+
+<hr>
+
+<h2>6. 局限性与下一步</h2>
+
+<p>1. <strong>本体构建中的主观性</strong>：B 中定义&quot;强意愿&quot;的方法对个人的判断敏感。解决方案：(i) 由两人独立进行本体设计，然后比较重叠的部分；(ii) 对不同意向进行灵敏性分析（如调整&quot;强意愿&quot;的门槛） 2. <strong>计算复杂度</strong>：规则引擎的批处理可能数据密集——考虑使用 DuckDB 代替 pandas 用于内存受限的系统 3. <strong>与 V4 的重叠</strong>：BDM 的五个维度可能已经捕获了本体特征的线性组合。如果 M_B 不能超越 M1，需要诚实地报告这一点</p>
+
+<hr>
+
+<em>本技术方案的规则和参数均为初始方案，实际数值将在数据分析时根据经验修正。</em>
+
+  </div>
+</div>
+<div id="doc_4">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-b">Branch B</span><span class="file-path">02_Branch_B_本体论/文献/B4_交叉映射_本体论.md</span>
+    <h1>Branch B 理论-技术-主张交叉映射表</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08
+
+<hr>
+
+<h2>核心主张映射</h2>
+
+<h3>主张 B1：交易透明 $\neq$ 信用透明</h3>
+<strong>简述</strong>：链上交易记录可见不等于偿付能力/意愿可见。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>Stiglitz &amp; Weiss (1981) — 信息不对称的框构；Qin et al. (2021) — 透明性的经验证据；Harvey et al. (2021) — DeFi透明性的宣言</th></tr>
+<tr><td><strong>技术操作</strong></td><td>概念分析——不需实证检验；使用推理和例子来区分两个概念层次</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>无（概念主张）</td></tr>
+<tr><td><strong>如果主张成立</strong></td><td>为后续的所有 B 主张提供理论正当性</td></tr>
+<tr><td><strong>如果被挑战</strong></td><td>用 Kolmogorov-Smirnov 检验来展示完全透明可观测行为和实际还款行为之间的分布差异——如果相同，透明性产生信用信息；如果不同，透明性不够</td></tr>
+</table>
+
+<h3>主张 B2：偿付意愿和偿付能力有分离的链上证据</h3>
+<strong>简述</strong>：偿付意愿（Willingness to Repay）和偿付能力（Ability to Repay）是信用判断的两个正交维度，并且在 DeFi 中有可操作的链上证据。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>Jaffee &amp; Russell (1976) — 偿付意愿/能力的理论区分; Karlan &amp; Zinman (2009) — 软信息用于拾取偿付能力之外的意愿；Iyer et al. (2016) — 朋友-邻居判断能识别的偿付意愿</th></tr>
+<tr><td><strong>技术操作</strong></td><td>在 Aave V2 数据上，识别两类不同的信用失败：由于 HF &lt; 1 而清算（能力失败）和即使 HF &gt; 1 也不还款（意愿失败）</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: &quot;能力失败&quot;和&quot;意愿失败&quot; 无法在数据中区分</td></tr>
+<tr><td><strong>成功判据</strong></td><td>通过聚类本体的行为模式，能够将&quot;能力失败&quot;案例和&quot;意愿失败&quot;案例分成两个集群</td></tr>
+<tr><td><strong>如果该主张失败</strong></td><td>偿付能力和意愿可能确实是正交的，但当前的 DeFi 数据结构无法将它们分开——可能需要外部数据</td></tr>
+</table>
+
+<h3>主张 B3：本体衍生特征比纯行为特征有增量信息</h3>
+<strong>简述</strong>：在M0（纯风险）的基础上，本体特征（signal_*）对清算预测的但增量信息超过BDM行为特征。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>Gruber (1995) — 本体设计的五个原则；Gómez-Pérez et al. (2004) — 本体验证方法；Noy &amp; McGuinness (2001) — 本体操作指南</th></tr>
+<tr><td><strong>技术操作</strong></td><td>赛马模型 M_B (M0+本体特征) vs M1 (M0+BDM)</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: AUC(M_B) ≤ AUC(M1)</td></tr>
+<tr><td><strong>成功判据</strong></td><td>本体特征的系数方向与本体预测一致，并且联合显著（p &lt; 0.05, likelihood ratio test vs. M1）</td></tr>
+<tr><td><strong>如果该主张失败</strong></td><td>表明 DeFi 的行为信息可能已被 &quot;缩减型&quot; 表示（BDM）所捕获——本体没有提供额外的&quot;组织方案&quot;</td></tr>
+</table>
+
+<h3>主张 B4：本体可跨协议迁移</h3>
+<strong>简述</strong>：在 Aave 上建立的规则在 Compound 上保持信用预测力。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>Borst (1997) — 本体的&quot;共享&quot;性要求；Guarino (1998) — 领域层 vs 任务层的区分；Joshi et al. (2020) — 跨域知识图谱的工程先例</th></tr>
+<tr><td><strong>技术操作</strong></td><td>将在 Aave 上训练的逻辑回归 (M_B) 在 Compound 数据上测试</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: M_B 在 Compound 上的 AUC ≥ 在 Aave 上的 AUC × 0.9</td></tr>
+<tr><td><strong>成功判据</strong></td><td>AUC 不退步超过 10%（或特征系数的方向一致）</td></tr>
+<tr><td><strong>如果该主张失败</strong></td><td>DeFi 信用本体具有协议特异性——透明度不是跨协议的通用信用信息生产机制</td></tr>
+</table>
+
+<h3>主张 B5：本体论使&quot;信息生产函数&quot;可见</h3>
+<strong>简述</strong>：IPF 框架澄清了 DeFi 中信用信号是如何通过一个知识框架的&quot;镜头&quot;从原始行为中被创造——不是被&quot;发现&quot;。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>Stiglitz &amp; Weiss (1988) — 银行作为信息生产装置；Holmström (1979) — 可观察性和信息合同化的区隔</th></tr>
+<tr><td><strong>技术操作</strong></td><td>通过比较&quot;原始特征&quot;（无框架）vs&quot;本体特征&quot;（有框架）的预测力来验证 IPF 框架</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: 在M0和M_B中，起始预测能力的差异与&quot;原始数据中没有信用信号&quot;不符</td></tr>
+<tr><td><strong>成功判据</strong></td><td>M_B中的特征重要性分布比 M0 更集中（只有少数本体特征是信号丰富的），表明 IPF 在有效地过滤掉噪声</td></tr>
+<tr><td><strong>如果该主张失败</strong></td><td>信息生产函数并非本体——可能是其他的信息治理机制</td></tr>
+</table>
+
+<hr>
+
+<h2>风险控制映射</h2>
+
+<table>
+<tr><td>风险</td><td>缓解</td><td>涉及的文献</td></tr>
+<tr><th>本体太抽象，委员会认为&quot;不是金融PhD&quot;</th><th>建立经验锚：提供一个&quot;合成例子&quot;，展示使用 B 后，两个 BDM 相同的借款人为什么信用评估不同</th><th>Stiglitz &amp; Weiss (1981)—信息生产的经典案例；Gruber (1995)—本体操作性展示</th></tr>
+<tr><td>本体特征无增量信息</td><td>转化为纯概念研究—发表理论框架而非实证文章</td><td>Gruber (1995); Guarino (1998)—纯概念性文章是本体社区的标准发表物</td></tr>
+<tr><td>本体构建中的主观性</td><td>双人独立设计 + Cohen&#x27;s kappa</td><td>Gómez-Pérez et al. (2004)—本体验证方法</td></tr>
+<tr><td>不可跨协议迁移</td><td>解释为何不可迁移——&quot;本体需要被协议共识所共享，而不仅仅是结构共享&quot;</td><td>Borst (1997)—本体的共享性质</td></tr>
+</table>
+
+<hr>
+
+<h2>跨分支映射</h2>
+
+<table>
+<tr><td>B 的主张</td><td>A (RAT)：时间轨迹</td><td>C (HAM)：异质类型</td><td>D (数据驱动)：无理论</td></tr>
+<tr><th>&quot;交易透明 ≠ 信用透明&quot;</th><th>A 不问这个问题——假定透明已足</th><th>C 认为&quot;看得到&quot;不够——类型需要被识别</th><th>D 也不问——只关心是否有信号</th></tr>
+<tr><td>&quot;本体特征有增量&quot;</td><td>A 将本体特征扩展为在时间中的轨迹</td><td>C 检验&quot;谁使用哪个本体视角来看数据&quot;</td><td>D 的赛马设计可以容纳 B 的特征</td></tr>
+<tr><td>&quot;跨协议迁移&quot;</td><td>A 分析跨协议的序列形态差异——平行检验</td><td>C 模拟不同声明的类型在不同协议中如何表现</td><td>D 做外部效度统计检验</td></tr>
+</table>
+
+<hr>
+
+<em>此映射表应随着新文献的发现而持续更新。每个&quot;技术操作&quot;应针对一个可被证伪的零假设。</em>
+
+  </div>
+</div>
+</main>
+<script>
+  document.querySelectorAll('#sidebar a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body></html>

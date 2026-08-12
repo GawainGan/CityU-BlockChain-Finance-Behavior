@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Branch D · 数据驱动安全网 — 完整文档</title>
+    <style>
+      :root {
+        --bg: #0d1117; --bg-secondary: #161b22; --border: #303d63;
+        --text: #c9d1d9; --text-secondary: #8b949e; --accent: #58a6ff;
+        --accent-hover: #79c0ff; --green: #3fb950; --orange: #d2991d;
+        --red: #f85149; --purple: #a371f7; --code-bg: #1c2128;
+        --heading: #f0f6fc; --link: #58a6ff; --table-header: #1c2128;
+        --table-row-alt: #161b22; --teal: #39d2c0;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+        background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px;
+      }
+      #sidebar {
+        position: fixed; top: 0; left: 0; width: 320px; height: 100vh;
+        background: var(--bg-secondary); border-right: 1px solid var(--border);
+        overflow-y: auto; z-index: 100; padding: 20px;
+      }
+      #sidebar h2 {
+        color: var(--heading); font-size: 18px; margin-bottom: 16px;
+        padding-bottom: 12px; border-bottom: 1px solid var(--border);
+      }
+      #sidebar .nav-section-title {
+        color: var(--accent); font-size: 12px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px; margin: 16px 0 8px 0;
+      }
+      #sidebar nav a {
+        display: block; color: var(--text-secondary); text-decoration: none;
+        padding: 4px 0; font-size: 13px; transition: color 0.15s;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      #sidebar nav a:hover { color: var(--accent-hover); }
+      #content { margin-left: 340px; padding: 40px 60px; max-width: 1000px; }
+      .doc-section {
+        border: 1px solid var(--border); border-radius: 8px; padding: 32px;
+        margin-bottom: 24px; background: var(--bg-secondary);
+      }
+      .doc-section h1 { font-size: 28px; color: var(--heading); margin-bottom: 8px; }
+      .doc-section h2 { font-size: 22px; color: var(--heading); margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+      .doc-section h3 { font-size: 18px; color: var(--heading); margin: 24px 0 8px; }
+      .doc-section h4 { font-size: 16px; color: var(--text); margin: 16px 0 6px; }
+      .doc-section p { margin: 8px 0; }
+      .doc-section a { color: var(--link); text-decoration: none; }
+      .doc-section a:hover { text-decoration: underline; }
+      .doc-section ul, .doc-section ol { margin: 8px 0 8px 24px; }
+      .doc-section li { margin: 4px 0; }
+      .doc-section hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+      .doc-section code {
+        background: var(--code-bg); padding: 2px 6px; border-radius: 4px;
+        font-size: 0.9em; font-family: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, Consolas, monospace;
+      }
+      .doc-section pre {
+        background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
+        padding: 16px; overflow-x: auto; margin: 12px 0; font-size: 13px; line-height: 1.5;
+      }
+      .doc-section pre code { background: none; padding: 0; }
+      .doc-section table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+      .doc-section th { background: var(--table-header); padding: 8px 12px; text-align: left; border: 1px solid var(--border); color: var(--heading); }
+      .doc-section td { padding: 8px 12px; border: 1px solid var(--border); }
+      .doc-section tr:nth-child(even) td { background: var(--table-row-alt); }
+      .doc-section strong { color: var(--heading); }
+      .doc-section em { color: var(--orange); }
+      .file-path {
+        color: var(--text-secondary); font-size: 12px; font-family: monospace;
+        margin-bottom: 16px; padding: 6px 10px; background: var(--code-bg);
+        border-radius: 4px; display: inline-block;
+      }
+      .branch-badge {
+        display: inline-block; padding: 2px 8px; border-radius: 4px;
+        font-size: 12px; font-weight: 600; margin-right: 8px;
+      }
+      .badge-a { background: rgba(88,166,255,0.15); color: var(--accent); }
+      .badge-b { background: rgba(163,113,247,0.15); color: var(--purple); }
+      .badge-c { background: rgba(63,185,80,0.15); color: var(--green); }
+      .badge-d { background: rgba(210,153,29,0.15); color: var(--orange); }
+      .badge-e { background: rgba(57,210,192,0.15); color: var(--teal); }
+      .page-header {
+        border-left: 3px solid var(--accent); padding: 16px 24px; margin-bottom: 32px;
+        background: var(--bg-secondary); border-radius: 0 8px 8px 0;
+      }
+      .page-header.branch-b { border-left-color: var(--purple); }
+      .page-header.branch-c { border-left-color: var(--green); }
+      .page-header.branch-d { border-left-color: var(--orange); }
+      .page-header.branch-e { border-left-color: var(--teal); }
+      .page-header h1 { font-size: 28px; margin-bottom: 4px; }
+      .page-header p { color: var(--text-secondary); margin: 0; }
+      .nav-toggle {
+        display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+        background: var(--bg-secondary); border: 1px solid var(--border);
+        color: var(--text); font-size: 20px; padding: 8px 12px;
+        border-radius: 6px; cursor: pointer;
+      }
+      @media (max-width: 900px) {
+        #sidebar { transform: translateX(-100%); transition: transform 0.3s; width: 280px; }
+        #sidebar.open { transform: translateX(0); }
+        #content { margin-left: 0; padding: 20px; }
+        .nav-toggle { display: block; }
+      }
+    </style>
+</head>
+<body>
+<div id="top"></div>
+<button class="nav-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+<aside id="sidebar"><h2>四分支探索文档</h2><nav>
+<div class="nav-section-title">导航</div>
+    <a href="../00_总览/总览_完整文档.html">返回总览</a>
+    <a href="../0A_Branch_A_RAT/RAT_完整文档.html">Branch A · RAT 轨迹框架</a>
+    <a href="../0B_Branch_B_本体论/本体论_完整文档.html">Branch B · 决策本体论</a>
+    <a href="../0C_Branch_C_HAM/HAM_完整文档.html">Branch C · 异质预期演化</a>
+    <a href="../0E_Branch_E_CuspRAT/CuspRAT_完整文档.html">Branch E · Cusp RAT 动力系统</a>
+    <a href="#top">本页文档</a>
+    <a href="#doc_1">  文档 1</a>
+    <a href="#doc_2">  文档 2</a>
+    <a href="#doc_3">  文档 3</a>
+    <a href="#doc_4">  文档 4</a>
+</nav></aside>
+<main id="content">
+<div class="page-header branch-d">
+<h1>Branch D · 数据驱动安全网</h1>
+<p>4 篇文档</p>
+</div>
+<div id="doc_1">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-d">Branch D</span><span class="file-path">04_Branch_D_数据驱动/文献/D1_完整研究计划书_数据驱动.md</span>
+    <h1>Branch D：数据驱动最小可发表单元 — 完整研究计划书</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08 | <strong>性质</strong>：博士论文候选方向 / 安全网方案
+
+<hr>
+
+<h2>摘要</h2>
+
+<p>Branch D 是四个方向中唯一一个在理论不可知条件下运作的方案。它不预设前景理论（V4）、不依赖序列分析的方法迁移（Branch A）、不需要本体的概念框架（Branch B）、也不要求 HAM 的演化假设（Branch C）。它只问一个纯粹的经验问题：<strong>DeFi 借款人的链上行为模式是否能够预测清算——不管原因是什么？</strong> 研究通过无监督行为特征提取（PCA/因子分析）、赛马预测设计和治理模拟，提供一个完整的&quot;发现-验证&quot;管道。最重要的是：无论行为信号<strong>存在</strong>还是<strong>不存在</strong>，论文都能提供科学上可发表的结果——正结果证明行为信息的生产力；负结果反证 DeFi 透明性不等于信用透明性。这是为博士论文提供的最终安全网——当所有其他理论方向都失败时，D 仍保证可发表。</p>
+
+<hr>
+
+<h2>1. 问题陈述</h2>
+
+<h3>1.1 理论上中立的信用预测</h3>
+
+<p>在 V4 中，行为被理论所约束：如果前景理论成立，那么 X 指标应该预测清算。如果前景理论不成立，指标可能仍然预测清算——但它们被赋予的&quot;损失厌恶&quot;解释就崩溃了。</p>
+
+<p>Branch D 拒绝这种&quot;预测→解释&quot;的自上而下的推理结构。它只问： 1. <strong>存在</strong>：DeFi 借款人的行为特征空间是否有结构？（因子分析会发现什么？） 2. <strong>信息</strong>：这些行为特征是否比传统风险指标更好地预测清算？（赛马） 3. <strong>跨域</strong>：预测关系在跨协议和跨时间上有多稳健？（外部效度） 4. <strong>福利</strong>：如果将这些特征用于协议级的风险治理，福利是否会改善？（治理模拟）</p>
+
+<p>如果对这四个问题的回答全是&quot;否&quot;——如果行为特征没有结构、不预测清算、不能跨协议泛化——Branch D 仍有发表权：<strong>&quot;DeFi 链上行为不包含信用信号的实证证据&quot;</strong> 是一篇重要的<strong>否定结果论文</strong>（经充分验证后）。</p>
+
+<h3>1.2 核心研究问题</h3>
+
+<p>1. <strong>RQ1（行为模式存在性）</strong>：DeFi 借款人的行为特征空间是否有统计上清楚的、可解释的结构？ 2. <strong>RQ2（行为模式的信息内容）</strong>：从行为特征模式提取的因子是否比纯 HF 更好预测清算？（不管原因） 3. <strong>RQ3（跨协议外部效度）</strong>：在 Aave 上学到的行为模式是否可以迁移到 Compound 而后验预测力不显著退化？ 4. <strong>RQ4（治理福利）</strong>：如果协议使用行为预测来风险分层，总的福利是否显著改善？</p>
+
+<hr>
+
+<h2>2. 理论框架（最小集）</h2>
+
+<h3>2.1 三种经验假设</h3>
+
+<table>
+<tr><td>假设</td><td>内容</td><td>可被证伪的方法</td></tr>
+<tr><th><strong>E1：行为梯度</strong></th><th>借款人主动行为随 HF 变化（至少部分借款人）——无论方向</th><th>检验每个行为类型的方向：加抵押随 HF↓ 而增加？（多数——可能是防御型）还是随 HF↓ 而减少？（少数——可能是追求风险型）</th></tr>
+<tr><td><strong>E2：行为惯性与信用</strong></td><td>控制了 HF 动态后，行为的历史惯性（过去的行为预测当前行为，超出理性解释的部分）包含信用信息</td><td>行为惯性 = 当前行为 − 最佳理性预测（基于当前 HF 和一系列控制因素）——在训练集外检验该残差的预测力</td></tr>
+<tr><td><strong>E3：增量信息</strong></td><td>行为特征集合的信用信息不是旧信息的线性编码</td><td>标准赛马：行为特征的预测力是否优于纯 HF + 活跃度的特征</td></tr>
+</table>
+
+<h3>2.2 与 V4 的关系</h3>
+
+<p>- <strong>保留</strong>：全部数据基础设施（Aave/Compound 查询、HF 自计算、主动/被动分类树）、PoC 验证项（Safe 占比、闪电贷窗口）、赛马设计精神、决策锚ΔW。 - <strong>砍掉</strong>：前景理论 $\lambda$、$v(x)$、$\pi(p)$ 全部三个参数；关于 H1a/H1b/H1c 的具体预测；全部前景理论相关文献。 - <strong>重定位</strong>：BDM 从&quot;服务于理论检验的构念&quot;变为&quot;数据驱动的行为特征集合&quot;。</p>
+
+<hr>
+
+<h2>3. 操作化方案</h2>
+
+<h3>3.1 三层经验分析</h3>
+
+<strong>第一层：行为模式识别（无监督学习）</strong>
+
+<p>1. 从每个 spell（用户-开仓周期）提取全部行为特征： - HF 弹性（$\log$ 加抵押 ~ $\log$ HF） - 行为的不对称性（对 HF 下降的反应 vs. HF 上升的反应比） - 跨时间和跨交易量的集中度 - 清算后可量化的恢复行为</p>
+
+<p>2. 对特征空间进行 PCA/因子分析 → 提取 3-5 个&quot;行为因子&quot;</p>
+
+<p>3. 描述这些因子的统计分布：是单峰（一个总体）还是多峰（多个子类型）？这与 Branch C 的核心——&quot;是否异质性存在&quot;——间接对话。</p>
+
+<strong>第二层：信用预测（赛马设计）</strong>
+
+<p>使用逻辑回归或 Cox 比例风险模型，赛马：</p>
+
+<table>
+<tr><td>模型</td><td>特征</td></tr>
+<tr><th>M0</th><th>纯 HF + 抵押率（传统风险）</th></tr>
+<tr><td>M1</td><td>M0 + BDM（行为特征基线）</td></tr>
+<tr><td>M2</td><td>M0 + 行为因子（从第一层提取的）— <strong>主判定</strong></td></tr>
+<tr><td>M3</td><td>M0 + BDM + 行为因子（全模型）</td></tr>
+</table>
+
+<strong>关键检验</strong>：M2 是否显著优于 M0？（Brier Score 降低或 AUC 提高）这决定了&quot;行为是否提供增量信息&quot;。
+
+<strong>第三层：治理模拟</strong>
+
+<p>1. 用 M2 的预测模型将用户分为三个风险层：低（预测清算概率 &lt; 0.05）中（0.05-0.15）高（&gt; 0.15） 2. 模拟治理策略：&quot;对于高风险用户，将清算阈值从 1.0 提高到 1.05&quot; → 提前清算一些仓位 3. 计算 ΔW = 坏账减少 − 额外的费用支出 - 坏账减少：被提前清算的多出的用户 = 原本不会留下坏账的 - 额外的费用支出：被清算的用户多付的钱（比正常的归还清还多了 5% 的损失分摊）</p>
+
+<h3>3.2 方法考虑</h3>
+
+<p>- <strong>主模型</strong>：逻辑回归（最透明、可解释性最强） - <strong>辅助模型</strong>（特征重要性分解）：LightGBM + SHAP - <strong>时间序列交叉验证</strong>（非随机交叉验证——训练和测试集必须来自不同的日历窗口） - <strong>灾难性遗忘检验</strong>：用牛市中训练的系数在熊市样本中测试——看看行为-信用的关系如何恶化（外部效度检验）</p>
+
+<hr>
+
+<h2>4. 失败或&quot;中立&quot;结果的发表策略</h2>
+
+<p>D 的一个基本哲学是：<strong>科学从新的否定结果中学到的东西不亚于从肯定结果中学到的</strong>。以下是可能结果的光谱：</p>
+
+<table>
+<tr><td>结果</td><td>发表机会</td><td>论文标题举例</td></tr>
+<tr><th>正结果：行为因子 → 更好的预测</th><th>高 — 经典的&quot;发现新信号&quot;的论文</th><th>&quot;Do On-Chain Behavioral Patterns Predict DeFi Liquidations?&quot;</th></tr>
+<tr><td>行为因子预测，但不是增量</td><td>中 — 论文仍成立，但splash较小</td><td>&quot;Behavioral Information in DeFi Loans: A Confirmatory Study&quot;</td></tr>
+<tr><td>无预测力</td><td>中 — 重要的否定结果</td><td>&quot;The Limits of Chain-Transparency: No Evidence of Behavioral Credit Signals in DeFi&quot;</td></tr>
+<tr><td>预测从 Aave 到 Compound 不推广</td><td>中低 — 协议特化的有趣报告</td><td>&quot;Protocol-Specificity of DeFi Lending Behaviors&quot;</td></tr>
+<tr><td>行为稳定但不预测</td><td>中 — 关于&quot;为什么行为有组织但不提供信用信息&quot;的讨论</td><td>&quot;Behavioral Structure without Credit Content in DeFi&quot;</td></tr>
+</table>
+
+<hr>
+
+<h2>5. 期刊定位</h2>
+
+<p>- <strong>如果在正结果情况下</strong>：<em>Journal of Financial Stability</em>, <em>Journal of Empirical Finance</em>, <em>Quantitative Finance</em> - <strong>如果在否定结果情况下</strong>：特别适合 <em>Journal of Financial Intermediation</em> (&quot;DeFi 作为金融中介——它的局限&quot;)，或者 <em>Economics Letters</em> / <em>Finance Research Letters</em> (短通讯) - <strong>计算/风险导向的</strong>：<em>Computational Economics</em>, <em>Journal of Risk and Financial Management</em></p>
+
+<hr>
+
+<em>所有引用的文献须经实际的 <code>paper_search</code> 验证。本方案推荐作为博士论文的第二或第三篇论文。</em>
+
+  </div>
+</div>
+<div id="doc_2">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-d">Branch D</span><span class="file-path">04_Branch_D_数据驱动/文献/D2_文献支撑与理论溯源_数据驱动.md</span>
+    <h1>Branch D 文献支撑与理论溯源</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08
+
+<hr>
+
+<h2>文献支撑体系概览</h2>
+
+<p>Branch D 的文献需求最为简约（因为不依赖任何强理论锚），分为三类：(1) 实证工作的格式文献——支持&quot;我们需要一个描述性的、可发表的经验发现&quot;；(2) DeFi 借贷行为的经验基线——提供赛马比较对象；(3) 方法论——赋予结果的信度。</p>
+
+<hr>
+
+<h2>第一部分：实证论文的格式——支持&quot;这值得发表&quot;</h2>
+
+<h3>1.1 描述-发现传统的合法性</h3>
+
+<strong>Hamermesh, D.S. (2000). The Craft of Labormetrics. <em>Industrial and Labor Relations Review</em>, 53(3), 363-380.</strong>
+
+<p>- <strong>核心论点</strong>：&quot;计量经济学应用的五个戒律&quot;之一是：在复杂的结构模型之前，应该先提供描述性的、探索性的经验事实作为基础。这是一篇关于&quot;不要先建模，先观察&quot;的权威陈述。 - <strong>对 Branch D 的支撑</strong>：最直接支持 D 的文献。Hammermesh 的论点——&quot;如果不知道基本事实，你将建立关于幻觉的模型&quot;——完全适用于 D 的设计：在任何人理论化&quot;为什么行为模式预测清算&quot;之前，我们需要先知道它们是否真的预测清算。</p>
+
+<strong>Lewbel, A. (2019). The Identification Zoo: Meanings of Identification in Econometrics. <em>Journal of Economic Literature</em>, 57(4), 835-903.</strong>
+
+<p>- <strong>核心论点</strong>：系统梳理了计量经济学中&quot;识别&quot;的多重含义，区分了&quot;结构的&quot;（structural）和&quot;非结构的&quot;（descriptive/statistical）识别。这篇文章的核心信息是：一个发现的科学价值不取决于它的&quot;结构深度&quot;（即是否与一个深层理论联系起来），而取决于它是否构成一个稳固的、可复制的经验规律。 - <strong>对 Branch D 的支撑</strong>：直接反驳&quot;没有理论贡献=不科学&quot;的常见批评。D 回应：它的贡献是<strong>非结构性的经验发现的识别</strong>。这个发现有两个可能的理论解释，但它的价值——作为一个可检验的、可复制的、有政策相关性的规律——<strong>与其理论解释的质量是分开的</strong>。</p>
+
+<strong>Christensen, G. &amp; Miguel, E. (2018). Transparency and Reproducibility in Economics Research. <em>Journal of Economic Literature</em>, 56(3), 920-980.</strong> (综述)
+
+<p>- <strong>核心论点</strong>：实证经济学的&quot;可复制性危机&quot;的分析——包括多种统计偏见（出版偏见、p 值黑客、结果报告的不透明性等）和解决方案（预注册、详细的分析计划、否定的结果不应该是&quot;文件抽屉&quot;中的过客）。 - <strong>对 Branch D 的支撑</strong>：为该方向的预注册和透明性计划提供文献支持。Branch D 是四个方向中最适合做预注册的——因为在分析前已经明确了所有四个 RQ 的全部检验判据。这种&quot;预先规定失败判据&quot;的设计是 D 在方法学严谨性上的主要资产。</p>
+
+<h3>1.2 数据驱动发现的哲学辩护</h3>
+
+<strong>Anderson, C. (2008). The End of Theory: The Data Deluge Makes the Scientific Method Obsolete. <em>Wired Magazine</em>, 16.07.</strong>
+
+<p>- <strong>核心论点</strong>（非常挑衅但相关）：在巨量数据时代，&quot;相关性胜于因果关系&quot;——不是在理论上，而是在实践上。当你拥有足够的数据时，你不需要一个因果模型——相关性就足够了。 - <strong>对 Branch D 的支撑</strong>：虽然 D 并不完全放弃因果，但它确实接受了&quot;不关心为什么&quot;的实证前提——这与 Anderson 的颠覆性论点一致：如果你有足够的 DeFi 数据，你是否需要一个理论来确定相关性是否有用？D 的回答：作为第一步，不需要。</p>
+
+<strong>Breiman, L. (2001). Statistical Modeling: The Two Cultures. <em>Statistical Science</em>, 16(3), 199-231.</strong>
+
+<p>- <strong>核心论点</strong>：统计学中有两种文化——数据建模文化（regression, p-values, tests of assumptions）和算法建模文化（random forests, SVMs, neural nets）。Breiman 认为两者都可以在同样的&quot;预测精度&quot;标准下被评判——不需要共享一个先验理论。这个观点瓦解了传统的&quot;数据驱动=无理论&quot;的反对。 - <strong>对 Branch D 的支撑</strong>：D 与 Breiman 一致——它不认为必须有一个economic theory of behavioral deviations 才能使用这些偏差进行预测。预测精度的提高本身就是该偏差是&quot;真实的&quot;信号（因为它是对未来的预测）。</p>
+
+<hr>
+
+<h2>第二部分：DeFi 的经验基线</h2>
+
+<h3>2.1 链上信用评分</h3>
+
+<strong>Ghosh, S. et al. (2024). On-Chain Credit Scoring for DeFi.</strong> <em>(Working Paper)</em>
+
+<p>- <strong>核心论点</strong>：用传统链上特征（活跃度、资产、复杂图特征）来构建 DeFi 信用评分的第一次系统性尝试。该工作被认为引入了&quot;纯链上信贷评分&quot;的概念。 - <strong>对 Branch D 的支撑</strong>：提供了赛马的竞赛者角色。D 的M0模型（纯HF + 抵押率）是基线，Ghosh et al. 的工作表明&quot;用特征来预测&quot;在原理上是可行的。但该工作还未探索过行为偏差的特征——D 的独特性在于其行为的特征组（&quot;行为主义的信用&quot;与&quot;隐私保护的&quot;信用评分相对）。</p>
+
+<h3>2.2 DeFi 借贷的程式化事实</h3>
+
+<strong>Gadzinski &amp; Liuzzi (2025)</strong> 和 <strong>Cornelli et al. (2025)</strong> ——两个提供经验基础的 DeFi 工作。在 Branch D 中，它们作为&quot;已知的经验事实&quot;被引用。
+
+<strong>Mu, Y. et al. (2025). DEFI Lending: From Mechanism Efficiency to Borrower Behavior.</strong> <em>(Preprint)</em>
+
+<p>- <strong>核心论点</strong>：从机制高效性到借款人行为的综述——覆盖 DeFi 借贷的清算效率、Gas 拍卖、清算套利等的经验事例。 - <strong>对 Branch D 的支撑</strong>：提供 D 要研究的&quot;行为&quot;的背景环境——包括清算机制的契约环境（协议不能单方面改变信用条款）和 DeFi 借款人的类型（包括 arb bot 和普通用户）。</p>
+
+<hr>
+
+<h2>第三部分：方法论——赛马与预测</h2>
+
+<h3>3.1 比较两种预测模型</h3>
+
+<strong>DeLong, E.R., DeLong, D.M. &amp; Clarke-Pearson, D.L. (1988). Comparing the Areas under Two or More Correlated Receiver Operating Characteristic Curves. <em>Biometrics</em>, 44(3), 837-845.</strong>
+
+<p>- <strong>核心论点</strong>：当使用相同的数据测试两个分类器的ROC曲线时用于比较AUC的标准统计检验。 - <strong>对 Branch D 的支撑</strong>：D 的核心统计检验——哪个模型（M0 对 M2）有更大的AUC——将使用 DeLong 检验来判断差异是否统计显著。这是 D 的方法论工具箱中的关键部分。</p>
+
+<h3>3.2 特征重要性与可解释性</h3>
+
+<strong>Lundberg, S.M. &amp; Lee, S.I. (2017). A Unified Approach to Interpreting Model Predictions. <em>Advances in Neural Information Processing Systems</em>, 30, 4765-4774.</strong>
+
+<p>- <strong>核心论点</strong>：SHAP值（SHapley Additive exPlanations）作为一个跨模型的解释框架——任何机器学习模型的预测都可以被解释为&quot;当某个特征存在时，预测偏离了平均值的幅度&quot;。SHAP 提供了理论上的统一性。 - <strong>对 Branch D 的支撑</strong>：D 的辅助分析——哪些行为特征最重要？——通过 SHAP 获得。这允许 D 可以表述：&quot;行为因子 X 是预测清算的第三重要的特征，排在两个金融因子之后——因此即使未达最高30%的排名，X 在预测上也是有用的。&quot;</p>
+
+<hr>
+
+<h2>第四部分：文献的角色映射</h2>
+
+<table>
+<tr><td>文献</td><td>支持 D 的哪个主张？</td></tr>
+<tr><th>Hamermesh (2000)</th><th>在模型前先有事实是合法的</th></tr>
+<tr><td>Lewbel (2019)</td><td>&quot;识别&quot;不需要结构解释</td></tr>
+<tr><td>Breiman (2001)</td><td>预测精度独立于模型的先验理论内洽</td></tr>
+<tr><td>Ghosh et al. (2024)</td><td>链上信贷评分在原则上是可行的</td></tr>
+<tr><td>Christensen &amp; Miguel (2018)</td><td>透明性和预注册对经验论文的重要性</td></tr>
+<tr><td>DeLong et al. (1988)</td><td>检验增量AUC的方法论</td></tr>
+<tr><td>Lundberg &amp; Lee (2017)</td><td>SHAP 用于行为因子的重要性解释</td></tr>
+</table>
+
+<hr>
+
+<em>所有引用须通过 <code>paper_search</code> 确认。在 Branch D 的简约主义精神下，只引用严格必要的参考文献。</em>
+
+  </div>
+</div>
+<div id="doc_3">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-d">Branch D</span><span class="file-path">04_Branch_D_数据驱动/文献/D3_技术方案_数据驱动.md</span>
+    <h1>Branch D 技术方案：因子分析与赛马设计</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08
+
+<hr>
+
+<h2>1. 数据准备</h2>
+
+<p>与其他分支共享数据基础设施。使用与 Branch A/C 相同的 user-spell 或 user-month 数据。</p>
+
+<strong>核心行为特征集合（30-50个特征）</strong>：
+
+<table>
+<tr><td>特征类别</td><td>特征举例</td><td>D 中的角色</td></tr>
+<tr><th>HF 弹性</th><th>对 ΔHF 的行为反应（β）</th><th>从E1派生</th></tr>
+<tr><td>不对称性</td><td>行为对 HF↓ 的反应 / 行为对 HF↑ 的反应比率</td><td>这是 BDM&quot;补救超配度&quot;的特征对等物</td></tr>
+<tr><td>时间集中度</td><td>交易发生的天/周/月的 Gini 系数（0=平铺，1=全部集中在一个瞬间）</td><td>一个完全的非理论特征</td></tr>
+<tr><td>市场行为</td><td>在市场上涨/下跌的日平均 Δ 借款 比率</td><td>市场择时</td></tr>
+<tr><td>恢复后</td><td>清算后 30 天内的行为差异</td><td>恢复模式</td></tr>
+<tr><td>协议复杂度</td><td>与之交互的唯一协议数（Aave + 其他）</td><td>复杂性/丰富性</td></tr>
+<tr><td>跨仓行为</td><td>同时拥有的仓位数的均值/方差</td><td>分散化/持有行为</td></tr>
+<tr><td>季节性</td><td>周末 vs 工作日行为差异</td><td>插入机器人/传统金融的区别器</td></tr>
+</table>
+
+<strong>这些特征中的每一个都不需要&quot;因果解释&quot;；它们仅仅是关于行为的事实。它们的集合是 D 的因子分析的输入。</strong>
+
+<h2>2. 第一层：因子分析</h2>
+
+<h3>2.1 为什么用因子分析而不是 PCA？</h3>
+
+<p>- PCA 找到低维的超平面（线性投影在&quot;成分&quot;上），但不提供测量误差的解释 - 因子分析显式地假设有一个<strong>潜在因子结构</strong>生成观察到的特征——更适合 D 的目标（我们假设有少量潜在行为因子驱动观察到的特征）</p>
+
+<h3>2.2 因子数量的选择</h3>
+
+<p>- <strong>Scree plot</strong>：按降序绘制各特征值。查找&quot;肘部&quot;（从陡峭到平缓的转折点）来确定适当的因子数 - <strong>平行分析</strong>（Horn&#x27;s procedure）：比较观察到的特征值与其在随机数据（相同维度的纯噪声）中预期特征值的百分比——如果观察到的第 k 个特征值小于在随机数据中的第 95 百分位值，选择 k-1 个因子</p>
+
+<h3>2.3 因子解释</h3>
+
+<p>对每个因子，观察高负载（|loading| &gt; 0.5）的特征并提供一个实质性的标签。这类似于给 PCA 维度命名：</p>
+
+<table>
+<tr><td>因子</td><td>解释为</td></tr>
+<tr><th>因子 A：（IF）</th><th>高可扩展性和低分散性——&quot;-类因子&quot;</th></tr>
+<tr><td>因子 B：（IIF）</td><td>高度不对称性 + 高 HF 弹性——&quot;主动防御性&quot;</td></tr>
+<tr><td>因子 C：（PLF）</td><td>清算后最近的活动 / 空头恢复——&quot;恢复&quot;</td></tr>
+</table>
+
+<p>由此，D 产生了一个最小定义但有意义的&quot;行为画像&quot;（behavioral profile）。</p>
+
+<h2>3. 第二层：赛马</h2>
+
+<h3>3.1 预测模型</h3>
+
+<table>
+<tr><td>模型</td><td>预测因子</td><td>含义</td></tr>
+<tr><th>M0</th><th>HF特征(min, mean, sd) + 抵押率 + 利用率</th><th>纯传统风险模型</th></tr>
+<tr><td>M1</td><td>M0 + BDM五维度</td><td>V4基线——&quot;行为偏差的信用预测&quot;</td></tr>
+<tr><td>M2</td><td>M0 + 从第一层提取的3-5个行为因子</td><td><strong>主模型</strong></td></tr>
+<tr><td>M3</td><td>M0 + BDM + 因子</td><td>全模型</td></tr>
+</table>
+
+<h3>3.2 性能度量</h3>
+
+<p>- <strong>主要</strong>：AUC (ROC 曲线下面积) - <strong>辅助</strong>：Brier分数 (预测概率的校准得如何) - <strong>时间序列交叉验证</strong>：训练/测试按日历时间（例如，train on 2021, test on 2022），不是随机抽样</p>
+
+<h3>3.3 统计检验</h3>
+
+<p>- <strong>DeLong 检验</strong>：比较 M2 vs M0 的 AUC - <strong>似然比检验</strong>：比较嵌套模型的拟合度 — M2 是否比 M0 在拟合上好得多？ - <strong>Brier 评分差异</strong>：M2 Brier − M0 Brier → 较小的值更好吗？——使用引导检验。</p>
+
+<h2>4. 第三层：治理模拟</h2>
+
+<h3>4.1 设定</h3>
+
+<p>- 对于每个未在训练集中看到的 spell 月，预测其清算概率 $\hat{p}_i$ - 将用户分层为三个风险层： - 低风险: $\hat{p}_i &lt; 0.05$ - 中风险: $0.05 \leq \hat{p}_i &lt; 0.15$ - 高风险: $\hat{p}_i \geq 0.15$ - 对于高风险用户，模拟一个反事实：如果清算阈值从 HF = 1.0 提高到 HF = 1.05，坏账会发生什么？</p>
+
+<h3>4.2 福利计算</h3>
+
+<p>$$\Delta W = (B_0 - B_1) - (C_1 - C_0)$$</p>
+
+<p>其中： - $B_0$ = 真实的分摊的坏账 = Σ(坏账，当清算阈值 = 1.0 时发生的 dab) - $B_1$ = 反事实的坏账 = Σ(坏账，当清算时阈值为 1.05 时) - $C_0$ = 真实的分摊成本（被清算的用户在实地支付的分摊） - $C_1$ = 反事实的分摊成本（更早被清算的用户支付的分摊）</p>
+
+<h3>4.3 推断</h3>
+
+<p>- Bootstrap resample 1000 个 spells，计算每次的 ΔW，然后找到其分布 - 如果 95% 置信区间 [2.5%, 97.5%] 完全在零以上 → ΔW &gt; 0 是显著的 → 行为风险分层改善了福利</p>
+
+<hr>
+
+<h2>5. 稳健性</h2>
+
+<table>
+<tr><td>敏感性</td><td>主要方案</td><td>备选</td></tr>
+<tr><th>特征集</th><th>30-50 个复合特征</th><th>仅 BDM 五维度 或 提取特征（最后的保险）</th></tr>
+<tr><td>样本</td><td>全样本</td><td>仅 EOA 用户（排除合约钱包）</td></tr>
+<tr><td>特征工程</td><td>平均值 ± 标准差</td><td>用 winsorized (按 1% 剪群) 版本</td></tr>
+<tr><td>清算定义</td><td>任何清算事件</td><td>仅考虑&quot;重大&quot;的清算（UST &gt; 500 美元）</td></tr>
+<tr><td>模型</td><td>逻辑回归</td><td>LightGBM (如果术后的非线性信息在预测中有用)</td></tr>
+</table>
+
+<hr>
+
+<h2>6. 与其他分支的比较</h2>
+
+<table>
+<tr><td>维度</td><td>Branch D (数据驱动)</td><td>Branch A (RAT 轨迹)</td><td>Branch C (HAM 类型)</td></tr>
+<tr><th>假设</th><th>最低限度 — 只要求行为有净信用</th><th>行为序列形态包含信息</th><th>存在不同的响应函数</th></tr>
+<tr><td>复杂度</td><td>最低 — PCA + 逻辑回归</td><td>中等 — 序列 DTW + 层次聚类</td><td>中等 — 有限混合模型</td></tr>
+<tr><td>可发表性</td><td>正/负结果都可发表</td><td>需要有足够多的活跃账户</td><td>需要识别到可解释的类型</td></tr>
+<tr><td>期刊目标</td><td>J. Financial Stability 或类似</td><td>J. Econometrics</td><td>JEDC / Quantitative Finance</td></tr>
+<tr><td>博士论文角色</td><td>安全网——第二篇或第三篇论文</td><td>主线——方法论锚</td><td>第二线——行为解释</td></tr>
+</table>
+
+<hr>
+
+<h2>7. 日程</h2>
+
+<table>
+<tr><td>阶段</td><td>活动</td><td>时间</td></tr>
+<tr><th>1</th><th>特征工程（从数据库中计算 30-50 个特征）</th><th>2026 Q3</th></tr>
+<tr><td>2</td><td>因子分析 + 命名</td><td>2026 Q4</td></tr>
+<tr><td>3</td><td>赛马 (AUC 比较) + 外部效度检验</td><td>2027 Q1</td></tr>
+<tr><td>4</td><td>治理模拟 + 稳健性</td><td>2027 Q2</td></tr>
+<tr><td>5</td><td>初稿撰写 + 期刊投稿</td><td>2027 Q3</td></tr>
+</table>
+
+<hr>
+
+<em>本技术方案基于 V4 的数据基础设施，但在理论不可知条件下实施。所有赛马设计均已在时间序列交叉验证中预先声明。</em>
+
+  </div>
+</div>
+<div id="doc_4">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-d">Branch D</span><span class="file-path">04_Branch_D_数据驱动/文献/D4_交叉映射_数据驱动.md</span>
+    <h1>Branch D 理论-技术-主张交叉映射表</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08
+
+<hr>
+
+<h2>核心主张映射</h2>
+
+<h3>主张 D1：DeFi 行为特征空间有可解释的结构</h3>
+<strong>简述</strong>：借款人的多种行为指标不是独立的——它们聚集到少数潜在行为因子上。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>Hamermesh (2000) — 在理论之前先指出存在有结构的事实是合法的；Breiman (2001) — 预测精度的提高确认了结构</th></tr>
+<tr><td><strong>技术操作</strong></td><td>在 30-50 个行为指标上做因子分析（或 PCA）</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: 因子前 3 的特征值 ≤ 随机数据中的预期特征值（即没有因子结构）</td></tr>
+<tr><td><strong>成功判据</strong></td><td>通过平行分析和 scree plot 至少识别出 3 个因子（每个有 ≥ 3 个高负载的特征）</td></tr>
+</table>
+
+<h3>主张 D2：行为因子预测清算（增量信息）</h3>
+<strong>简述</strong>：行为轮廓提供了超出传统金融指标的信息，改善了清算预测力。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>Ghosh et al. (2024) — 链上信贷评分的基线；DeLong et al. (1988) — 比较 AUC 的统计检验</th></tr>
+<tr><td><strong>技术操作</strong></td><td>赛马：M2 (M0 + 行为因子) vs M0 (仅传统金融指标)，用 DeLong 检验</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: AUC(M2) ≤ AUC(M0)</td></tr>
+<tr><td><strong>成功判据</strong></td><td>DeLong 检验单侧 p &lt; 0.05</td></tr>
+<tr><td><strong>如果失败（p ≥ 0.05）</strong></td><td>报告：&quot;没有证据表明 DeFi 的行为特征有预测清算的力量&quot;（否定结果论文）</td></tr>
+</table>
+
+<h3>主张 D3：跨协议外部效度</h3>
+<strong>简述</strong>：在 Aave 上发现的预测关系在应用到 Compound 时保持稳健。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>Christensen &amp; Miguel (2018) — 透明性和可复制性是经验研究的核心</th></tr>
+<tr><td><strong>技术操作</strong></td><td>在 Aave 上训练 M2 模型，在 Compound 上测试 AUROC；比较性能是否恶化</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: AUC(Compound Test) ≤ 0.5（即不比随机好）</td></tr>
+<tr><td><strong>成功判据</strong></td><td>AUC ≥ 0.60；系数方向一致</td></tr>
+</table>
+
+<h3>主张 D4：治理福利为正</h3>
+<strong>简述</strong>：用行为轮廓进行风险分层，可以改善协议的总体福利。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>无需特定理论——这是对 M2 的应用</th></tr>
+<tr><td><strong>技术操作</strong></td><td>使用 M2 预测，将用户分层；模拟将高风险用户的清算阈值提高的影响；用 bootstrap 推断得出 ΔW</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: ΔW ≤ 0（更高的清算阈值没有改善福利）</td></tr>
+<tr><td><strong>成功判据</strong></td><td>95% bootstrap 置信区间 [?2.5%, ?97.5%] &gt; 0</td></tr>
+</table>
+
+<hr>
+
+<h2>风险控制映射</h2>
+
+<table>
+<tr><td>风险</td><td>缓解</td></tr>
+<tr><th>行为因子无解释性</th><th>给因子一个尝试性的标签，同时报告最佳负载中的前 5 个特征</th></tr>
+<tr><td>行为因子不预测清算</td><td>反馈到第一层——尝试非线性（XGBoost）来看看是否有隐藏的结构（负结果）</td></tr>
+<tr><td>跨协议 AUC 不显著</td><td>讨论协议特有的因素（gas 模型、抵押品种类）——这仍是一篇论文</td></tr>
+<tr><td>ΔW &lt; 0（负福利）</td><td>警告不要基于行为数据进行干预——&quot;治理模型还没有为行为特征准备好&quot;</td></tr>
+</table>
+
+<hr>
+
+<h2>跨分支映射</h2>
+
+<table>
+<tr><td>D 的主张</td><td>与 A (RAT) 的关系</td><td>与 B (本体) 的关系</td><td>与 C (HAM) 的关系</td></tr>
+<tr><th>行为结构存在</th><th>D 发现有结构，A 研究这结构的轨迹形式——两者可以互相检验！</th><th>B 会说&quot;结构是本体造成的——如果没有一个分类镜头（本体），原始数据中根本找不到结构&quot;</th><th>C 会说&quot;结构的成因是什么？——因为存在潜在的异质性类型&quot;</th></tr>
+<tr><td>行为因子的预测力</td><td>D 将&quot;增量信息&quot;报告为一个事实；A 给出<strong>为什么</strong>—因为轨迹形态</td><td>B 给出<strong>为什么</strong>—因为信息生产框架折射出的信号</td><td>C 给出<strong>为什么</strong>—因为不同类型的行为因素的混合意味着不同的结果</td></tr>
+<tr><td>跨协议效度</td><td>D 作外部效度；A 也这样做但用序列形态；且 A 更挑剔（序列形状可能协议特化）</td><td>B 用跨协议的本体推理（债务能力vs支付意愿）</td><td>C 说类型分布是协议特化的（哈耶克式的）</td></tr>
+<tr><td>治理模拟</td><td>D 给出一个抽象的基线（分层后的福利变化）</td><td>B 将模拟框架化为&quot;用信用本体重排风险&quot;</td><td>A 将刺激框架化为&quot;如果我们将属于慢性风险的轨迹类型与合理类型的协议设计区分开&quot;</td></tr>
+</table>
+
+<hr>
+
+<em>此映射表确认了 D 作为一个独立的、&quot;最小可行论文&quot;的安全网角色。它不需要任何其他分支的结果——但在所有其他方向都失败时，它至少保证一个有科学价值的发现可以被发表。</em>
+
+  </div>
+</div>
+</main>
+<script>
+  document.querySelectorAll('#sidebar a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body></html>

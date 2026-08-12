@@ -1,0 +1,160 @@
+%
+% Figures for the research report
+% Included via \input{figures_图示/图示总表_figures-all} from main.tex
+% All figures scaled to fit \textwidth
+%
+
+% ============================================================
+% Figure 1: Conceptual Framework (resized to fit)
+% ============================================================
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=1.2cm and 0.6cm,
+  box/.style={rectangle, rounded corners=2pt, draw=#1!60, fill=#1!12, text=#1!80!black, minimum width=2.2cm, minimum height=0.65cm, align=center, font=\scriptsize\sffamily, line width=0.4pt},
+  widebox/.style={rectangle, rounded corners=2pt, draw=#1!60, fill=#1!12, text=#1!80!black, minimum width=9cm, minimum height=0.65cm, align=center, font=\small\sffamily\bfseries, line width=0.4pt},
+  smallbox/.style={rectangle, rounded corners=2pt, draw=#1!60, fill=#1!10, text=#1!80!black, minimum width=1.8cm, minimum height=0.5cm, align=center, font=\tiny\sffamily, line width=0.3pt},
+  arrow/.style={->, >=stealth, line width=0.6pt, draw=black!55},
+  darrow/.style={<->, >=stealth, line width=0.7pt, draw=black!55},
+]
+  % Layer 1: Protocols
+  \node[widebox=blue, label={[font=\footnotesize\sffamily\bfseries]north:Data Sources}] (proto) {Aave (V2/V3) \hspace{0.8cm} Compound (V2/V3) \hspace{0.8cm} MakerDAO};
+
+  % Layer 2: Behavioral variables  
+  \node[widebox=teal, below=0.7cm of proto, label={[font=\footnotesize\sffamily\bfseries]north:Behavioral Process Extraction}] (behave) {\normalsize Borrower Active Adjustment \quad (collateral changes, debt management, response timing)};
+
+  % Layer 3: Two tracks
+  \node[box=violet, below left=1.1cm and -1.2cm of behave, minimum width=3.8cm, font=\scriptsize\sffamily] (rq1) {\textbf{RQ1: Behavioral Layer}\\[2pt]Do borrowers systematically adjust\\as HF $\rightarrow$ 1.0?};
+  \node[box=violet, below right=1.1cm and -1.2cm of behave, minimum width=3.8cm, font=\scriptsize\sffamily] (rq2) {\textbf{RQ2: Credit Layer}\\[2pt]Does adjustment behavior predict\\future liquidations?};
+
+  \node[box=red!80!black, below=0.6cm of rq1, minimum width=3.8cm, font=\scriptsize\sffamily] (out1) {Prospect Theory Validation\\(loss aversion, reference-point)};
+  \node[box=red!80!black, below=0.6cm of rq2, minimum width=3.8cm, font=\scriptsize\sffamily] (out2) {Behavioral Early Warning\\(credit risk signals)};
+
+  % Arrows
+  \draw[arrow, thick] (proto.south) -- (behave.north);
+  \draw[arrow, thick] (behave.south) |- (rq1.north);
+  \draw[arrow, thick] (behave.south) |- (rq2.north);
+  \draw[arrow] (rq1.south) -- (out1.north);
+  \draw[arrow] (rq2.south) -- (out2.north);
+  \draw[darrow, thick] (rq1.east) -- node[above, font=\tiny\sffamily]{H2a: Incremental predictive power?} (rq2.west);
+
+  % Left labels
+  \node[font=\footnotesize\sffamily, text=black!60, rotate=90, above left=0.0cm and -1.8cm of behave, anchor=south] {$\longleftarrow$ Behavioral Finance $\longrightarrow$};
+\end{tikzpicture}%
+}
+\caption{Conceptual framework for studying borrower behavior and credit signals in DeFi lending. The framework proceeds from raw on-chain data (top) through behavioral process variable extraction (center) to the research questions (bottom). RQ1 characterizes how borrowers adjust positions as risk accumulates; RQ2 tests whether these behavioral patterns provide incremental predictive power for future liquidation events beyond conventional risk indicators.}
+\label{fig:framework}
+\end{figure}
+
+
+% ============================================================
+% Figure 2: Methodology Pipeline (scaled)
+% ============================================================
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=0.7cm and 0.4cm,
+  stage/.style={rectangle, rounded corners=3pt, draw=#1!70, fill=#1!15, text=black!80, minimum width=2.8cm, minimum height=0.7cm, align=center, font=\scriptsize\sffamily, line width=0.4pt},
+  substage/.style={rectangle, rounded corners=2pt, draw=#1!45, fill=#1!8, text=black!65, minimum width=2.6cm, minimum height=0.5cm, align=center, font=\tiny\sffamily, line width=0.3pt},
+  arrow/.style={->, >=stealth, line width=0.6pt, draw=black!60},
+]
+  \node[stage=blue] (s1) {1. Data Extraction\\Ethereum RPC / Dune};
+  \node[stage=cyan, right=0.08cm of s1] (s2) {2. Event Classification\\Active vs.\ Passive};
+  \node[stage=teal, right=0.08cm of s2] (s3) {3. Trajectory\\Reconstruction\\Daily HF, bands};
+  \node[stage=violet, right=0.08cm of s3] (s4) {4. Variable\\Construction\\BH process vars};
+  \node[stage=red!70!black, right=0.08cm of s4] (s5) {5. Model\\Estimation\\XGBoost + Logit};
+
+  \draw[arrow, thick] (s1.east) -- (s2.west);
+  \draw[arrow, thick] (s2.east) -- (s3.west);
+  \draw[arrow, thick] (s3.east) -- (s4.west);
+  \draw[arrow, thick] (s4.east) -- (s5.west);
+
+  \node[substage=blue, below=0.1cm of s1] {\shortstack{Borrow, Repay,\\Deposit, Withdraw}};
+  \node[substage=cyan, below=0.1cm of s2] {\shortstack{msg.sender\\classification}};
+  \node[substage=teal, below=0.1cm of s3] {\shortstack{min HF, band\\days, drawdown}};
+  \node[substage=violet, below=0.1cm of s4] {\shortstack{adjust rate,\\latency, intensity}};
+  \node[substage=red!70!black, below=0.1cm of s5] {\shortstack{AUC-ROC, PR-AUC\\DeLong test}};
+\end{tikzpicture}%
+}
+\caption{Methodology pipeline from raw blockchain data to predictive model evaluation. Stage 1 extracts transaction events from Ethereum; Stage 2 classifies transactions as active (borrower-initiated) or passive (liquidation bot); Stage 3 reconstructs position risk trajectories; Stage 4 constructs behavioral process variables; and Stage 5 estimates and compares predictive models ($\rightarrow$ liquidation prediction at 7d/30d/90d horizons).}
+\label{fig:methodology}
+\end{figure}
+
+
+% ============================================================
+% Figure 3: Risk Trajectory / Health Factor Illustration (scaled)
+% ============================================================
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  scale=1.0,
+  >=stealth,
+  axisline/.style={->, line width=0.6pt},
+  dataline/.style={line width=0.8pt},
+]
+  % Axes
+  \draw[axisline] (0,0) -- (9.5,0) node[right, font=\footnotesize] {Time $\longrightarrow$};
+  \draw[axisline] (0,0) -- (0,5.2) node[above, font=\footnotesize] {Health Factor};
+  
+  % Labels
+  \node[font=\scriptsize] at (4.5,-0.5) {Observation Window (daily frequency)};
+  
+  % Y-axis labels
+  \draw[dashed, gray!40] (0,0.0) -- (8.5,0.0);
+  \node[font=\scriptsize, left] at (-0.15,0.0) {0};
+  \draw[dashed, gray!40] (0,1.0) -- (8.5,1.0);
+  \node[font=\scriptsize, left] at (0,1.0) {1.0};
+  \node[font=\tiny, red!70!black] at (-0.7, 0.55) {\shortstack{Liq.\\Thresh.}};
+  
+  \draw[dashed, gray!40] (0,2.0) -- (8.5,2.0);
+  \node[font=\scriptsize, left] at (0,2.0) {2.0};
+  \draw[dashed, gray!40] (0,3.0) -- (8.5,3.0);
+  \node[font=\scriptsize, left] at (0,3.0) {3.0};
+  \draw[dashed, gray!40] (0,4.0) -- (8.5,4.0);
+  \node[font=\scriptsize, left] at (0,4.0) {4.0};
+  
+  % Risk bands (shaded)
+  \fill[red!8] (0,1.0) rectangle (8.5,0.0);
+  \fill[orange!8] (0,2.0) rectangle (8.5,1.0);
+  \fill[yellow!8] (0,3.0) rectangle (8.5,2.0);
+  \fill[green!8] (0,5.0) rectangle (8.5,3.0);
+  
+  \node[font=\tiny\sffamily, text=red!50!black, opacity=0.6] at (1.2,0.5) {Liquidation Zone};
+  \node[font=\tiny\sffamily, text=orange!50!black, opacity=0.6] at (1.2,1.5) {High Risk (HF $<$ 2)};
+  \node[font=\tiny\sffamily, text=yellow!50!black, opacity=0.6] at (1.2,2.5) {Moderate Risk};
+  \node[font=\tiny\sffamily, text=green!50!black, opacity=0.6] at (1.2,4.0) {Safe Zone (HF $>$ 3)};
+  
+  % Simulated HF trajectory (shifted slightly left)
+  \draw[dataline, blue!60, line width=1.2pt] plot[smooth] coordinates {
+    (0,3.5) (0.35,3.3) (0.7,3.1) (1.0,2.8) (1.4,2.5) (1.7,2.3) 
+    (2.1,2.0) (2.3,1.7) (2.4,1.5) (2.55,1.25) 
+  };
+  
+  % Active adjustment events (stars)
+  \node[star, star points=5, star point ratio=2.25, draw=green!70!black, fill=green!60, minimum size=2mm, inner sep=0pt] at (1.4,2.5) {};
+  \draw[->, green!60!black, line width=0.5pt] (1.4,2.9) -- (1.4,2.5) node[pos=0, above, font=\tiny] {+collateral};
+  
+  \node[star, star points=5, star point ratio=2.25, draw=green!70!black, fill=green!60, minimum size=2mm, inner sep=0pt] at (2.1,2.0) {};
+  \draw[->, green!60!black, line width=0.5pt] (2.1,2.4) -- (2.1,2.0) node[pos=0, above, font=\tiny] {repay debt};
+  
+  % Liquidation event
+  \node[circle, draw=red!80!black, fill=red!60, minimum size=2.5mm, inner sep=0pt] at (2.55,1.25) {\tiny\color{white}\textbf{!}};
+  \draw[->, red!80!black, line width=0.5pt] (2.9,1.25) -- (2.65,1.25) node[pos=0, right, font=\tiny] {liquidation};
+  
+  % Legend (inside plot area, top right)
+  \node[font=\tiny, draw=black!30, fill=white, rounded corners=2pt, inner sep=3pt] at (6.8,4.5) {
+    \shortstack[l]{
+      \tikz{\draw[blue!60, line width=1.1pt] (0,0)--(0.4,0);} \, HF trajectory\\
+      \tikz{\node[star, star points=5, star point ratio=2.25, fill=green!60, minimum size=1.3mm, inner sep=0pt] at (0,0) {};} \, Active adjustment\\
+      \tikz{\node[circle, fill=red!60, minimum size=1.3mm, inner sep=0pt] at (0,0) {};} \, Liquidation event
+    }
+  };
+
+\end{tikzpicture}%
+}
+\caption{Illustrative health factor (HF) trajectory and behavioral response. A borrowing position's HF declines toward the liquidation threshold (HF = 1.0) as collateral value decreases. Active borrower adjustments (green stars) represent collateral additions or debt repayment. The central empirical question is whether the pattern of these adjustments---their timing, magnitude, and frequency---provides predictive information about eventual liquidation beyond what is captured by the HF itself.}
+\label{fig:trajectory}
+\end{figure}

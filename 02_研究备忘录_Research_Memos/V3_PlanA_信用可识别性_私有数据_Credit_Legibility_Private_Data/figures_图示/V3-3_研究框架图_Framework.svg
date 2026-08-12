@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" font-family="'PingFang SC','Microsoft YaHei','Helvetica Neue',Arial,sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#475569"/>
+    </marker>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0f766e"/><stop offset="1" stop-color="#0891b2"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .t{font-size:13px;fill:#0f172a;font-weight:600}
+    .s{font-size:11px;fill:#475569}
+    .m{font-size:10px;fill:#64748b;font-family:ui-monospace,Consolas,monospace}
+    .b{fill:#ffffff;stroke:#cbd5e1;stroke-width:1.2}
+    .bh{fill:#f0f9ff;stroke:#0891b2;stroke-width:1.4}
+    .bg{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.4}
+    .bo{fill:#fff7ed;stroke:#ea580c;stroke-width:1.4}
+    .br{fill:#fef2f2;stroke:#dc2626;stroke-width:1.4}
+    .ln{fill:none;stroke:#475569;stroke-width:1.4}
+    .tlt{font-size:15px;fill:#0f172a;font-weight:700}
+  </style>
+
+  <text x="490" y="28" text-anchor="middle" class="tlt">Plan A · V3-3 研究框架：信用可识别性缺口 CVD 的测度与外部构念效度</text>
+  <line x1="40" y1="42" x2="940" y2="42" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Layer 1: Theory anchor -->
+  <rect x="40" y="62" width="170" height="50" rx="8" class="bh"/>
+  <text x="125" y="84" text-anchor="middle" class="t">credit legibility</text>
+  <text x="125" y="100" text-anchor="middle" class="s">先于评分的对象（Scott 1998）</text>
+
+  <!-- Layer 2: CVD measure -->
+  <rect x="250" y="62" width="200" height="50" rx="8" fill="url(#g1)" stroke="#0f766e" stroke-width="1.4"/>
+  <text x="350" y="84" text-anchor="middle" class="t" fill="#ffffff">CVD = f(D_id, D_sem, D_port)</text>
+  <text x="350" y="100" text-anchor="middle" class="s" fill="#cffafe">观察者相对 · 公理化典范形式</text>
+
+  <!-- 3 dimensions -->
+  <rect x="490" y="50" width="150" height="34" rx="6" class="bg"/>
+  <text x="565" y="66" text-anchor="middle" class="t">D_id 身份赤字</text>
+  <text x="565" y="79" text-anchor="middle" class="m">conf_ER · 锚点</text>
+  <rect x="490" y="92" width="150" height="34" rx="6" class="bg"/>
+  <text x="565" y="108" text-anchor="middle" class="t">D_sem 语义赤字</text>
+  <text x="565" y="121" text-anchor="middle" class="m">SKU/商户语义覆盖</text>
+  <rect x="490" y="134" width="150" height="34" rx="6" class="bg"/>
+  <text x="565" y="150" text-anchor="middle" class="t">D_port 可携带赤字</text>
+  <text x="565" y="163" text-anchor="middle" class="m">跨场景行为同步度</text>
+
+  <!-- arrows theory -> CVD -->
+  <path d="M210,87 L248,87" class="ln" marker-end="url(#ar)"/>
+  <!-- CVD -> 3 dims -->
+  <path d="M450,80 L470,67 L488,67" class="ln" marker-end="url(#ar)"/>
+  <path d="M450,87 L488,109" class="ln" marker-end="url(#ar)"/>
+  <path d="M450,95 L470,151 L488,151" class="ln" marker-end="url(#ar)"/>
+
+  <!-- Data asset -->
+  <rect x="40" y="200" width="200" height="58" rx="8" class="bo"/>
+  <text x="140" y="222" text-anchor="middle" class="t">UnusPay 确定性映射</text>
+  <text x="140" y="238" text-anchor="middle" class="s">TxHash ↔ OrderID/SKU</text>
+  <text x="140" y="252" text-anchor="middle" class="m">“可识别性被局部修复”场景</text>
+
+  <!-- 4-way horse race -->
+  <text x="690" y="64" text-anchor="middle" class="tlt" fill="#0891b2">四方判别赛马</text>
+  <rect x="680" y="74" width="240" height="26" rx="5" class="b"/>
+  <text x="800" y="91" text-anchor="middle" class="s">M0 · 二元可得性旗标（最弱下限）</text>
+  <rect x="680" y="104" width="240" height="26" rx="5" class="b"/>
+  <text x="800" y="121" text-anchor="middle" class="s">M_act · 活跃度基线（GBM）</text>
+  <rect x="680" y="134" width="240" height="26" rx="5" class="bo"/>
+  <text x="800" y="151" text-anchor="middle" class="s">M_sku · 纯 SKU 语义（Bazarbash 式）★新增</text>
+  <rect x="680" y="164" width="240" height="26" rx="5" fill="url(#g1)" stroke="#0f766e"/>
+  <text x="800" y="181" text-anchor="middle" class="s" fill="#ffffff">M_CVD · 完整 CVD（三维）</text>
+
+  <path d="M565,168 L640,168 L640,177 L678,177" class="ln" marker-end="url(#ar)"/>
+
+  <!-- External result ladder -->
+  <text x="690" y="220" text-anchor="middle" class="tlt" fill="#ea580c">外部结果阶梯</text>
+  <rect x="680" y="230" width="240" height="24" rx="5" class="br"/>
+  <text x="800" y="246" text-anchor="middle" class="s">档1 内部结果（同源 · 下限参照）</text>
+  <rect x="680" y="256" width="240" height="24" rx="5" class="bo"/>
+  <text x="800" y="272" text-anchor="middle" class="s">档2 半外部（人工确认欺诈）</text>
+  <rect x="680" y="282" width="240" height="24" rx="5" class="bg"/>
+  <text x="800" y="298" text-anchor="middle" class="t">档3 真外部硬结果 ★主判据</text>
+
+  <path d="M800,194 L800,228" class="ln" marker-end="url(#ar)" stroke-dasharray="4 3"/>
+
+  <!-- H1c kernel -->
+  <rect x="250" y="200" width="380" height="58" rx="8" class="br"/>
+  <text x="440" y="222" text-anchor="middle" class="t">H1c · 唯一经验内核</text>
+  <text x="440" y="240" text-anchor="middle" class="s">CVD 控活跃度 + 控纯SKU 后</text>
+  <text x="440" y="254" text-anchor="middle" class="s">仍对【外部于 UnusPay 的风险结果】有增量预测力</text>
+
+  <path d="M240,229 L248,229" class="ln" marker-end="url(#ar)"/>
+  <path d="M630,229 L678,242" class="ln" marker-end="url(#ar)"/>
+
+  <!-- Pilot gate -->
+  <rect x="40" y="320" width="900" height="100" rx="10" fill="#fefce8" stroke="#ca8a04" stroke-width="1.4"/>
+  <text x="490" y="344" text-anchor="middle" class="tlt" fill="#a16207">Pilot 去险（投入完整研究前的强制闸门）</text>
+  <g font-size="10.5" fill="#475569">
+    <text x="60" y="368"><tspan font-weight="700" fill="#dc2626">P1</tspan> 商户标注覆盖率 ≥~50%</text>
+    <text x="60" y="386"><tspan font-weight="700" fill="#dc2626">P2</tspan> ΔAUC≥0.02 且 bootstrap 下界&gt;0（同时赢 M_act 和 M_sku）</text>
+    <text x="60" y="404"><tspan font-weight="700" fill="#ea580c">P3</tspan> “同一人”标签可得性 → 路线 A/B</text>
+    <text x="500" y="368"><tspan font-weight="700" fill="#16a34a">P4</tspan> 双口径差异（可选）</text>
+    <text x="500" y="386"><tspan font-weight="700" fill="#dc2626">P5</tspan> 外部结果匹配率 → 决定档3是否可用</text>
+    <text x="500" y="404"><tspan font-weight="700" fill="#475569">→</tspan> 决策树：全过推进 / P1不过切对照口径 / P5不过退档2</text>
+  </g>
+
+  <!-- Bottom: contribution & target -->
+  <rect x="40" y="445" width="430" height="92" rx="8" class="bh"/>
+  <text x="55" y="467" class="tlt" fill="#0891b2">预期贡献</text>
+  <text x="55" y="487" class="s">① credit legibility 首个可计算、观察者相对、</text>
+  <text x="55" y="503" class="s">   有公理基础的测度 CVD</text>
+  <text x="55" y="519" class="s">② 四方赛马 + 外部阶梯 = 外部构念效度</text>
+
+  <rect x="510" y="445" width="430" height="92" rx="8" class="bo"/>
+  <text x="525" y="467" class="tlt" fill="#ea580c">定位与诚实边界</text>
+  <text x="525" y="487" class="s">测度+构念效度的实证方法论论文</text>
+  <text x="525" y="503" class="s">目标 ISR / MISQ 或金融科技期刊</text>
+  <text x="525" y="519" class="s">legibility ≠ creditworthiness · CVD 高=看不清，≠坏</text>
+</svg>

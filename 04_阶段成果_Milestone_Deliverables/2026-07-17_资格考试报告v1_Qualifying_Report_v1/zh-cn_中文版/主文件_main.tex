@@ -1,0 +1,81 @@
+\documentclass[12pt,a4paper,fontset=mac]{ctexart}
+
+% --- Packages ---
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
+\usepackage[round,authoryear,sort&compress,longnamesfirst]{natbib}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,decorations.pathreplacing,shapes.geometric,calc,backgrounds}
+
+\geometry{margin=1in}
+\setstretch{1.4}
+\bibliographystyle{plainnat}
+
+\title{\vspace{-1.5cm} \textbf{DeFi借贷市场中的风险行为与信用信号：}\\\large{头寸风险积累下的借款人主动调整行为}}
+\author{}
+\date{}
+
+\begin{document}
+
+% ============================================================
+% COVER SHEET
+% ============================================================
+\thispagestyle{empty}
+\begin{center}
+
+\vspace*{2cm}
+
+{\large\textbf{资格考试报告}}
+
+\vspace{2.5cm}
+
+\begin{tabular}{r@{\hskip 6pt}l}
+\textbf{学生姓名（学号）：} & 甘翌伟 (59765200) \\[8pt]
+\textbf{专业：} & 数据科学系 \\[8pt]
+\textbf{研究计划题目：} & \parbox[t]{9cm}{\raggedright\small DeFi借贷市场中的风险行为与信用信号：头寸风险积累下的借款人主动调整行为} \\[8pt]
+\textbf{报告类型（报告期）：} & 资格考试报告 (2025年8月1日\,--\,2026年7月31日) \\[8pt]
+\textbf{日期：} & 2026年7月
+\end{tabular}
+
+\vfill
+\rule{\textwidth}{0.5pt}
+\footnotesize 香港城市大学 \hspace{1cm} 数据科学系
+
+\end{center}
+
+\newpage
+
+% ============================================================
+% BLIND TITLE PAGE
+% ============================================================
+\maketitle
+\thispagestyle{empty}
+
+\input{sections_章节/abstract_摘要}
+\newpage
+\tableofcontents
+\newpage
+
+\input{sections_章节/introduction_引言}
+\newpage
+\input{sections_章节/literature-review_文献综述}
+\newpage
+
+\input{sections_章节/research-topic_研究主题}
+\newpage
+\input{sections_章节/methodology_方法论}
+\newpage
+\input{sections_章节/discussion_讨论}
+\newpage
+
+\bibliography{refs_参考文献}
+
+\end{document}

@@ -1,0 +1,89 @@
+digraph V4_KnowledgeGraph_Demo {
+    // ===== 全局设置 =====
+    rankdir=TB;
+    fontname="Noto Sans SC";
+    node [fontname="Noto Sans SC" fontsize=11];
+    edge [fontname="Noto Sans SC" fontsize=9];
+    bgcolor="white";
+    pad=0.5;
+    nodesep=0.6;
+    ranksep=0.8;
+
+    // ===== Node 样式定义 =====
+    // 🧠 概念节点: 蓝色圆角矩形
+    node [shape=box style="rounded,filled" fillcolor="#e1f5fe" color="#0288d1" penwidth=2];
+    C_PT [label="🧠 前景理论\n(Kahneman & Tversky, 1979)"];
+    C_LA [label="🧠 损失厌恶 H1a\nλ > 1"];
+    C_RP [label="🧠 参考点效应 H1b\nHF=1处行为跳变"];
+    C_DS [label="🧠 递减敏感性 H1c\n远离HF=1反应钝化"];
+    C_BDM [label="🧠 BDM行为偏差指数\n5维度(含DeFi独有)"];
+
+    // ⚠️ 状态/问题节点: 橙色菱形
+    node [shape=diamond style="filled" fillcolor="#fff3e0" color="#ef6c00" penwidth=2];
+    S_DA [label="⚠️ 决策锚缺失\n(V4盲点1: 🔴致命)"];
+    S_AP [label="⚠️ 主动vs被动混淆\n(V4盲点5: 🔴致命)"];
+    S_DA_FIX [label="⚠️ 决策锚部分修复\n(ΔW福利量化)"];
+    S_AP_FIX [label="⚠️ 分类逻辑已修复\n(6类+决策树)"];
+    S_SAFE [label="⚠️ Safe钱包新风险\n(V4_1盲点5: 🟡重大)"];
+    S_DUNE_OK [label="⚠️ Dune数据已验证\nlending表可获取"];
+    S_GAP [label="⚠️ 文献缺口确认\n前景理论×DeFi借贷=空白"];
+
+    // 📦 产物节点: 绿色矩形
+    node [shape=box style="filled" fillcolor="#e8f5e9" color="#2e7d32" penwidth=2];
+    A_V4 [label="📦 V4探索稿"];
+    A_V41 [label="📦 V4_1改进提案"];
+    A_DT [label="📦 主动vs被动决策树"];
+    A_DUNE [label="📦 Dune查询模板"];
+
+    // 🔧 数据/工具节点: 紫色平行四边形
+    node [shape=parallelogram style="filled" fillcolor="#f3e5f5" color="#7b1fa2" penwidth=2];
+    D_DUNE [label="🔧 Dune Analytics\nlending.borrow/supply"];
+    D_SAFE [label="🔧 Safe多签钱包\ntx.from=合约地址"];
+    D_HF [label="🔧 HF自计算\n持仓+prices.usd"];
+
+    // ===== Edges =====
+
+    // --X--> 致命发现 (红色虚线)
+    edge [style=dashed color="#c62828" fontcolor="#c62828" penwidth=1.5];
+    A_V4 -> S_DA [label="  盲点自检发现:\n无ΔW折算→论文退化为统计发现  "];
+    A_V4 -> S_AP [label="  盲点自检发现:\n无法区分补救vs清算→RQ1失效  "];
+
+    // --E--> 演化动机 (绿色实线粗)
+    edge [style=bold color="#2e7d32" fontcolor="#2e7d32" penwidth=2];
+    S_DA_FIX -> A_V41 [label="  ΔW福利量化→写入V4_1  "];
+    S_AP_FIX -> A_V41 [label="  6类分类→写入V4_1  "];
+    S_AP_FIX -> A_DT [label="  操作化→独立决策树文件  "];
+    S_DUNE_OK -> A_DUNE [label="  验证通过→产出查询模板  "];
+
+    // --T--> 理论支撑 (蓝色实线)
+    edge [style=solid color="#0288d1" fontcolor="#0288d1" penwidth=1.5];
+    C_PT -> C_LA [label="  核心预测1  "];
+    C_PT -> C_RP [label="  核心预测2  "];
+    C_PT -> C_DS [label="  核心预测3  "];
+    C_LA -> C_BDM [label="  Arshadi & Kim 2025:\nPoS验证者中λ>1可检测  "];
+    C_RP -> C_BDM [label="  Cornelli et al. 2025:\nHF近1时选波动抵押品×2.3  "];
+    C_DS -> C_BDM [label="  Gadzinski & Liuzzi 2025:\n清算后30天恢复72%活动  "];
+    S_GAP -> A_V41 [label="  3个空白→V4_1理论定位  "];
+
+    // --O--> 操作化映射 (紫色点线)
+    edge [style=dotted color="#7b1fa2" fontcolor="#7b1fa2" penwidth=1.5];
+    C_BDM -> D_DUNE [label="  维度3:抵押品切换\nCollateral Enable/Disable事件  "];
+    C_RP -> D_HF [label="  HF=1断点检测\nBai-Perron+接近度设计  "];
+    C_LA -> D_HF [label="  配对|ΔHF|相同\n比较补救vs增险幅度  "];
+
+    // --D--> 数据验证 (灰色实线)
+    edge [style=solid color="#616161" fontcolor="#616161" penwidth=1];
+    D_DUNE -> S_DUNE_OK [label="  transaction_type=liquidation\nLiquidationCall含liquidator字段  "];
+    D_DUNE -> S_AP_FIX [label="  JOIN evm.transactions\n获取tx.from判定发起者  "];
+
+    // 新风险暴露 (红色点线)
+    edge [style=dotted color="#c62828" fontcolor="#c62828" penwidth=1.5];
+    S_AP_FIX -> S_SAFE [label="  解决分类后暴露:\ntx.from对Safe=合约地址  "];
+    D_SAFE -> S_SAFE [label="  Bank of Canada 2026:\n前10大借款人占97%清算量  "];
+    S_SAFE -> A_V41 [label="  PoC必须量化Safe占比\n>30%则RQ1限于EOA散户  "];
+
+    // 修复路径 (橙色实线)
+    edge [style=solid color="#ef6c00" fontcolor="#ef6c00" penwidth=1.5];
+    S_DA -> S_DA_FIX [label="  加入ΔW福利量化公式\n受益方→stAAVE持有者  "];
+    S_AP -> S_AP_FIX [label="  6类操作分类+HF上下文\n+时间窗口判定  "];
+}

@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Branch A · RAT 轨迹框架（序列分析） — 完整文档</title>
+    <style>
+      :root {
+        --bg: #0d1117; --bg-secondary: #161b22; --border: #303d63;
+        --text: #c9d1d9; --text-secondary: #8b949e; --accent: #58a6ff;
+        --accent-hover: #79c0ff; --green: #3fb950; --orange: #d2991d;
+        --red: #f85149; --purple: #a371f7; --code-bg: #1c2128;
+        --heading: #f0f6fc; --link: #58a6ff; --table-header: #1c2128;
+        --table-row-alt: #161b22; --teal: #39d2c0;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+        background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px;
+      }
+      #sidebar {
+        position: fixed; top: 0; left: 0; width: 320px; height: 100vh;
+        background: var(--bg-secondary); border-right: 1px solid var(--border);
+        overflow-y: auto; z-index: 100; padding: 20px;
+      }
+      #sidebar h2 {
+        color: var(--heading); font-size: 18px; margin-bottom: 16px;
+        padding-bottom: 12px; border-bottom: 1px solid var(--border);
+      }
+      #sidebar .nav-section-title {
+        color: var(--accent); font-size: 12px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px; margin: 16px 0 8px 0;
+      }
+      #sidebar nav a {
+        display: block; color: var(--text-secondary); text-decoration: none;
+        padding: 4px 0; font-size: 13px; transition: color 0.15s;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      #sidebar nav a:hover { color: var(--accent-hover); }
+      #content { margin-left: 340px; padding: 40px 60px; max-width: 1000px; }
+      .doc-section {
+        border: 1px solid var(--border); border-radius: 8px; padding: 32px;
+        margin-bottom: 24px; background: var(--bg-secondary);
+      }
+      .doc-section h1 { font-size: 28px; color: var(--heading); margin-bottom: 8px; }
+      .doc-section h2 { font-size: 22px; color: var(--heading); margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+      .doc-section h3 { font-size: 18px; color: var(--heading); margin: 24px 0 8px; }
+      .doc-section h4 { font-size: 16px; color: var(--text); margin: 16px 0 6px; }
+      .doc-section p { margin: 8px 0; }
+      .doc-section a { color: var(--link); text-decoration: none; }
+      .doc-section a:hover { text-decoration: underline; }
+      .doc-section ul, .doc-section ol { margin: 8px 0 8px 24px; }
+      .doc-section li { margin: 4px 0; }
+      .doc-section hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+      .doc-section code {
+        background: var(--code-bg); padding: 2px 6px; border-radius: 4px;
+        font-size: 0.9em; font-family: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, Consolas, monospace;
+      }
+      .doc-section pre {
+        background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
+        padding: 16px; overflow-x: auto; margin: 12px 0; font-size: 13px; line-height: 1.5;
+      }
+      .doc-section pre code { background: none; padding: 0; }
+      .doc-section table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+      .doc-section th { background: var(--table-header); padding: 8px 12px; text-align: left; border: 1px solid var(--border); color: var(--heading); }
+      .doc-section td { padding: 8px 12px; border: 1px solid var(--border); }
+      .doc-section tr:nth-child(even) td { background: var(--table-row-alt); }
+      .doc-section strong { color: var(--heading); }
+      .doc-section em { color: var(--orange); }
+      .file-path {
+        color: var(--text-secondary); font-size: 12px; font-family: monospace;
+        margin-bottom: 16px; padding: 6px 10px; background: var(--code-bg);
+        border-radius: 4px; display: inline-block;
+      }
+      .branch-badge {
+        display: inline-block; padding: 2px 8px; border-radius: 4px;
+        font-size: 12px; font-weight: 600; margin-right: 8px;
+      }
+      .badge-a { background: rgba(88,166,255,0.15); color: var(--accent); }
+      .badge-b { background: rgba(163,113,247,0.15); color: var(--purple); }
+      .badge-c { background: rgba(63,185,80,0.15); color: var(--green); }
+      .badge-d { background: rgba(210,153,29,0.15); color: var(--orange); }
+      .badge-e { background: rgba(57,210,192,0.15); color: var(--teal); }
+      .page-header {
+        border-left: 3px solid var(--accent); padding: 16px 24px; margin-bottom: 32px;
+        background: var(--bg-secondary); border-radius: 0 8px 8px 0;
+      }
+      .page-header.branch-b { border-left-color: var(--purple); }
+      .page-header.branch-c { border-left-color: var(--green); }
+      .page-header.branch-d { border-left-color: var(--orange); }
+      .page-header.branch-e { border-left-color: var(--teal); }
+      .page-header h1 { font-size: 28px; margin-bottom: 4px; }
+      .page-header p { color: var(--text-secondary); margin: 0; }
+      .nav-toggle {
+        display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+        background: var(--bg-secondary); border: 1px solid var(--border);
+        color: var(--text); font-size: 20px; padding: 8px 12px;
+        border-radius: 6px; cursor: pointer;
+      }
+      @media (max-width: 900px) {
+        #sidebar { transform: translateX(-100%); transition: transform 0.3s; width: 280px; }
+        #sidebar.open { transform: translateX(0); }
+        #content { margin-left: 0; padding: 20px; }
+        .nav-toggle { display: block; }
+      }
+    </style>
+</head>
+<body>
+<div id="top"></div>
+<button class="nav-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+<aside id="sidebar"><h2>四分支探索文档</h2><nav>
+<div class="nav-section-title">导航</div>
+    <a href="../00_总览/总览_完整文档.html">返回总览</a>
+    <a href="../0B_Branch_B_本体论/本体论_完整文档.html">Branch B · 决策本体论</a>
+    <a href="../0C_Branch_C_HAM/HAM_完整文档.html">Branch C · 异质预期演化</a>
+    <a href="../0D_Branch_D_数据驱动/数据驱动_完整文档.html">Branch D · 数据驱动安全网</a>
+    <a href="../0E_Branch_E_CuspRAT/CuspRAT_完整文档.html">Branch E · Cusp RAT 动力系统</a>
+    <a href="#top">本页文档</a>
+    <a href="#doc_1">  文档 1</a>
+    <a href="#doc_2">  文档 2</a>
+    <a href="#doc_3">  文档 3</a>
+    <a href="#doc_4">  文档 4</a>
+</nav></aside>
+<main id="content">
+<div class="page-header branch-a">
+<h1>Branch A · RAT 轨迹框架（序列分析）</h1>
+<p>4 篇文档</p>
+</div>
+<div id="doc_1">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-a">Branch A</span><span class="file-path">01_Branch_A_RAT/文献/A1_完整研究计划书_RAT.md</span>
+    <h1>Branch A：Risk Adjustment Trajectories (RAT) — 完整研究计划书</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08 | <strong>性质</strong>：博士论文候选方向
+
+<hr>
+
+<h2>摘要</h2>
+
+<p>本研究计划提出&quot;风险调整轨迹&quot;（Risk Adjustment Trajectories, RAT）框架，将 DeFi 借贷行为从静态截面偏差量度重构为动态序列形态分析。通过将社会学中的序列分析方法（sequence analysis）首次系统性地引入金融行为预测，RAT 不预设&quot;理性基准&quot;，而是通过最优匹配（Optimal Matching）或动态时间规整（DTW）度量借款人行为序列的形态相似度，进而通过聚类识别典型的&quot;轨迹类型&quot;。研究假设是：轨迹形态本身——而非偏离理性基准的幅度——包含超越传统风险指标和行为偏差指数的增量信用信息。本计划书涵盖研究动机、理论框架、操作化方案、失败判据、期刊战略与完整的文献基础。</p>
+
+<hr>
+
+<h2>1. 研究动机与问题陈述</h2>
+
+<h3>1.1 DeFi 借贷中的&quot;行为&quot;问题</h3>
+
+<p>去中心化金融（DeFi）借贷协议通过智能合约在链上记录每一笔交易，理论上提供了&quot;全行为可观测性&quot;。然而，现有研究（包括本研究团队的 V4 方案）在将行为转化为信用信号时，主要采用的是<strong>静态截面视角</strong>：在某个时点测量借款人的行为偏差幅度（如&quot;补救超配度&quot;——实际加抵押量超过理性预期加抵押量的程度），然后将这个幅度作为预测清算的特征。</p>
+
+<p>这种方法的根本局限在于：<strong>它忽略了行为的时间结构</strong>。两个借款人在某一个时点的 BDM（行为偏差指数）得分可能完全相同，但他们在时间轴上的行为形态可能完全相反：</p>
+
+<p>- <strong>借款人 X</strong>：在 HF 从 2.0 下降到 1.05 的三个月里，每个星期都随着 HF 的下降逐步增加抵押品（预防型轨迹） - <strong>借款人 Y</strong>：在 HF 从 2.0 下降到 1.05 的三个月里，前两个月完全无行动，最后一周在 HF=1.02 时一次性追加大量抵押（应激型轨迹）</p>
+
+<p>如果仅仅看截面 BDM 得分，两人都&quot;弥补得足够多&quot;——但 X 的行为意味着持续的偿付意愿和对风险的主动管理，而 Y 的行为意味着它可能没有在密切监控头寸（只在最后一刻抢救）。这两个人在信用意义上可能完全不同，但静态 BDM 无法区分他们。</p>
+
+<h3>1.2 从&quot;偏差&quot;到&quot;轨迹&quot;的范式转换</h3>
+
+<p>RAT 框架提出的核心转换是：<strong>不关心借款人的行为是否偏离理性基准，而关心他们的行为在时间轴上形成了什么样的形态</strong>。这一思想直接来源于社会序列分析传统：</p>
+
+<p>- <strong>Abbott (1995)</strong> 开创的序列分析社会学传统认为，社会现象的最佳理解单位不是个体的某个属性，而是个体生命历程中状态的<strong>序列</strong>。一个职业史——&quot;教育→第一份工作→升职→创业&quot;——的意义不在于某个时间点上是&quot;有业&quot;还是&quot;失业&quot;，而在于整个序列的形态与序列类型的归属。</p>
+
+<p>- <strong>生命历程研究</strong>（Elder, 1998; Mayer, 2009）比&quot;较偏离正常生命历程轨道多远&quot;更关心&quot;你属于哪一条生命历程轨道&quot;——&quot;早婚早育高就业&quot;vs&quot;晚婚无子创业&quot;是两条完全不同的生命轨迹，没有一条是&quot;正确&quot;的。</p>
+
+<p>- <strong>犯罪学中的发展轨迹理论</strong>（Nagin, 2005; Piquero, 2008）识别出&quot;慢性犯罪者&quot;、&quot;青春期限定型&quot;、&quot;成年起犯型&quot;等轨迹类型——这不是某种犯罪倾向的&quot;幅度&quot;，而是犯罪行为随着时间展开的<strong>形态</strong>。</p>
+
+<p>将这一逻辑平移到 DeFi 借贷：<strong>借货行为的最佳理解单位不是&quot;偏差幅度&quot;，而是&quot;轨迹形态&quot;</strong>。我们不是问&quot;这个借款人偏离理性基准多远&quot;，而是问&quot;这个借款人属于哪一类行为轨迹&quot;。</p>
+
+<h3>1.3 核心研究问题</h3>
+
+<p>1. <strong>RQ1（轨迹形态学）</strong>：DeFi 借款人的风险调整行为可以归纳为哪几类典型轨迹？不同类型在序列形态上如何区分？ 2. <strong>RQ2（信用增量）</strong>：轨迹类型是否在传统风险指标（HF 动态、抵押率）和 BDM 维度之外，对清算风险有增量预测力？ 3. <strong>RQ3（方向性动态）</strong>：轨迹中的&quot;转折点&quot;（从一个行为模式转向另一个的时点）如何与外生市场事件（牛熊转换、协议参数变更）相关？ 4. <strong>RQ4（治理干预设计）</strong>：基于轨迹的预测是否支持更精准的风险分层？轨迹转换概率是否能量化为治理策略的预期效果？</p>
+
+<hr>
+
+<h2>2. 理论框架</h2>
+
+<h3>2.1 核心概念定义</h3>
+
+<strong>Risk Adjustment Trajectory (RAT)</strong>：借款人在 DeFi 借贷协议上，从首次开仓到被清算（或还清/退出）期间，其风险调整行为在时间轴上的多通道状态序列。
+
+<p>RAT 是由三个并行通道（channel）组成的多通道序列：</p>
+
+<table>
+<tr><td>通道</td><td>状态空间</td><td>测量什么</td></tr>
+<tr><th>仓位调整方向（Action）</th><th>加抵押 / 还款 / 增贷 / 撤抵押 / 无行动（5个名义状态）</th><th>借款人在每个时间窗口内的主要行为决策</th></tr>
+<tr><td>健康因子区间（HF Zone）</td><td>(1.0, 1.1] / (1.1, 1.2] / (1.2, 1.5] / (1.5, 2.0] / &gt;2.0（5个有序区间）</td><td>借款人在当前时间窗口面临的客观风险程度</td></tr>
+<tr><td>抵押品风险态度（Collat Attitude）</td><td>增加波动资产 / 增加稳定币 / 无变化（3个名义状态）</td><td>借款人的资产安全倾向</td></tr>
+</table>
+
+<strong>多通道同时分析</strong>（multi-channel sequence analysis）的优势在于：它不仅记录&quot;做了什么事&quot;，还记录&quot;在什么风险状态下做的&quot;以及&quot;这个行为暗示了什么风险态度&quot;。单通道&quot;行动序列&quot;可能看不出信用差异，但结合 HF 区间和抵押品态度，形态的模式会更丰富且更具判别力。
+
+<h3>2.2 序列分析的理论基础</h3>
+
+<strong>2.2.1 最优匹配（Optimal Matching, OM）</strong>
+
+<p>OM 的核心思想是：将两个序列之间的&quot;距离&quot;定义为将序列 A 通过一系列编辑操作（替换、插入、删除）转化为序列 B 的最小代价。代价通过替代成本矩阵（substitution cost matrix）确定：</p>
+
+<p>- <strong>替代成本</strong>（substitution cost）：将序列 A 中的状态 $s_i$ 替换为序列 B 中的状态 $s_j$ 的成本。如果 $s_i$ 和 $s_j$ 在实际中频繁相互转换，则替代成本低（这两个状态在实际中很相似）。替代成本可以基于数据的过渡概率（transition rate-based costs）或理论距离。 - <strong>Indel 成本</strong>（insertion/deletion cost）：在序列中插入或删除一个状态的成本。通常设为单位成本的 1/2（标准 OM 约定）或通过优化程序估计。</p>
+
+<p>最后得到的是任意两个序列之间的 $n \times n$ 距离矩阵，其中 $n$ 是 spell 的总数。</p>
+
+<strong>2.2.2 动态时间规整（Dynamic Time Warping, DTW）</strong>
+
+<p>DTW 是一种更适用于不等长序列的序列对齐方法。对于 DeFi 数据，不同借款人的开仓到清算/还清的时间跨度可能差异显著（有的持续 3 个月，有的持续 2 年）。DTW 可以通过非线性对齐来处理这种不等长问题。Bai et al. (2019) 已将 DTW 成功应用于动态金融网络的相似度度量。</p>
+
+<strong>2.2.3 多通道扩展</strong>
+
+<p>标准 OM 和 DTW 处理单通道序列。多通道扩展（multi-channel OM/DTW）将每个通道的距离计算出来，然后通过加权和（由通道间的&quot;连接成本&quot;加权）形成总距离：</p>
+
+<p>$$d_{\text{multi}}(s_i, s_j) = \sum_{c=1}^{C} w_c \cdot d_c(s_i^c, s_j^c)$$</p>
+
+<p>其中 $C=3$ 是通道数，$w_c$ 是通道权重（默认等权，稳健性检验中变动）。</p>
+
+<h3>2.3 从序列距离到轨迹聚类</h3>
+
+<p>有了距离矩阵后，使用层次聚类（Ward&#x27;s method，因其倾向生成同等大小的聚类且在平方欧几里得距离下是最小方差法）将 spell 聚为 K 类。最优 K 通过以下判据联合确定：</p>
+
+<p>- <strong>轮廓系数（Silhouette score）</strong>：衡量类内紧致性与类间分离性的平衡——每个 spell 的轮廓值范围是 [-1, 1]，接近 1 表示好的聚类分配 - <strong>Calinski-Harabasz 伪 F 统计量</strong>（又称方差比标准）：类间方差与类内方差之比，峰值对应最优聚类数 - <strong>ASW (Average Silhouette Width)</strong>：平均轮廓宽度，&gt; 0.5 可接受，&gt; 0.7 强结构 - <strong>实质可解释性</strong>：最终 K 的聚类中心序列是否在经济上可被赋予合理的名称和解释</p>
+
+<h3>2.4 轨迹类型命名与信用检验</h3>
+
+<p>根据聚类中心的多通道序列形态，将每个类命名（如&quot;慢性冒险型&quot;、&quot;预防型&quot;、&quot;无为型&quot;、&quot;清算后重生型&quot;、&quot;市场择时型&quot;）：</p>
+
+<p>- <strong>慢性冒险型</strong>：HF 长期低于 1.2，频繁在底部区间内进行加抵押/还款，但从不彻底改善 HF——可能是在用最小力气维持仓位不死 - <strong>预防型</strong>：HF 一旦低于 1.5 就持续加抵押，将其推回 2.0 以上——高度积极的风险管理 - <strong>无为型</strong>：开仓后 HF 从 2.5 一路下滑到被清算——几乎没有主动行为，完全接受风险 - <strong>市场择时型</strong>：HF 高时增贷（乐观），HF 低时加抵押（防御）——与市场状态协同的行为 - <strong>清算后重生型</strong>：被清算后，在短期（7-14天）内重新开仓——持续的借贷参与意愿</p>
+
+<p>然后将轨迹类型作为自变量，进行信用预测赛马：</p>
+
+<table>
+<tr><td>模型</td><td>特征</td><td>角色</td></tr>
+<tr><th>M0</th><th>HF 路径特征 + 抵押率</th><th>传统风险基线</th></tr>
+<tr><td>M1</td><td>M0 + 五个 BDM 维度</td><td>V4 基线（用于对比）</td></tr>
+<tr><td>M_RAT</td><td>M0 + 轨迹类型（虚拟）+ 轨迹到清算距离 + 通道间同步度</td><td>主模型</td></tr>
+</table>
+
+<strong>核心判据</strong>：M_RAT 的 AUC（或 C-index，对于生存模型）是否显著高于 M0 和 M1。统计检验使用 DeLong 检验或 bootstrapped test。
+
+<hr>
+
+<h2>3. 操作化方案</h2>
+
+<h3>3.1 分析单元</h3>
+
+<strong>用户-开仓周期（user-spell）</strong> 为分析单元。与 V4 的面板用户-月视角不同，RAT 将每个&quot;开仓→还清/清算&quot;视为一个完整的序列单元。
+
+<h3>3.2 数据来源</h3>
+
+<p>- <strong>主协议</strong>：Aave V2 Ethereum（经 Dune 查询提取） - <strong>补充协议</strong>（外部效度检验）：Compound V2 Ethereum - <strong>时间范围</strong>：Aave V2 创世（2020-12）至 2025-12（或数据截止） - <strong>Spell 构建</strong>：每个 EOA 地址的一个特定资产对（如 ETH-USD）的一个开仓到清算/还清为一个 spell</p>
+
+<h3>3.3 序列构造</h3>
+
+<strong>时间粒度</strong>：
+<p>- 主分析：周 - 清算前 30 天：天（密集抽样以捕获关键窗动态）</p>
+
+<strong>状态定义与编码</strong>：
+<p>- 每个周窗口内，将借款人的主要行为分类到上述 5 个行动状态 - HF 周平均值被离散化为上述 5 个有序区间 - 抵押品变化（当周加权净变化）被分类为上述 3 个风险态度状态</p>
+
+<strong>序列长度对齐</strong>：
+<p>- 不等长序列使用 DTW（无需对齐）或通过右截断（从序列末尾逆向对齐，保留清算前的近期动态）标准化</p>
+
+<h3>3.4 多通道序列距离计算</h3>
+
+<p>使用 R 的 <code>TraMineR</code>（序列分析）+ <code>WeightedCluster</code>（加权聚类）+ <code>dtw</code> 或 <code>dtwclust</code>（DTW聚类）包，或 Python 的 <code>dtaidistance</code>。对于替代成本矩阵：</p>
+
+<p>- <strong>行动通道</strong>：基于过渡概率的替代成本（频繁在&quot;加抵押&quot;和&quot;还款&quot;间切换的两个状态替代成本低——这意味着它们在实际中被视为类似的行为） - <strong>HF 通道</strong>：基于有序距离（邻接区间的替代成本=1，距离为 2 的区间替代成本=2，以此类推） - <strong>抵押品态度通道</strong>：基于理论距离（将&quot;增加波动资产&quot;和&quot;增加稳定币&quot;设为替代成本 2，各自与&quot;无变化&quot;的替代成本均为 1）</p>
+
+<strong>权重方案</strong>（用于稳健性检验）：
+<p>- 主方案：等权（$w_1 = w_2 = w_3 = 1/3$） - 备选方案 1：理论加权（行动通道权重最高——直接反映选择） - 备选方案 2：数据驱动（通过 Mantel 检验优化权重）</p>
+
+<h3>3.5 统计模型</h3>
+
+<strong>RQ2 的信用预测模型</strong>：
+<p>- 因变量：spell 是否以清算结束（二值变量） - 主要自变量：轨迹类型虚拟变量 - 竞争变量：HF 路径特征（最低、平均水平、波动率、漂移率）、抵押率、BDM 五维 - 协变量：开仓时的全链余额、使用过的协议数、交互频率 - 模型：逻辑回归（基准）+ Cox 比例风险模型（生存分析——因为&quot;被清算&quot;还受时间跨度的影响）</p>
+
+<strong>增量预测力的统计检验</strong>：
+<p>- DeLong 检验：AUC(M_RAT) &gt; AUC(M1) 的显著性 - 似然比检验：轨迹虚拟变量的联合显著性 - Brier 评分比较：概率预测的校准性</p>
+
+<strong>RQ3 的方向性动态检验</strong>：
+<p>- 识别&quot;转折点&quot;——聚类后每个序列与聚类中心的偏离度在时间上的导数为最大值的时刻 - 转折点前后各 2 周，检验外生事件（ETH 波动率的任意上下的布林带突破、gas 价格的 ±2σ 跳跃、Aave 协议参数变更）的频率是否显著高于期望</p>
+
+<h3>3.6 计算可扩展性问题</h3>
+
+<p>最优匹配的全对距离矩阵计算的复杂度是 $O(s^2 \cdot n^2)$，其中 $s$ 是状态数，$n$ 是 spell 数。在 200K+ spell 的数据集上：</p>
+
+<p>- <strong>降级方案 A</strong>：随机抽样（10K-20K 代表性子集） - <strong>降级方案 B</strong>：使用 DTW 的快速 lower-bound（Keogh&#x27;s LB_Keogh）进行近似最近邻搜索，仅计算高相似度对的精确距离 - <strong>降级方案 C</strong>：从 OM 改为基于 Markov 链的差异度（SVD：sequence-variance decomposition），复杂度仅为 $O(n)$</p>
+
+<hr>
+
+<h2>4. 完整文献基础</h2>
+
+<h3>4.1 序列分析方法论</h3>
+
+<table>
+<tr><td>引用</td><td>核心贡献</td><td>用于支持</td></tr>
+<tr><th>Abbott (1995). Sequence Analysis: New Methods for Old Ideas. <em>Annual Review of Sociology</em>, 21, 93-113.</th><th>序列分析的社会学宣言——奠定了将序列形态（而不是截面属性）作为分析单位的方法论基础</th><th>RQ1 理论框架——说明为什么轨迹形态比截面偏差信息更多</th></tr>
+<tr><td>Aisenbrey &amp; Fasang (2010). New Life for Old Ideas: The &quot;Second Wave&quot; of Sequence Analysis. <em>Sociological Methods &amp; Research</em>, 38(3), 420-462.</td><td>第二波序列分析——多通道序列、差异分解、统计推断</td><td>RQ2 方法论——多通道序列分析的具体操作</td></tr>
+<tr><td>Liao, T.F. et al. (2022). Sequence Analysis: Its Past, Present, and Future. <em>Social Science Research</em>, 107, 102772.</td><td>序列分析的最新综述——未来方向包括因果推断、机器学习融合</td><td>前沿定位——展示序列分析的待发展空间</td></tr>
+<tr><td>Studer &amp; Ritschard (2016). What Matters in Differences between Life Trajectories. <em>JRSS Series A</em>, 179(2), 481-511.</td><td>轨迹间差异的分解方法——将总体差异分解为通道内、通道间和交互项</td><td>RQ2 方法——将轨迹差异的信用贡献量化</td></tr>
+<tr><td>Lesnard (2010). Setting Cost in Optimal Matching to Uncover Contemporaneous Socio-Temporal Patterns. <em>Sociological Methods &amp; Research</em>, 38(3), 389-419.</td><td>时序模式中的替代成本定义—如何设置最优匹配的成本参数</td><td>方法实施——替代成本矩阵的具体设置策略</td></tr>
+<tr><td>Elzinga &amp; Liefbroer (2007). De-Standardization of Family-Life Trajectories of Young Adults. <em>European Journal of Population</em>, 23, 225-250.</td><td>序列差异的统计推断——自助法标准误与空假设</td><td>RQ2 统计方法——聚类结构的显著性检验</td></tr>
+</table>
+
+<h3>4.2 发展轨迹与犯罪学</h3>
+
+<table>
+<tr><td>引用</td><td>核心贡献</td><td>用于支持</td></tr>
+<tr><th>Nagin (2005). <em>Group-Based Modeling of Development</em>. Harvard University Press.</th><th>GBTM 经典——通过有限混合模型识别发展轨迹类型</th><th>RQ1 理论动机——&quot;犯罪轨迹→金融风险轨迹&quot;的类比</th></tr>
+<tr><td>Piquero (2008). Taking Stock of Developmental Trajectories. <em>Journal of Criminal Law &amp; Criminology</em>, 35(3), 287-296.</td><td>轨迹研究的经验总结——轨迹类型的稳健性与政策含义</td><td>RQ4——轨迹如何用于干预设计</td></tr>
+<tr><td>Nagin &amp; Odgers (2010). Group-Based Trajectory Modeling in Clinical Research. <em>Annual Review of Clinical Psychology</em>, 6, 109-138.</td><td>GBTM 的临床研究应用——医学健康轨迹与信用风险轨迹的平行类比</td><td>RQ1-2——轨迹方法的跨学科适用性</td></tr>
+</table>
+
+<h3>4.3 金融中的序列与动态</h3>
+
+<table>
+<tr><td>引用</td><td>核心贡献</td><td>用于支持</td></tr>
+<tr><th>Bai et al. (2019). Entropic Dynamic Time Warping Kernels for Co-evolving Financial Time Series. arXiv:1910.09153.</th><th>DTW 成功应用于动态金融网络的相似度度量</th><th>RQ2 方法——金融领域中 DTW 已有计算工具</th></tr>
+<tr><td>Demyanyk &amp; Van Hemert (2009). Understanding the Subprime Mortgage Crisis. <em>Review of Financial Studies</em>, 24(6), 1848-1880.</td><td>房贷借款人的生存分析——使用&quot;贷款-月&quot;轨迹特征预测违约</td><td>RQ2——传统金融中行为轨迹的预测价值先例</td></tr>
+<tr><td>Deng &amp; Quigley (2004). Woodhead Behavior and the Pricing of Residential Mortgages. <em>UC Berkeley Working Paper</em>.</td><td>提前还款与违约的竞争风险——使用 Cox 模型对抵押贷款做&quot;风险轨迹&quot;</td><td>RQ2 方法——竞争风险框架在轨迹信用判断中的应用</td></tr>
+</table>
+
+<h3>4.4 DeFi 借贷行为（V4 继承）</h3>
+
+<table>
+<tr><td>引用</td><td>核心贡献</td><td>用于支持</td></tr>
+<tr><th>Gadzinski &amp; Liuzzi (2025). Three Essays on DeFi Lending Markets.</th><th>DeFi 借贷中的清算后恢复与行为动态</th><th>RQ1——清算后重生的序列特征</th></tr>
+<tr><td>Cornelli et al. (2025). DeFi Lending and Collateral Choices. <em>Working Paper</em>.</td><td>抵押品选择行为——在安全与风险资产间的切换</td><td>RQ1 抵押品通道——抵押品切换的行为动态</td></tr>
+<tr><td>Sadeghi &amp; Feinstein (2026). Transaction Fees and Liquidation Windows in DeFi. <em>Working Paper</em>.</td><td>交易成本对清算窗口行为的影响</td><td>RQ3——gas 价格作为转折点外生冲击</td></tr>
+<tr><td>Ghosh et al. (2024). On-Chain Credit Scoring for DeFi. <em>Working Paper</em>.</td><td>链上信用评分的基线——提供 RAT 模型比较的基线</td><td>RQ2 赛马——与基线信用评分方法比较</td></tr>
+</table>
+
+<h3>4.5 方法论与计算工具</h3>
+
+<table>
+<tr><td>引用</td><td>核心贡献</td><td>用于支持</td></tr>
+<tr><th>Jain (2010). Data Clustering: 50 Years Beyond K-means. <em>Pattern Recognition Letters</em>, 31(8), 651-666.</th><th>聚类方法的全面综述——Ward、k-means、GMM 的比较</th><th>RQ1 方法——选择最适聚类算法</th></tr>
+<tr><td>Wang et al. (2018). Time Series Clustering: A Superiority of DTW Over Euclidean. <em>Data Mining &amp; Knowledge Discovery</em>, 32(3), 669-702.</td><td>DTW 对欧几里得距离的优势——特别是在不等长序列和对齐变形下</td><td>RQ1 方法——为什么 DTW 优于 OM 在某些情境下</td></tr>
+<tr><td>Montero &amp; Vilar (2014). TSclust: An R Package for Time Series Clustering. <em>Journal of Statistical Software</em>, 62(1), 1-43.</td><td>时间序列聚类的 R 包——实现指南</td><td>实现工具</td></tr>
+</table>
+
+<hr>
+
+<h2>5. 期刊与学术定位</h2>
+
+<h3>5.1 主攻期刊</h3>
+
+<strong>Journal of Econometrics</strong>
+<p>- 理由：该期刊欢迎方法论的创新应用，尤其是当方法迁移较传统计量方法带来了实质性的新信息。RAT 将序列分析从社会学迁移到金融预测，这在方法论上是创新的（不是发明新算法，而是识别出新场景中新工具的价值）。 - 发表先例：该期刊发表过多篇关于有限混合模型、动态面板与 Markov 切换模型的方法论-应用结合类文章。</p>
+
+<strong>Sociological Methods &amp; Research</strong>
+<p>- 理由：该期刊是序列分析方法的&quot;主场&quot;——Aisenbrey &amp; Fasang (2010) 和 Studer &amp; Ritschard (2016) 均发表于此。如果 RAT 展示的序列分析方法过审，在此期刊发表将是对该方法最高级别的认可。</p>
+
+<h3>5.2 次选期刊</h3>
+
+<p>- <strong>Journal of Financial Econometrics</strong>：如果更强调方法的计量/统计贡献 - <strong>EPJ Data Science</strong>：如果更强调计算社会科学的交叉应用 - <strong>Computational Economics</strong>：如果方法论贡献不够强势，但技术在金融中应用得当</p>
+
+<hr>
+
+<h2>6. 失败判据与降级方案</h2>
+
+<table>
+<tr><td>失败场景</td><td>判据</td><td>降级方案</td></tr>
+<tr><th>序列不可分型</th><th>轮廓系数 &lt; 0.2，聚类缺乏解释力</th><th>放弃聚类，改用序列距离矩阵直接做预测（核方法——用核逻辑回归基于距离矩阵预测清算）</th></tr>
+<tr><td>RAT 无信用增量</td><td>轨迹类型的系数的 DeLong 检验不显著</td><td>报告&quot;行为过程的线性压缩已经足够&quot;——BDM 的低维线性表示等价于多通道序列的高维表示，这是同样有意义的结果</td></tr>
+<tr><td>主动行为样本不足</td><td>Safe 占比 &gt; 30% 或主动行为占比 &lt; 20%</td><td>回到 V4 PoC 判据——如果主动行为不可靠分离，行为方向全体受限</td></tr>
+<tr><td>计算不可扩展</td><td>20K+ spell 的 OM 不可行</td><td>改用 DTW + lower bound 近似，或随机抽样（10K spell 随机子集）</td></tr>
+</table>
+
+<hr>
+
+<h2>7. 时间线（预计）</h2>
+
+<table>
+<tr><td>阶段</td><td>内容</td><td>时间</td></tr>
+<tr><th>Phase 0</th><th>V4 PoC（Safe 占比、主动行为样本量）</th><th>2026 Q3</th></tr>
+<tr><td>Phase 1</td><td>序列构造 + 单通道 OM 试验（100-500 spell）</td><td>2026 Q4</td></tr>
+<tr><td>Phase 2</td><td>多通道扩展 + 聚类 + 轨迹类型命名</td><td>2027 Q1-Q2</td></tr>
+<tr><td>Phase 3</td><td>赛马（M0 vs M1 vs M_RAT）+ 统计检验</td><td>2027 Q2-Q3</td></tr>
+<tr><td>Phase 4</td><td>因果检验（转折点分析）+ 治理模拟</td><td>2027 Q3-Q4</td></tr>
+<tr><td>Phase 5</td><td>论文撰写 + 期刊投稿</td><td>2027 Q4 起</td></tr>
+</table>
+
+<hr>
+
+<em>本计划书的全部文献（包括引用但未在 4.1-4.5 中详列的部分）均需经过实际的 <code>paper_search</code> 确认后才可写入正式论文的 .bib 文件。</em>
+
+  </div>
+</div>
+<div id="doc_2">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-a">Branch A</span><span class="file-path">01_Branch_A_RAT/文献/A2_文献支撑与理论溯源_RAT.md</span>
+    <h1>Branch A 文献支撑与理论溯源</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08
+
+<hr>
+
+<h2>文献支撑体系概览</h2>
+
+<p>RAT 框架的独特性在于它是一个<strong>跨学科的方法论迁移</strong>——将社会学中的序列分析方法引入金融行为预测。因此，其文献基础必须同时覆盖四个领域：(1) 序列分析方法论的经典与前沿文献，(2) 金融行为/信用风险中已有的动态和时间维度研究，(3) DeFi 借贷行为的实证基础，(4) 计算方法的工程文献。</p>
+
+<p>以下按&quot;该文献支持 RAT 的哪个主张&quot;进行组织，每篇标注其核心论点及在 RAT 框架中的具体角色。</p>
+
+<hr>
+
+<h2>第一部分：序列分析方法论基础 — 提供操作工具</h2>
+
+<h3>1.1 经典起源</h3>
+
+<strong>Abbott, A. (1995). Sequence Analysis: New Methods for Old Ideas. <em>Annual Review of Sociology</em>, 21, 93-113.</strong>
+
+<p>- <strong>核心论点</strong>：社会现实的最佳分析单位不是变量的共变关系，而是&quot;事件序列&quot;——行动在时间上的特定排序。序列分析方法（特别是最优匹配）为揭示这些序列的模式提供了一套完整的分析工具。 - <strong>对 RAT 的支持</strong>：这是 RAT 的方法论&quot;宣言&quot;——将&quot;行为偏差&quot;重构为&quot;行为序列&quot;的正当性基础。Abbott 论证了序列形态包含的信息是截面属性无法捕获的，这正是 RAT 超越 BDM 的理论缘由。</p>
+
+<strong>Aisenbrey, S. &amp; Fasang, A.E. (2010). New Life for Old Ideas: The &quot;Second Wave&quot; of Sequence Analysis. <em>Sociological Methods &amp; Research</em>, 38(3), 420-462.</strong>
+
+<p>- <strong>核心论点</strong>：序列分析的第二波革新从&quot;发现序列类型&quot;扩展到&quot;解释序列差异&quot;。关键创新包括：多通道序列分析（同时分析多个并行生命周期域）、序列差异的统计推断、以及将序列作为因变量或自变量的回归框架。 - <strong>对 RAT 的支持</strong>：直接提供了多通道序列分析（RAT 的核心操作特征——行动+HF区间+抵押品态度三通道）的权威方法论基础。该文奠定了 RAT 的 RQ2（轨迹类型与信用的关联）从&quot;描述&quot;到&quot;推断&quot;的转向。</p>
+
+<strong>Studer, M. &amp; Ritschard, G. (2016). What Matters in Differences between Life Trajectories. <em>Journal of the Royal Statistical Society: Series A</em>, 179(2), 481-511.</strong>
+
+<p>- <strong>核心论点</strong>：可直接将组间序列差异分解为由几个来源贡献的&quot;差异爆发&quot;——效应来自状态分布的变化、序列转换的变化还是整体时序的偏移？通过伪 $R^2$ 的分解实现。 - <strong>对 RAT 的支持</strong>：为 RAT 的 RQ2 提供了直接的操作化工具——将&quot;清算 spell&quot;和&quot;非清算 spell&quot;两组序列的组间差异分解为：哪些轨迹特征驱动了信用区分？是 HF 区间的分布差异（客观风险）还是行动形态的差异（行为响应）？</p>
+
+<strong>Liao, T.F. et al. (2022). Sequence Analysis: Its Past, Present, and Future. <em>Social Science Research</em>, 107, 102772.</strong>
+
+<p>- <strong>核心论点</strong>：综述了序列分析当前的前沿趋势——因果推断的整合、机器学习方法的融合、和时间的多尺度处理。 - <strong>对 RAT 的支持</strong>：定位 RAT 在序列分析文献发展前沿中的位置，彰显该方法的&quot;热点&quot;属性（对审稿人）——不是过时的方法，而是正在快速发展的领域。</p>
+
+<h3>1.2 方法实施指南</h3>
+
+<strong>Lesnard, L. (2010). Setting Cost in Optimal Matching to Uncover Contemporaneous Socio-Temporal Patterns. <em>Sociological Methods &amp; Research</em>, 38(3), 389-419.</strong>
+
+<p>- <strong>核心论点</strong>：关键的方法论文章——系统化论证了&quot;替代成本矩阵的设置不是任意的，必须与实质理论的期望时序模式一致&quot;。如果理论预期最近的过去比远处的过去更重要，替代成本应体现这种不对称。 - <strong>对 RAT 的支持</strong>：为 RAT 的替代成本矩阵设计提供了工程指导——在&quot;行动通道&quot;中，基于过渡概率的替代成本确保&quot;加抵押&quot;和&quot;还款&quot;的替代成本低（在实际中这两个状态经常互相转换，将它们区分为两个状态的代价应该小）；在&quot;HF通道&quot;中，有序距离确保 (1.0, 1.1] 与 (1.1,1.2] 的替代成本低于与 &gt;2.0 的替代成本。</p>
+
+<strong>Elzinga, C.H. &amp; Liefbroer, A.C. (2007). De-Standardization of Family-Life Trajectories of Young Adults. <em>European Journal of Population</em>, 23, 225-250.</strong>
+
+<p>- <strong>核心论点</strong>：详细描述了基于序列差异的统计推断方法——特别是自助法（bootstrap）用于聚类结构的显著性检验。 - <strong>对 RAT 的支持</strong>：为 RAT 的聚类显著性检验（&quot;5 类是否显著优于 4 类？&quot;）提供了标准方法。</p>
+
+<h3>1.3 序列分析的其它关键参考文献</h3>
+
+<strong>Gauthier, J.A. et al. (2010). Multichannel Sequence Analysis Applied to Social Science Data. <em>Sociological Methodology</em>, 40(1), 1-38.</strong>
+
+<p>- <strong>核心论点</strong>：多通道序列分析的权威操作指南——包括通道加权方案、连接成本的估计、和跨通道模式的比较。 - <strong>对 RAT 的支持</strong>：这将是 RAT 方法的直接操作手册——如何把三个通道打进一个距离度量，以及三个通道的权重方案（默认等权 vs 数据驱动）。</p>
+
+<strong>Piccarreta, R. &amp; Lior, O. (2010). Exploring Sequences: A Graphical Tool Based on Multi-Dimensional Scaling. <em>JRSS Series A</em>, 173(3), 623-640.</strong>
+
+<p>- <strong>核心论点</strong>：用多维尺度（MDS）将序列距离矩阵可视化，在低维空间中直观检查聚类结构。 - <strong>对 RAT 的支持</strong>：是 RAT 聚类结果的可视化工件——可以用 2D/3D MDS 图展示&quot;清算 spell&quot;和&quot;正常还清 spell&quot;在序列空间中的分布是否分离。</p>
+
+<hr>
+
+<h2>第二部分：轨迹与时间的理论来源 — 提供分析视角</h2>
+
+<h3>2.1 生命历程与犯罪学中的发展轨迹</h3>
+
+<strong>Nagin, D.S. (2005). <em>Group-Based Modeling of Development</em>. Harvard University Press.</strong>
+
+<p>- <strong>核心论点</strong>：群体基础的轨迹建模（GBTM）使用有限混合模型（随时间的重复测量）来识别总体中的不同发展轨迹类型。核心贡献是：总体的平均轨迹通常不代表任何子群体——存在多个异质轨迹，分别由不同过程生成。 - <strong>对 RAT 的支持</strong>：两个层面的支持。<strong>理论上</strong>：GBTM 证明在犯罪学中，只问&quot;犯罪率上升还是下降&quot;是不够的——需要知道&quot;哪些人会上升、哪些会下降、在什么年龄段&quot;。类似地，在 DeFi 中，只问&quot;接近清算时加不加抵押&quot;也不够——需要知道&quot;那些&#x27;慢性冒险型&#x27;在接近清算时在做什么？他们在什么时点被清算？&quot;。<strong>方法上</strong>：Nagin 的 GBTM 为 RAT 提供了轨迹建模在分量不为人知时的统计框架——但 RAT 不直接使用 GBTM（GBTM 要求时间对齐的测量），而是使用序列分析 + 聚类作为识别方法。</p>
+
+<strong>Piquero, A.R. (2008). Taking Stock of Developmental Trajectories of Criminal Offending. <em>Journal of Criminal Law &amp; Criminology</em>, 35(3), 287-296.</strong>
+
+<p>- <strong>核心论点</strong>：轨迹分型的稳健性——当在跨队列、跨区域、跨测量条件下复制轨迹研究时，轨迹类型的数量与形状是否稳定？总体答案是&quot;是&quot;：虽然不同类型的占比会变化，但整体的轨迹形状（高/中/低+不犯罪）是跨情境稳健的。 - <strong>对 RAT 的支持</strong>：直接支持 RAT 的外部效度——虽然我们是在 Aave 上做的主分析，但应在 Compound 上复制。如果 Aave 和 Compound 上的轨迹类型形状一致，RAT 的结论稳健性极大增强。</p>
+
+<strong>Elder, G.H. (1998). The Life Course as Developmental Theory. <em>Child Development</em>, 69(1), 1-12.</strong>
+
+<p>- <strong>核心论点</strong>：人生轨迹的核心原则——&quot;时间与地点的历史定位&quot;、&quot;时机&quot;（时点效应）、&quot;相互关联的生活&quot;。最重要的是：&quot;轨迹&quot;（trajectory）与&quot;转折&quot;（turning point）的区分：轨迹是长期的行为方向，转折是系统性改变轨迹方向的关键事件。 - <strong>对 RAT 的支持</strong>：为 RQ3（转折点分析）提供理论工具——将清算前的&quot;转折点&quot;（如开始频繁加抵押的时刻）定义为轨迹上的&quot;不连续点&quot;，而不是一个平稳变化。转折点前后，行为模式发生质的变化。识别这些点的时机和频率，可以判断&quot;什么事件触发借款人从一种行为模式切换为另一种&quot;。</p>
+
+<h3>2.2 金融中的动态生存分析</h3>
+
+<strong>Demyanyk, Y. &amp; Van Hemert, O. (2011). Understanding the Subprime Mortgage Crisis. <em>Review of Financial Studies</em>, 24(6), 1848-1880.</strong>
+
+<p>- <strong>核心论点</strong>：对 subprime 贷款的分析揭示了一个关键的动态模式——高质量贷款（低贷款价值比、完整文件）在贷款证券化后的第三至第四年违约率显著上升，意味着存在&quot;触发事件&quot;（如利率重置）而不是持续的不可持续债务。 - <strong>对 RAT 的支持</strong>：为 RAT 提供了&quot;触发事件&quot;的金融前例——在 DeFi 中，清算前的借贷行为是否也存在&quot;触发事件&quot;（如 ETH 暴跌、gas 飙升、贷款价值比达到某个心理阈值）导致的模式转变？时间动态在其中至关重要。</p>
+
+<strong>Deng, Y. &amp; Quigley, J.M. (2004). Woodhead Behavior and the Pricing of Residential Mortgages. <em>UC Berkeley Working Paper</em>.</strong>
+
+<p>- <strong>核心论点</strong>：将抵押贷款的竞争风险（提前还款 vs 违约）建模为两个时间函数——一个时间到事件函数的&quot;轨迹&quot;。借款人进入某个风险组合（如拖延支付）取决于时变协变量（付款历史、LTV、利率环境）。 - <strong>对 RAT 的侧面支持</strong>：证明在传统金融中，把借款人特征在时间上展开为轨迹——然后使用生存分析（而不是截面 logit）来预测结局——比单纯的截面预测力更强。这间接支持了 RAT 的方法：与其在某个时点测量 BDM，不如在时间上展开 BDM 成为行为轨迹，然后用生存模型分析。</p>
+
+<h3>2.3 最优匹配在金融中的应用</h3>
+
+<strong>Bai, L. et al. (2019). Entropic Dynamic Time Warping Kernels for Co-evolving Financial Time Series. arXiv:1910.09153.</strong>
+
+<p>- <strong>核心论点</strong>：提出一个基于&quot;entropic DTW&quot;的图核——将动态时间规整扩展为同时处理多个相关序列的集合匹配。将其应用于中美贸易战期间的 FTSE 100 和 沪深 300 成分股网络，论证了 DTW 在金融网络相似度度量中的优越性。 - <strong>对 RAT 的支持</strong>：直接支持 RAT 的使用 DTW 路线——该文证明 DTW 在不等长金融时间序列中寻找语义对齐的时间变形具有技术优势。此外，entropic DTW 提供了一种更&quot;软&quot;（soft）的对齐方式——对于不等长的 spell，DTW 比 OM 更灵活。</p>
+
+<hr>
+
+<h2>第三部分：DeFi 借贷行为实证基础 — 提供背景与基线</h2>
+
+<h3>3.1 核心 DeFi 借贷文献</h3>
+
+<strong>Gadzinski, G. &amp; Liuzzi, D. (2025). Three Essays on DeFi Lending Markets.</strong> <em>(Working Paper / PhD Dissertation)</em>
+
+<p>- <strong>核心论点</strong>：研究 DeFi 借贷的核心行为——包括清算事件的动态、借款人的恢复模式、以及在去杠杆过程中的行为调整。 - <strong>对 RAT 的支持</strong>：提供 RAT 的一个关键序列特征——&quot;清算后重生&quot;：被清算的用户是否回到协议（以及以什么方式回到协议）是序列的一个核心形态。Gadzinski &amp; Liuzzi 的工作为 RAT 的&quot;清算后行为序列&quot;提供了描述性基础。</p>
+
+<strong>Cornelli, G. et al. (2025). DeFi Lending and Collateral Choices.</strong> <em>(Working Paper)</em>
+
+<p>- <strong>核心论点</strong>：研究 DeFi 中的抵押品种类选择行为——什么因素驱动借款人在波动资产（ETH, WBTC）和稳定币之间切换抵押品？ - <strong>对 RAT 的支持</strong>：直接支持 RAT 的&quot;抵押品态度&quot;通道——Cornelli et al. 发现抵押品切换决策包含关于借款人风险态度的信息，但这些信息在截面分析中往往被忽略（因为不同时间点的抵押品选择意味着不同的态度）。RAT 的多通道设计恰好将其作为一个独立的通道与行动/HF 并行分析，看看抵押品切换在时间上的序列形态是否包含超越截面&quot;抵押品当前类型&quot;的信用信息。</p>
+
+<strong>Qin, K. et al. (2021). An Empirical Study of DeFi Liquidations. <em>Financial Cryptography &amp; Data Security Conference.</strong></em>
+
+<p>- <strong>核心论点</strong>：记录了 Aave 和 Compound 上清算的程式化事实——清算机制、套利者的激进行为、gas 价格竞争等。 - <strong>对 RAT 的支持</strong>：为 RAT 提供了清算发生的制度环境——理解&quot;为什么有的用户被清算了（因为套利者有机会），而有的用户虽然应该被清算但躲过一劫（因为 gas 费过高）&quot;对于解释序列的终点（&quot;被清算了&quot;vs&quot;没被清算&quot;）非常重要。</p>
+
+<h3>3.2 链上信用评分基线</h3>
+
+<strong>Ghosh, S. et al. (2024). On-Chain Credit Scoring for DeFi.</strong> <em>(Working Paper)</em>
+
+<p>- <strong>核心论点</strong>：尝试基于链上行为特征构建 DeFi 信用评分的第一个系统化尝试。使用传统链上特征（活跃度、余额、交互协议数、DeFi 组合构成等）+ 图特征（地址间的拓扑关系）。 - <strong>对 RAT 的支持</strong>：作为 RAT 赛马的基线比较——将 RAT 的轨迹特征与 Ghosh et al. 的&quot;特征 + 图&quot;方法进行对比，评估轨迹形态是否比纯特征提取有增量信息。</p>
+
+<strong>Cornelli, G. et al. (2024). DeFi vs. Traditional Financial Intermediaries. <em>Journal of Financial Intermediation</em>.</strong>
+
+<p>- <strong>核心论点</strong>：比较 DeFi 与传统金融中介的功能等效性——两者是否在执行相同的信用信息生产功能？DeFi 通过智能合约生产了什么种类的信息？ - <strong>对 RAT 的侧面支持</strong>：间接支撑 RAT 的研究动机——如果 DeFi 和传统中介在&quot;信息生产&quot;的功能上存在系统性差异，那么 DeFi 中借款人的行为序列可能包含传统中介无法提取的维度，使得基于序列的信用分析在 DeFi 中特别有效。</p>
+
+<hr>
+
+<h2>第四部分：计算方法与工程文献 — 提供工具</h2>
+
+<strong>Jain, A.K. (2010). Data Clustering: 50 Years Beyond K-means. <em>Pattern Recognition Letters</em>, 31(8), 651-666.</strong>
+
+<p>- <strong>核心论点</strong>：综述了聚类算法 50 年的发展——从 k-means 的刚性球形假设到谱聚类、密度聚类、模型基础的聚类。对于含结构的时间序列数据，spectral clustering 或 Gaussian Mixture 可能更优。 - <strong>对 RAT 的支持</strong>：为 RAT 的聚类算法选择提供指南——在尝试了层次聚类后，可能发现 spectral clustering 在基于距离矩阵的序列聚类中表现更好。</p>
+
+<strong>Wang, X. et al. (2018). Time Series Clustering: A Superiority of DTW Over Euclidean. <em>Data Mining &amp; Knowledge Discovery</em>, 32(3), 669-702.</strong>
+
+<p>- <strong>核心论点</strong>：实验比较证明 DTW 在不等长序列、序列存在时间偏移、和存在相变的情况下，聚类效果显著优于欧几里得距离。该文提供了广泛的模拟和真实数据实验作为证据。 - <strong>对 RAT 的支持</strong>：对于不等长的 DeFi spell 序列，直接支持使用 DTW 作为默认的距离度量，而不是强行右截断到等长（这会丢掉近期的序列信息）。</p>
+
+<strong>Montero, P. &amp; Vilar, J.A. (2014). TSclust: An R Package for Time Series Clustering. <em>Journal of Statistical Software</em>, 62(1), 1-43.</strong>
+
+<p>- <strong>核心论点</strong>：提供了一个简洁统一的 R 接口，支持多种基于距离、基于模型、基于特征的时序聚类方法。 - <strong>对 RAT 的实用性</strong>：作为 RAT 技术实现的起点包——可快速尝试多种聚类算法并进行诊断。</p>
+
+<hr>
+
+<h2>第五部分：RAT 框架中各文献的角色映射</h2>
+
+<table>
+<tr><td>论文主张</td><td>需要支撑的文献</td><td>核心待检验假设</td></tr>
+<tr><th>&quot;序列形态包含截面BDM未捕捉的信息&quot;</th><th>Abbott (1995), Aisenbrey &amp; Fasang (2010) 的方法论论证</th><th>H0: 轨迹类型不增加预测力</th></tr>
+<tr><td>&quot;DeFi借款人的行为可被聚为可解释的轨迹类型&quot;</td><td>Nagin (2005) 的轨迹模型、Piquero (2008) 的稳健性证据</td><td>H0: 轮廓系数&lt;0.2 (无聚类结构)</td></tr>
+<tr><td>&quot;多通道分析优于单通道&quot;</td><td>Aisenbrey &amp; Fasang (2010), Gauthier et al. (2010) 的方法指南</td><td>H0: 三通道不加权优于单通道</td></tr>
+<tr><td>&quot;轨迹类型的信用预测力源于行为动态，不是客观HF动态&quot;</td><td>Demyanyk &amp; Van Hemert (2011), Deng &amp; Quigley (2004) 的类比</td><td>H0: 控制了HF路径后，轨迹类型系数不显著</td></tr>
+<tr><td>&quot;DeFi 是轨迹分析的理想场所&quot;</td><td>Cornelli et al. (2025), Qin et al. (2021) 提供的数据环境</td><td>需要论证全透明度确实能减少测量误差</td></tr>
+</table>
+
+<hr>
+
+<h2>文献检索的下一步</h2>
+
+<p>以上所有文献（特别是 2024-2025 年的 DeFi 文献和序列分析最新综述）在正式写入论文前必须通过实际的 <code>paper_search</code> 确认真实性与权威性。本文献支撑文档已标注来源的理论角色，但最终 .bib 文件中的每个条目均需通过 <code>bib_fetch</code> 获取真实的 DOI、作者列表和发表细节。</p>
+
+  </div>
+</div>
+<div id="doc_3">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-a">Branch A</span><span class="file-path">01_Branch_A_RAT/文献/A3_技术方案_RAT.md</span>
+    <h1>Branch A 技术方案：序列分析与轨迹聚类的完整技术路线图</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08
+
+<hr>
+
+<h2>技术方案概要</h2>
+
+<p>本技术方案覆盖 RAT 的五个技术层面：（1）数据流水线——从 Aave 交易日志到可分析的多通道序列；（2）序列距离计算——单通道 vs 多通道的最优匹配/DTW参数；（3）聚类与验证——从距离矩阵到可解释的轨迹类型；（4）预测建模——从轨迹类型到清算的概率；（5）因果推断框架——序列如何被用于外生事件的效果识别。</p>
+
+<hr>
+
+<h2>1. 数据流水线</h2>
+
+<h3>1.1 输入数据</h3>
+
+<p>从 Dune Analytics / The Graph 查询以下原始表：</p>
+
+<table>
+<tr><td>数据表</td><td>内容</td><td>关键字段</td></tr>
+<tr><th><code>aave_v2_ethereum.Deposit</code></th><th>存款/加抵押事件</th><th>user, reserve, amount_usd, block_time, txn_hash</th></tr>
+<tr><td><code>aave_v2_ethereum.Withdraw</code></td><td>取款/撤抵押事件</td><td>user, reserve, amount_usd, block_time, txn_hash</td></tr>
+<tr><td><code>aave_v2_ethereum.Borrow</code></td><td>借款/增贷事件</td><td>user, reserve, amount_usd, block_time, txn_hash</td></tr>
+<tr><td><code>aave_v2_ethereum.Repay</code></td><td>还款事件</td><td>user, reserve, amount_usd, block_time, txn_hash</td></tr>
+<tr><td><code>aave_v2_ethereum.LiquidationCall</code></td><td>清算事件</td><td>user, collateral_asset, debt_asset, amount_usd, block_time, txn_hash</td></tr>
+<tr><td><code>prices.usd</code></td><td>历史价格</td><td>symbol, price, minute</td></tr>
+</table>
+
+<strong>需要自计算的关键变量</strong>（不在原始交易日志中）：
+<p>- <strong>Health Factor (HF)</strong>：基于每个用户的 collateral（各储备的 USD 价值 × 各储备的清算阈值）和 debt（各 debt 储备的 USD 价值）在每个区块上的余额快照重新计算 - 注意：Aave 链上 <code>getUserAccountData</code> 的返回值是在调用时刻原子的，但历史值需要在每个区块根据累积的 aToken 利息重新计算 - <strong>主动 vs 被动行为分类</strong>：通过交易的 <code>msg.sender</code> 字段区分 - 主动行为 = msg.sender 是用户的 EOA 地址 - 被动行为 = msg.sender 是合约地址（清算机器人、闪电贷合约等）</p>
+
+<h3>1.2 Spell 构造</h3>
+
+<strong>定义</strong>：一个 spell 是&quot;开始&quot;(spell_start) 到&quot;结束&quot;(spell_end) 的有序序列，定义如下：
+
+<p>- <strong>spell_start</strong> = 用户在 Aave V2 Ethereum 上的第一次借款交易（Borrow 事件）的时刻 - 仅考虑用户在 Aave 上的&quot;首次开仓&quot;spell（每个用户只保留第一个 spell，避免 spell 间的依赖） - 稳健性检验：包含所有 spell，并用 spell 顺序的固定效应控制 - <strong>spell_end</strong> = MIN(spell 对应的 debt 余额第一次归零, 用户的所有 deposit 被清算为零) 的时刻 - 如果 spell 以&quot;还清&quot;结束 → 结局 = 0（非清算结束） - 如果 spell 以&quot;被清算&quot;结束 → 结局 = 1（清算结束） - 如果在数据截止日（2025-12-31 23:59 UTC）仍未结束 → &quot;右删减&quot;（censor），结局 = 0（censor）</p>
+
+<strong>最小 spell 持续时间</strong>：≥ 7 天（排除小于一周的极短期活跃交易）
+
+<h3>1.3 序列化</h3>
+
+<p>对于每个 spell，构造时间等间距的序列：</p>
+
+<strong>时间窗长度</strong>：
+<p>- 主分析：周（calendar week） - 清算前 30 天：日（捕获密集的行为转变）</p>
+
+<strong>序列状态赋值（每个时间窗）</strong>：
+
+<strong>通道 1：行动（Action）</strong>——当窗内的主要净行为方向
+
+<table>
+<tr><td>状态</td><td>赋值条件</td></tr>
+<tr><th>加抵押</th><th>Δ存款_usd &gt; Δ取款_usd 且 Δ存款_usd - Δ取款_usd &gt; 0.001 × total_deposit</th></tr>
+<tr><td>还款</td><td>非加抵押 且 Δ还款_usd &gt; Δ借款_usd 且 Δ还款_usd - Δ借款_usd &gt; 0.001 × total_debt</td></tr>
+<tr><td>增贷</td><td>非加抵押 且 Δ借款_usd &gt; Δ还款_usd 且 Δ借款_usd - Δ还款_usd &gt; 0.001 × total_debt</td></tr>
+<tr><td>撤抵押</td><td>非增贷 且 Δ取款_usd &gt; Δ存款_usd 且 Δ取款_usd - Δ存款_usd &gt; 0.001 × total_deposit</td></tr>
+<tr><td>无行动</td><td>其余情况（净变动 &lt; 阈值的被动状态）</td></tr>
+</table>
+
+<strong>通道 2：健康因子区间（HF Zone）</strong>——当窗的平均 HF 值
+
+<table>
+<tr><td>区间</td><td>边界</td><td>风险含义</td></tr>
+<tr><th>临界</th><th>HF ∈ (1.00, 1.10]</th><th>即期清算风险</th></tr>
+<tr><td>高危</td><td>HF ∈ (1.10, 1.20]</td><td>近期清算风险</td></tr>
+<tr><td>中危</td><td>HF ∈ (1.20, 1.50]</td><td>需要管理</td></tr>
+<tr><td>安全</td><td>HF ∈ (1.50, 2.00]</td><td>适度缓冲</td></tr>
+<tr><td>充裕</td><td>HF &gt; 2.00</td><td>大量缓冲</td></tr>
+</table>
+
+<p>注意：由于 HF=1.0 以下通常立即被清算（除非 gas 太高），实际上 HF &lt; 1.0 的窗口极少——这本身就是个信息——应该与&quot;临界&quot;区合并还是独立，取决于数据中 HF &lt; 1.0 的窗口比例。</p>
+
+<strong>通道 3：抵押品态度（Collateral Attitude）</strong>——当窗内抵押品组合的净变化
+
+<table>
+<tr><td>状态</td><td>赋值条件</td></tr>
+<tr><th>增加波动资产</th><th>Δ波动资产金额_usd &gt; Δ稳定币金额_usd 且 Δ波动资产金额_usd &gt; 0</th></tr>
+<tr><td>增加稳定币</td><td>Δ波动资产金额_usd &lt; Δ稳定币金额_usd 且 Δ稳定币金额_usd &gt; 0</td></tr>
+<tr><td>无变化</td><td>其余情况</td></tr>
+</table>
+
+<p>其中：波动资产 = ETH, WBTC, LINK, AAVE, etc.；稳定币 = USDC, USDT, DAI, etc.</p>
+
+<hr>
+
+<h2>2. 序列距离计算</h2>
+
+<h3>2.1 替代成本矩阵的确定</h3>
+
+<strong>行动通道</strong>（5×5 名义矩阵）：
+<p>根据过渡概率的替代成本——从训练数据中，对任意两个行动状态，计算在实际序列中处于状态 i 的下一窗口转换到状态 j 或 j 的下一窗口转换到 i 的联合概率。替代成本 = 2 - 2 × 联合概率。</p>
+
+<strong>HF 通道</strong>（5×5 有序矩阵）：
+<p>$ \text{cost}(i,j) = |i - j| $</p>
+
+<p>保持 HF 区间的自然顺序——相邻区间（如&quot;临界&quot;和&quot;高危&quot;）的替代成本低，远距离区间（&quot;临界&quot;和&quot;充裕&quot;）的替代成本高。</p>
+
+<strong>抵押品态度通道</strong>（3×3 名义矩阵）：
+<p>- cost(&quot;增加波动资产&quot;, &quot;增加稳定币&quot;) = 2（对立态度） - cost(&quot;增加波动资产/增加稳定币&quot;, &quot;无变化&quot;) = 1（与中性态度的距离）</p>
+
+<h3>2.2 Indel 成本</h3>
+
+<p>- 默认：各通道单位成本的 1/2 - 稳健性：单位成本的 1/10 和 1/1，检验 indel 的敏感度</p>
+
+<h3>2.3 多通道总距离</h3>
+
+<p>$$d_{\text{total}}(s_i, s_j) = w_A \cdot d_A + w_H \cdot d_H + w_C \cdot d_C$$</p>
+
+<p>其中： - $d_A, d_H, d_C$ 分别是行动、HF、抵押品态度通道的距离 - 主方案：$w_A = w_H = w_C = 1/3$ - 备选方案 1：行动通道权重更高 ($w_A = 0.5, w_H = 0.3, w_C = 0.2$) - 备选方案 2：HF 通道权重更高 ($w_H = 0.5$，因为客观风险可能在交易行为之外独立预测清算)</p>
+
+<h3>2.4 DTW 备选路线</h3>
+
+<p>对于不等长 spell，DTW 的步骤： 1. 对各通道分别计算 DTW 对齐距离，使用无 window 约束（无 Sakoe-Chiba band） 2. 将三个通道的 DTW 距离标准化后（除各通道的最大距离），等权加总 3. 得到 n × n 对齐距离矩阵</p>
+
+<strong>OM vs DTW 选择判据</strong>：
+<p>- 如果 spell 长度的标准差/均值 &lt; 0.3（序列长度相对均匀），OM 足够 - 否则使用 DTW</p>
+
+<hr>
+
+<h2>3. 聚类与验证</h2>
+
+<h3>3.1 层次聚类</h3>
+
+<p>- <strong>方法</strong>：Ward&#x27;s method（最小方差法），在平方欧几里得距离上最小化聚类内方差 - <strong>R 库</strong>：<code>TraMineR::seqdist()</code> 计算距离矩阵 → <code>fastcluster::hclust(method = &quot;ward.D2&quot;)</code> - <strong>剪枝</strong>：通过 dendrogram 剪枝到 K 个聚类</p>
+
+<h3>3.2 最佳聚类数的选择</h3>
+
+<table>
+<tr><td>指标</td><td>判据</td><td>阈值</td></tr>
+<tr><th>轮廓系数 (ASW)</th><th>最大化</th><th>ASW &gt; 0.5 可接受；&gt; 0.7 强结构</th></tr>
+<tr><td>CH 伪 F</td><td>最大化</td><td>选择 global 或 local 最大值</td></tr>
+<tr><td>最小聚类规模</td><td>—</td><td>每个聚类 ≥ 5% 样本</td></tr>
+<tr><td>实质可解释性</td><td>手动检查</td><td>聚类中心具有经济含义</td></tr>
+</table>
+
+<strong>K 的选择策略</strong>：通常选择 CH 统计量的 &quot;elbow&quot; 后的第一个局部最大值
+
+<h3>3.3 聚类结构显著性检验</h3>
+
+<p>- <strong>自助法检验</strong>：在 spell 上做 1000 次自助法重抽样，对每个 bootstrap 样本计算三通道序列距离和所有 K 的聚类 - <strong>检验</strong>：真实 ASW 是否显著大于 bootsrap 分布的第 95 百分位数 → 如果大于，说明聚类结构是显著的，不是噪声的 artifact - <strong>补充检验</strong> 用 PAM (Partitioning Around Medoids) 来取代层次聚类，检查方法独立性</p>
+
+<h3>3.4 聚类中心的可视化与命名</h3>
+
+<p>对于每一类别，绘制&quot;聚类中心&quot;——使用所有成员的序列状态的众数（mode）来构造一个&quot;代表性序列&quot;（medoid 意味着找一个真实的最中心的代表性序列，众数序列意味着最频繁的状态在每个位置）：</p>
+
+<p>- <strong>状态分布图（State Distribution Plot）</strong>：三类通道的子图——每行是一个聚类，X 轴时间，Y 轴是状态的比例（用颜色块表示） - <strong>代表性的&quot;序列索引图&quot;（Sequence Index Plot, SIP）</strong>：每个序列的甘特图——每行是一个 spell，X 轴时间，Y 轴用不同颜色表示不同的序列状态（行动通道为主）</p>
+
+<p>聚类中心的命名应基于： 1. 行动通道的常见模式 （如&quot;频繁加抵押&quot;） 2. HF 通道的常见状态 （如&quot;长期处于高危区&quot;） 3. 抵押品态度的典型变化 4. 以及针对该聚类，清算结局的原始发生率</p>
+
+<hr>
+
+<h2>4. 信用预测建模</h2>
+
+<h3>4.1 赛马设计</h3>
+
+<p>对清算结局（1=清算，0=censor/还清）拟合四个逻辑回归：</p>
+
+<table>
+<tr><td>模型</td><td>特征</td></tr>
+<tr><th>M0</th><th>传统风险：HF_min（spell内最低HF）、HF_mean（spell内平均HF）、HF_sd（spell内HF波动性）、collat_ratio_mean、debt_to_deposit_ratio</th></tr>
+<tr><td>M1</td><td>M0 + 五个BDM维度：补救超配度、参考点跳变度、抵押品切换方向、清算后恢复模式、闪电贷非行动</td></tr>
+<tr><td>M2</td><td>M0 + 轨迹类型：K 个虚拟变量（轨迹类型1 到 K-1，K 是参照类）</td></tr>
+<tr><td>M3</td><td>M1 + M2：所有变量（检验BDM和轨迹类型哪个更重要）</td></tr>
+</table>
+
+<h3>4.2 增量预测力的检验</h3>
+
+<p>- <strong>主要检验</strong>：DeLong 检验比较 AUC(M2) vs AUC(M0) - <strong>次要检验</strong>：DeLong 检验比较 AUC(M3) vs AUC(M1)（BDM + 轨迹类型 vs BDM 单独） - <strong>似然比检验</strong>：M2 的似然值与 M0 的似然值之比 = 2×(LL(M2) - LL(M0)) ~ χ² (df = K-1，即新增参数的个数) - <strong>Brier 评分</strong>：M0 vs M2 的分数差，低者更好</p>
+
+<h3>4.3 生存分析框架</h3>
+
+<p>由于&quot;未被清算的观察&quot;包括真实存活（可能未来被清算）和右删减，逻辑回归实际上是有偏的（它把右删减当作结局=0），标准的替代是 Cox 比例风险模型：</p>
+
+<p>- <strong>因变量</strong>：时间到清算（days_to_liquidation） - <strong>删减变量</strong>：censor = 1 如果 spell 持续到数据截止日未被清算 - <strong>协变量</strong>：与 M2 相同 + 时变协变量（周级 HF） - <strong>检验</strong>：log-rank 检验 K 个轨迹类型的生存曲线是否相同</p>
+
+<h3>4.4 类别级别的特征重要性</h3>
+
+<p>- 用 SHAP（SHapley Additive exPlanations）对最终 XGBoost/LightGBM 模型分解每个特征对每个预测的贡献 - 具体关注：哪个通道（行动 vs HF vs 抵押品态度）的轨迹特征对最终预测贡献最大？ - 在 K 个虚拟变量中，哪些类型的正向预测（增加清算风险）和负向预测（降低清算风险）的 SHAP 值方向与预期一致？</p>
+
+<hr>
+
+<h2>5. 因果推断与治理模拟</h2>
+
+<h3>5.1 转折点分析（RQ3）</h3>
+
+<strong>定义</strong>：轨迹转折点 = 在序列聚类后，某个 spell 的序列与该聚类的中心序列在时间 t 的偏离度（局部距离）的导数达到最大的时刻。
+
+<strong>操作</strong>：
+<p>1. 对于每个 spell，计算其与所属聚类中心的&quot;滑动窗口距离&quot;——每个窗口 t 的三通道平均距离（不使用 indel，只考虑该窗口的对齐） 2. 找到距离突然增大的窗口（偏离中心序列最远的时刻）——这就是候选转折点 3. 检验转折点前后的外生事件频率：在转折点前 2 周内，是否存在以下事件？ - ETH 日回报率超出 ±2 标准差 - gas 价格超出 +2 标准差 - Aave 协议参数变更（如新的清算阈值、增加/移除抵押品等） - 重大策略公告或新闻冲击（如果可获取）</p>
+
+<h3>5.2 治理干预模拟（RQ4）</h3>
+
+<strong>模拟设置</strong>：
+<p>1. 用 M2（M0 + 轨迹类型）训练清算预测模型 2. 对测试集中，识别出预测清算概率最高的 20% spell（高危组） 3. 模拟治理策略：&quot;如果协议将高危组的清算阈值从 HF=1.0 提高到 HF=1.05&quot;（即如果 HF 降至 1.05 就引发部分清算） 4. 计算期望福利变化 ΔW = (坏账减少的金额) - (被清算的用户多付的金额 + 协议执行费用)</p>
+
+<strong>蒙特卡洛</strong>：用自助法（bootstrapped spells）生成 1000 个可能的坏账分布，计算 ΔW 的 95% 置信区间。
+
+<hr>
+
+<h2>6. 技术栈与工具</h2>
+
+<table>
+<tr><td>层面</td><td>工具</td><td>理由</td></tr>
+<tr><th>数据提取</th><th>Dune SQL</th><th>跨协议查询、历史快照、gas 价格</th></tr>
+<tr><td>数据清洗</td><td>Python (pandas, numpy)</td><td>灵活的数据操作</td></tr>
+<tr><td>序列分析</td><td>R (TraMineR, TraMineRextras)</td><td>最成熟的序列分析生态</td></tr>
+<tr><td>距离计算</td><td>R (TraMineR::seqdist) 或 Python (dtaidistance)</td><td>多通道 DTW + OM</td></tr>
+<tr><td>聚类</td><td>R (fastcluster, WeightedCluster)</td><td>层次聚类 + 加权聚类</td></tr>
+<tr><td>统计建模</td><td>R (lme4, survival, pROC)</td><td>逻辑回归 + Cox + AUC</td></tr>
+<tr><td>机器学习</td><td>Python (xgboost, lightgbm, shap)</td><td>非线性辅助模型</td></tr>
+<tr><td>可视化</td><td>R (ggplot2, TraMineRextras)</td><td>序列图、状态分布图</td></tr>
+<tr><td>版本管理</td><td>Git + DVC</td><td>可复制的数据版本</td></tr>
+</table>
+
+<hr>
+
+<h2>7. 预期结果</h2>
+
+<h3>7.1 如果一切顺利（正结果）</h3>
+
+<p>- 在 Aave V2 上识别出 5-7 个高度可解释的轨迹类型 - 其中 &quot;慢性冒险型&quot; 和 &quot;无为型&quot; 的清算率显著高于其他类型 - &quot;预防型&quot; 的清算率显著低于基准 - 轨迹类型的增量 AUC（vs 纯 HF 动态）0.05-0.10 - 从 Aave 到 Compound 的迁移中，至少 3 个同样识别的轨迹类型的信用预测方向一致</p>
+
+<h3>7.2 如果部分失败</h3>
+
+<p>- 可以识别出轨迹类型（轮廓系数 &gt; 0.5），但轨迹类型不预测清算 → 报告&quot;行为过程的多变性不意味着信用信号——借款人的行为轨迹有结构，但在信用判断中没有价值&quot;（具有相同的科学价值） - 序列不能分型（轮廓系数 &lt; 0.2） → 报告&quot;DeFi 借贷行为没有稳定可分的序列形态——行为是高斯噪声的过程&quot;（也成立）</p>
+
+<hr>
+
+<h2>8. 敏感性与稳健性检验</h2>
+
+<table>
+<tr><td>维度</td><td>主方案</td><td>备选方案</td><td>检验什么</td></tr>
+<tr><th>距离度量</th><th>多通道DTW</th><th>多通道OM</th><th>DTW 的对齐假设是否影响结果？</th></tr>
+<tr><td>替代成本</td><td>过渡概率基础成本</td><td>统一成本（=1）</td><td>替代成本对聚类结果的影响？</td></tr>
+<tr><td>聚类算法</td><td>层次 Ward&#x27;s</td><td>K-medoids (PAM)</td><td>Ward&#x27;s 的直径对小聚类的倾向？</td></tr>
+<tr><td>状态表示</td><td>5 + 5 + 3 = 75 个三通道联合状态</td><td>三个独立维度</td><td>联合表示比分别表示更好吗？</td></tr>
+<tr><td>时间粒度</td><td>周</td><td>两周 / 天</td><td>窗口粒度的选择是任意的吗？</td></tr>
+<tr><td>通道权重</td><td>等权 (1/3, 1/3, 1/3)</td><td>(1/2, 1/4, 1/4) 等</td><td>多通道距离的构造是否对权重敏感？</td></tr>
+<tr><td>样本</td><td>Aave V2</td><td>Compound V2</td><td>外部效度</td></tr>
+<tr><td>协变量</td><td>无</td><td>跨协议、钱包年龄</td><td>控制混杂因素</td></tr>
+</table>
+
+<hr>
+
+<em>本技术方案的所有的统计算法和参数均需经过实际数据分析的验证。在获得数据前，这些参数值均为首选值而非确定值。</em>
+
+  </div>
+</div>
+<div id="doc_4">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-a">Branch A</span><span class="file-path">01_Branch_A_RAT/文献/A4_交叉映射_RAT.md</span>
+    <h1>Branch A 理论-技术-主张交叉映射表</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08
+
+<hr>
+
+<h2>说明</h2>
+
+<p>本映射表追踪每一条 RAT 的核心主张 $\to$ 支撑该主张的理论/文献 $\to$ 操作化该主张的技术步骤。目的是确保论文的每个声明在理论/文献上有退路，在技术上有可执行路线。</p>
+
+<hr>
+
+<h2>核心主张映射</h2>
+
+<h3>主张 A1：行为序列形态包含超越截面偏差的信息</h3>
+<strong>简述</strong>：两个 BDM 得分相同的借款人，其时间序列形态可能完全不同，而这种形态差异包含额外的信用信号。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>理论/文献支撑</strong></th><th>Abbott (1995) — 序列形态优于截面属性的方法论论证；Aisenbrey &amp; Fasang (2010) — 多通道序列捕获的信息量远超单维度</th></tr>
+<tr><td><strong>技术操作</strong></td><td>对于每个 spell，构建三通道状态序列；计算多通道序列距离；聚类；比较&quot;同BDM不同类&quot;的两组人的清算率</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: 在属于不同轨迹类型但 BDM 五维得分无统计学差异的 spell 子集中，两类的清算率相等</td></tr>
+<tr><td><strong>成功判据</strong></td><td>上述子集中的类间清算率差异在 5% 水平上显著（通过费希尔精确检验）</td></tr>
+<tr><td><strong>如果该主张失败</strong></td><td>说明&quot;截面BDM已经足够概括借款人的行为信息——序列形态没有提供额外信息&quot;</td></tr>
+</table>
+
+<h3>主张 A2：DeFi 借款人可以分为多个稳定可解释的轨迹类型</h3>
+<strong>简述</strong>：通过序列分析+聚类，行为序列自然地分为 5-7 个典型的轨迹类型，每类有独特的形态。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>理论/文献支撑</strong></th><th>Nagin (2005) 的GBTM — 轨迹类型在多个领域中都稳定存在；Piquero (2008) — 跨情境的轨迹稳健性</th></tr>
+<tr><td><strong>技术操作</strong></td><td>随机抽样 15K spell → 构建三通道序列 → 多通道DTW/OM距离 → Ward&#x27;s 层次聚类 → 最佳聚类数选择（CH统计量 ）</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: 轮廓系数 &lt; 0.2（不存在聚类结构）</td></tr>
+<tr><td><strong>成功判据</strong></td><td>ASW &gt; 0.5；至少 3 个聚类（最多 7 个）每个占总体的 &gt; 5%；聚类中心具有经济上可命名的典型形态</td></tr>
+<tr><td><strong>如果该主张失败</strong></td><td>改用 DTW 核距离 + 核逻辑回归直接做预测（不需要聚类）；或报告&quot;行为序列没有结构性聚类&quot;</td></tr>
+</table>
+
+<h3>主张 A3：多通道分析优于单通道分析</h3>
+<strong>简述</strong>：同时分析行动、HF 区间和抵押品态度，比仅分析行动通道（只问&quot;做了什么&quot;不问&quot;在什么风险状态下做的&quot;和&quot;伴随的风险态度是什么&quot;）有更强的信用预测力。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>理论/文献支撑</strong></th><th>Gauthier et al. (2010) — 多通道序列的操作指导；Cornelli et al. (2025) — 抵押品切换行为的信息；Gadzinski &amp; Liuzzi (2025) — 清算后恢复与 HF 动态的交互</th></tr>
+<tr><td><strong>技术操作</strong></td><td>比较以下三个聚类的信用预测力: (a) 仅行动通道聚类的轨迹类型，(b) 仅HF通道聚类的轨迹类型，(c) 三通道聚类的轨迹类型</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: (c) 的信用预测AUC = max((a)的AUC, (b)的AUC)</td></tr>
+<tr><td><strong>成功判据</strong></td><td>(c) 的 AUC 显著高于 (a) 和 (b)</td></tr>
+<tr><td><strong>如果该主张失败</strong></td><td>说明单通道（尤其是HF通道）已经足够 — 行动和抵押品态度不提供额外信息</td></tr>
+</table>
+
+<h3>主张 A4：轨迹类型的信用预测力超越BDM指数</h3>
+<strong>简述</strong>：控制了 BDM 五维度和 HF 动态后，轨迹类型虚拟变量的系数仍然显著。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>理论/文献支撑</strong></th><th>Demyanyk &amp; Van Hemert (2011), Deng &amp; Quigley (2004) — 动态过程比静态快照在金融中信息更多；Stiglitz &amp; Weiss (1981) — 信用信息需要&quot;时间深度&quot;</th></tr>
+<tr><td><strong>技术操作</strong></td><td>赛马模型 M3（M0 + BDM + 轨迹类型）中，对轨迹类型的 K-1 个虚拟变量做联合 Wald 检验</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: β_trajectory_1 = β_trajectory_2 = ... = β_trajectory_{K-1} = 0</td></tr>
+<tr><td><strong>成功判据</strong></td><td>Wald 检验 p &lt; 0.01；AUC(M3) - AUC(M0+BDM) 的 Delong p &lt; 0.05；增量 AUC &gt; 0.03</td></tr>
+<tr><td><strong>如果该主张失败</strong></td><td>报告&quot;行为截面BDM与行为序列轨迹等价——这说明信息生产的流水线不会因维度增加而变强&quot;</td></tr>
+</table>
+
+<h3>主张 A5：转折点与外生事件相关</h3>
+<strong>简述</strong>：轨迹中的转变（即行为模式发生质变的时间点）不是随机的，而是与市场事件（牛熊转换、gas 对冲、协议变更）有关。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>理论/文献支撑</strong></th><th>Elder (1998) 的&quot;转折点&quot;概念；Qin et al. (2021) — 清算机制与gas事件的交互；Sadeghi &amp; Feinstein (2026) — 交易成本对清算行为的影响</th></tr>
+<tr><td><strong>技术操作</strong></td><td>识别转折点 → 检验转折点前后2周内的外生事件频率是否超过偏差期</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: 转折点前后2周的外生事件频率 = 偏差期的频率</td></tr>
+<tr><td><strong>成功判据</strong></td><td>费希尔精确检验 p &lt; 0.05（至少一个事件类别）</td></tr>
+<tr><td><strong>如果该主张失败</strong></td><td>报告&quot;转折点不是外生市场事件的功能——可能由内生机制生成&quot;</td></tr>
+</table>
+
+<h3>主张 A6 (RQ4)：轨迹类型可用于治理干预</h3>
+<strong>简述</strong>：协议可以使用轨迹类型来识别高危借款人，主动调整清算阈值可以改善协议的总体福利。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>理论/文献支撑</strong></th><th>Piquero (2008) — 轨迹类型以干预/政策导向；Pistor (2020) — 金融治理的编码化；Klages-Mundt (2023) — DeFi 中的最优协议参数设计</th></tr>
+<tr><td><strong>技术操作</strong></td><td>用于治理模拟的预测模型 + 清算阈值调整模拟 + ΔW 的 bootstrap</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: 模拟中 ΔW ≤ 0</td></tr>
+<tr><td><strong>成功判据</strong></td><td>95% bootstrap 置信区间 ΔW &gt; 0</td></tr>
+<tr><td><strong>如果该主张失败</strong></td><td>报告&quot;行为轨迹的预测力不足以产生正福利——但模型本身提供了一个可复用的框架&quot;</td></tr>
+</table>
+
+<hr>
+
+<h2>风险控制映射</h2>
+
+<table>
+<tr><td>风险</td><td>相应的缓解步骤</td><td>涉及的文献/方法</td></tr>
+<tr><th>序列不可分型</th><th>转换为轨迹距离矩阵 + 核方法直接预测</th><th>Wang et al. (2018) — DTW核；Bai et al. (2019) — entropic DTW核</th></tr>
+<tr><td>RAT无信用增量</td><td>接受并撰写&quot;行为过程的线性压缩足够——序列没有额外信息&quot;的经济解释</td><td>Aisenbrey &amp; Fasang (2010) — 提供了统计工具来支持&quot;无差异&quot;的结论</td></tr>
+<tr><td>计算不可扩展</td><td>随机抽样 (10K) 或 DTW lower bound 近似</td><td>Keogh&#x27;s LB_Keogh 用于 DTW 的快速lower bound</td></tr>
+<tr><td>主动行为样本不足</td><td>回到V4 PoC判据——只有被动行为才考虑全方向拒绝</td><td>V4 PoC 框架</td></tr>
+<tr><td>聚类命名过于武断</td><td>采用&quot;双向&quot;方法——定量聚类 + 同时提供BDA的&quot;聚类特征原型&quot;（medoids），减少个人标注的武断</td><td>Jain (2010) — 聚类后模型解释的多种方法</td></tr>
+</table>
+
+<hr>
+
+<h2>跨分支映射</h2>
+
+<table>
+<tr><td>RAT 主张</td><td>与B(本体论)的关系</td><td>与C(HAM)的关系</td><td>与D(数据驱动)的关系</td></tr>
+<tr><th>序列形态 &gt; 截面偏差</th><th>B 不会预设&quot;偏差&quot;——本体会将&quot;序列形态&quot;作为信息生产的一个输入；RAT直接生产这个输入</th><th>C 会问&quot;序列形态是否源于不同的行为策略类型&quot;——两者完全兼容</th><th>D 不需要任何理论——直接检验&quot;有无形态&quot;即可</th></tr>
+<tr><td>多通道分析</td><td>B 的本体可以是RAT多通道的知识表示——&quot;行动&quot;、&quot;风险状态&quot;和&quot;风险态度&quot;可以定义为本体中的类-关系</td><td>C 的HAC会用多通道距离来定义一个&quot;特征空间&quot;，在这个空间里识别类型</td><td>D 的因子分析等价于单通道特征分解——RAT是&quot;多通道&quot;，D是&quot;因子&quot;</td></tr>
+<tr><td>轨迹类型聚类</td><td>B 会将这些类型作为本体的&quot;实例&quot;——&quot;预防型&quot;在DeFi信用本体中扮演什么角色？</td><td>C 的风险在于：“轨迹类型&quot;可能在C的框架中会被&quot;行为策略类型&quot;吞没——因为轨迹类型其实就是策略类型的可视化表示</td><td>D 不需要聚类——如果BDM是因子，那&quot;它是哪一类的特征&quot;就没意义了</td></tr>
+<tr><td>治理模拟</td><td>B 提供了模拟的理论支柱——&quot;哪种本体重排可以改善福利？&quot;</td><td>C 提供了异质性支柱——并非所有类型都同等对待干预</td><td>D 提供了纯经验——福利变化可能是正的也可能是负的——都是发现</td></tr>
+</table>
+
+<hr>
+
+<em>此映射表应随着研究的推进和文献的丰富而更新。每一条新发现的文献都应在第四个&quot;对 RAT 主张的支持&quot;列中记录其具体角色。</em>
+
+  </div>
+</div>
+</main>
+<script>
+  document.querySelectorAll('#sidebar a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body></html>

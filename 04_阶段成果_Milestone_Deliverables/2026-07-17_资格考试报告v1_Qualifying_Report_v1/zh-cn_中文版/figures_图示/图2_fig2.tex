@@ -1,0 +1,33 @@
+%
+% Figure 2: Methodology Pipeline
+%
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=0.7cm and 0.4cm,
+  stage/.style={rectangle, rounded corners=3pt, draw=#1!70, fill=#1!15, text=black!80, minimum width=2.8cm, minimum height=0.7cm, align=center, font=\scriptsize\sffamily, line width=0.4pt},
+  substage/.style={rectangle, rounded corners=2pt, draw=#1!45, fill=#1!8, text=black!65, minimum width=2.6cm, minimum height=0.5cm, align=center, font=\tiny\sffamily, line width=0.3pt},
+  arrow/.style={->, >=stealth, line width=0.6pt, draw=black!60},
+]
+  \node[stage=blue] (s1) {1. Data Extraction\\Ethereum RPC / Dune};
+  \node[stage=cyan, right=0.08cm of s1] (s2) {2. Event Classification\\Active vs.\ Passive};
+  \node[stage=teal, right=0.08cm of s2] (s3) {3. Trajectory\\Reconstruction\\Daily HF, bands};
+  \node[stage=violet, right=0.08cm of s3] (s4) {4. Variable\\Construction\\BH process vars};
+  \node[stage=red!70!black, right=0.08cm of s4] (s5) {5. Predictive\\Modeling\\(classification)};
+
+  \draw[arrow, thick] (s1.east) -- (s2.west);
+  \draw[arrow, thick] (s2.east) -- (s3.west);
+  \draw[arrow, thick] (s3.east) -- (s4.west);
+  \draw[arrow, thick] (s4.east) -- (s5.west);
+
+  \node[substage=blue, below=0.1cm of s1] {\shortstack{Borrow, Repay,\\Deposit, Withdraw}};
+  \node[substage=cyan, below=0.1cm of s2] {\shortstack{msg.sender\\classification}};
+  \node[substage=teal, below=0.1cm of s3] {\shortstack{min HF, band\\days, drawdown}};
+  \node[substage=violet, below=0.1cm of s4] {\shortstack{adjust rate,\\latency, intensity}};
+  \node[substage=red!70!black, below=0.1cm of s5] {\shortstack{AUC-ROC, PR-AUC\\model comparison}};
+\end{tikzpicture}%
+}
+\caption{Methodology pipeline from raw blockchain data to predictive model evaluation. Stage 1 extracts transaction events from Ethereum; Stage 2 classifies transactions as active (borrower-initiated) or passive (liquidation bot); Stage 3 reconstructs position risk trajectories; Stage 4 constructs behavioral process variables; and Stage 5 estimates predictive models using standard classification techniques, evaluating them $\rightarrow$ liquidation prediction at 7d/30d/90d horizons.}
+\label{fig:methodology}
+\end{figure}

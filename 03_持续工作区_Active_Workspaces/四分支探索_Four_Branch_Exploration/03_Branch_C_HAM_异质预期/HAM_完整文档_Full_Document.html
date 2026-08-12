@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Branch C · 异质预期与演化响应函数 — 完整文档</title>
+    <style>
+      :root {
+        --bg: #0d1117; --bg-secondary: #161b22; --border: #303d63;
+        --text: #c9d1d9; --text-secondary: #8b949e; --accent: #58a6ff;
+        --accent-hover: #79c0ff; --green: #3fb950; --orange: #d2991d;
+        --red: #f85149; --purple: #a371f7; --code-bg: #1c2128;
+        --heading: #f0f6fc; --link: #58a6ff; --table-header: #1c2128;
+        --table-row-alt: #161b22; --teal: #39d2c0;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+        background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px;
+      }
+      #sidebar {
+        position: fixed; top: 0; left: 0; width: 320px; height: 100vh;
+        background: var(--bg-secondary); border-right: 1px solid var(--border);
+        overflow-y: auto; z-index: 100; padding: 20px;
+      }
+      #sidebar h2 {
+        color: var(--heading); font-size: 18px; margin-bottom: 16px;
+        padding-bottom: 12px; border-bottom: 1px solid var(--border);
+      }
+      #sidebar .nav-section-title {
+        color: var(--accent); font-size: 12px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px; margin: 16px 0 8px 0;
+      }
+      #sidebar nav a {
+        display: block; color: var(--text-secondary); text-decoration: none;
+        padding: 4px 0; font-size: 13px; transition: color 0.15s;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      #sidebar nav a:hover { color: var(--accent-hover); }
+      #content { margin-left: 340px; padding: 40px 60px; max-width: 1000px; }
+      .doc-section {
+        border: 1px solid var(--border); border-radius: 8px; padding: 32px;
+        margin-bottom: 24px; background: var(--bg-secondary);
+      }
+      .doc-section h1 { font-size: 28px; color: var(--heading); margin-bottom: 8px; }
+      .doc-section h2 { font-size: 22px; color: var(--heading); margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+      .doc-section h3 { font-size: 18px; color: var(--heading); margin: 24px 0 8px; }
+      .doc-section h4 { font-size: 16px; color: var(--text); margin: 16px 0 6px; }
+      .doc-section p { margin: 8px 0; }
+      .doc-section a { color: var(--link); text-decoration: none; }
+      .doc-section a:hover { text-decoration: underline; }
+      .doc-section ul, .doc-section ol { margin: 8px 0 8px 24px; }
+      .doc-section li { margin: 4px 0; }
+      .doc-section hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+      .doc-section code {
+        background: var(--code-bg); padding: 2px 6px; border-radius: 4px;
+        font-size: 0.9em; font-family: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, Consolas, monospace;
+      }
+      .doc-section pre {
+        background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
+        padding: 16px; overflow-x: auto; margin: 12px 0; font-size: 13px; line-height: 1.5;
+      }
+      .doc-section pre code { background: none; padding: 0; }
+      .doc-section table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+      .doc-section th { background: var(--table-header); padding: 8px 12px; text-align: left; border: 1px solid var(--border); color: var(--heading); }
+      .doc-section td { padding: 8px 12px; border: 1px solid var(--border); }
+      .doc-section tr:nth-child(even) td { background: var(--table-row-alt); }
+      .doc-section strong { color: var(--heading); }
+      .doc-section em { color: var(--orange); }
+      .file-path {
+        color: var(--text-secondary); font-size: 12px; font-family: monospace;
+        margin-bottom: 16px; padding: 6px 10px; background: var(--code-bg);
+        border-radius: 4px; display: inline-block;
+      }
+      .branch-badge {
+        display: inline-block; padding: 2px 8px; border-radius: 4px;
+        font-size: 12px; font-weight: 600; margin-right: 8px;
+      }
+      .badge-a { background: rgba(88,166,255,0.15); color: var(--accent); }
+      .badge-b { background: rgba(163,113,247,0.15); color: var(--purple); }
+      .badge-c { background: rgba(63,185,80,0.15); color: var(--green); }
+      .badge-d { background: rgba(210,153,29,0.15); color: var(--orange); }
+      .badge-e { background: rgba(57,210,192,0.15); color: var(--teal); }
+      .page-header {
+        border-left: 3px solid var(--accent); padding: 16px 24px; margin-bottom: 32px;
+        background: var(--bg-secondary); border-radius: 0 8px 8px 0;
+      }
+      .page-header.branch-b { border-left-color: var(--purple); }
+      .page-header.branch-c { border-left-color: var(--green); }
+      .page-header.branch-d { border-left-color: var(--orange); }
+      .page-header.branch-e { border-left-color: var(--teal); }
+      .page-header h1 { font-size: 28px; margin-bottom: 4px; }
+      .page-header p { color: var(--text-secondary); margin: 0; }
+      .nav-toggle {
+        display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+        background: var(--bg-secondary); border: 1px solid var(--border);
+        color: var(--text); font-size: 20px; padding: 8px 12px;
+        border-radius: 6px; cursor: pointer;
+      }
+      @media (max-width: 900px) {
+        #sidebar { transform: translateX(-100%); transition: transform 0.3s; width: 280px; }
+        #sidebar.open { transform: translateX(0); }
+        #content { margin-left: 0; padding: 20px; }
+        .nav-toggle { display: block; }
+      }
+    </style>
+</head>
+<body>
+<div id="top"></div>
+<button class="nav-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+<aside id="sidebar"><h2>四分支探索文档</h2><nav>
+<div class="nav-section-title">导航</div>
+    <a href="../00_总览/总览_完整文档.html">返回总览</a>
+    <a href="../0A_Branch_A_RAT/RAT_完整文档.html">Branch A · RAT 轨迹框架</a>
+    <a href="../0B_Branch_B_本体论/本体论_完整文档.html">Branch B · 决策本体论</a>
+    <a href="../0D_Branch_D_数据驱动/数据驱动_完整文档.html">Branch D · 数据驱动安全网</a>
+    <a href="../0E_Branch_E_CuspRAT/CuspRAT_完整文档.html">Branch E · Cusp RAT 动力系统</a>
+    <a href="#top">本页文档</a>
+    <a href="#doc_1">  文档 1</a>
+    <a href="#doc_2">  文档 2</a>
+    <a href="#doc_3">  文档 3</a>
+    <a href="#doc_4">  文档 4</a>
+</nav></aside>
+<main id="content">
+<div class="page-header branch-c">
+<h1>Branch C · 异质预期与演化响应函数</h1>
+<p>4 篇文档</p>
+</div>
+<div id="doc_1">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-c">Branch C</span><span class="file-path">03_Branch_C_HAM/文献/C1_完整研究计划书_HAM.md</span>
+    <h1>Branch C：异质预期与演化响应函数 — 完整研究计划书</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08 | <strong>性质</strong>：博士论文候选方向
+
+<hr>
+
+<h2>摘要</h2>
+
+<p>V4 隐含地假设 DeFi 所有借款人共享同一行为规则——前景理论规定的损失厌恶（$\lambda &gt; 1$）、参考点依赖和递减敏感性。Branch C 拒绝这一假设，提出 DeFi 借款人可能是<strong>异质的</strong>：&quot;损失厌恶者&quot;（HF下降时补救 &gt; HF上升时的行动）、&quot;损失追求者&quot;（HF下降时反而加杠杆——赌博翻本）、&quot;惯性持有者&quot;（从不交易）等等，他们共同存在于同一市场中。这一视角根植于异质代理人模型（Heterogeneous Agent Models, HAM）传统（Brock &amp; Hommes 1997, 1998; Hommes 2006），但将其指向从&quot;资产定价&quot;调转为&quot;信用行为&quot;。本研究通过有限混合模型（Finite Mixture Model）从链上行为数据中无监督地识别这些策略类型，然后检验不同策略类型在清算风险上的差异，以及行为类型的分布是否随市场状态而&quot;演化&quot;——更成功的策略是否增长份额。这为理解 DeFi 治理干预（谁将响应？如何响应？）提供了比&quot;平均处理效应&quot;更细致的框架。</p>
+
+<hr>
+
+<h2>1. 动机与核心直觉</h2>
+
+<h3>1.1 V4 的&quot;平均行为人&quot;问题</h3>
+
+<p>V4 将前景理论用作一个<strong>通用</strong>行为规则：所有借款人都被假定为损失厌恶的（prospect theory 的 $\lambda$ 参数 &gt; 1），当 HF 下降时都会采取补救行动。该假设在方法论上表现为：对总体的行为反应进行回归，得到一个 <strong>平均值</strong> $\bar{\lambda} &gt; 1$，然后声称这与前景理论一致。</p>
+
+<p>但这里存在一个基本谬误——<strong>总体的平均行为不等于任何个体的行为</strong>。考虑以下两种人口构成的 DeFi 借贷市场，两者都在总平均上表现为 $\bar{\lambda} &gt; 1$：</p>
+
+<p>- <strong>市场 X</strong>：50% 是非常积极的 HODLer（$\lambda = 2$——他们会非常积极地加抵押），50% 是漠不关心者（$\lambda = 0$——不关心 HF 变化）。总平均 $\bar{\lambda} = 1.0$。 - <strong>市场 Y</strong>：100% 是温和的损失厌恶者（每个人的 $\lambda = 1.1$）。总平均 $\bar{\lambda} = 1.1$。</p>
+
+<p>两个市场的平均行为几乎相同（1.0 vs 1.1），但根本的动态完全不同。在市场 X 中，清算发生在&quot;漠不关心者&quot;中，针对治理干预的响应只对&quot;HODLer&quot;有效。在市场 Y 中，每个人都会对干预做出相似而温和的反应。但 V4 的框架无法区分两者——两者都有一个&quot;看起来像前景理论&quot;的总平均行为。</p>
+
+<h3>1.2 HAM 的解答</h3>
+
+<p>异质代理人模型（Heterogeneous Agent Models, HAM）传统提供了解药。其核心洞察是：</p>
+
+<p>1. <strong>代理人根据明确的决策规则（&quot;策略&quot;）相互区分</strong>——有些人可能是经验主义者（chartist），有些人是基本面主义者（fundamentalist），有些人是懒人（inertia holder）。每个人的行为由其策略决定。 2. <strong>代理人不必要都使用相同的策略</strong>——即使从同一数据上，不同的决策规则可以产生大相径庭的行为。市场可以在多个策略共存下运作。 3. <strong>策略的分布可以因选择而演变</strong>——那些预测更精准或利润更高的策略将增加其市场比重，而那些表现差的被淘汰。</p>
+
+<p>Branch C 将这一套思想从资产定价移植到信用行为： - <strong>决策规则</strong> = 借款人的<strong>响应函数</strong>——给定市场状态（如 HF）下采取什么行为 - <strong>异质性</strong> = 不同的响应函数类型，通过数据无监督地识别 - <strong>演化</strong> = 响应函数类型在清算/非清算结果上的分布随时间的重组</p>
+
+<h3>1.3 核心研究问题</h3>
+
+<p>1. <strong>RQ1（类型存在性）</strong>：DeFi 借款人的行为响应是否可以分为几个可解释的&quot;策略类型&quot;？每类占总体的比例是多少？ 2. <strong>RQ2（类型的稳定性和可转换性）</strong>：行为类型是稳定的&quot;人格特征&quot;，还是随着市场/协议状态变化的&quot;响应策略&quot;？ 3. <strong>RQ3（信用预测力）</strong>：不同类型的借款人在清算风险上是否有显著差异？差异在控制传统特征后是否持续存在？ 4. <strong>RQ4（演化适应性）</strong>：这些类型的分布是否符合&quot;更成功的类型增长&quot;的演化逻辑？在什么样的市场条件下？</p>
+
+<hr>
+
+<h2>2. 理论框架</h2>
+
+<h3>2.1 异质响应函数</h3>
+
+<p>定义 K 个潜在行为策略（$k = 1, ..., K$），每个对应一个特定的响应函数 $f_k$：</p>
+
+<p>$$a_{i,t} = f_k(\text{HF}_{i,t}, \text{MarketState}_t; \theta_k) + \epsilon_{i,t}^{(k)}$$</p>
+
+<p>其中： - $a_{i,t}$ = 用户 $i$ 在时间 $t$ 的主动行为（加抵押的 USD 金额） - $\text{HF}_{i,t}$ = 用户当前的健康因子 - $\text{MarketState}_t$ = 市场上下文（牛市/熊市、波动率、gas 价格） - $f_k$ = 策略 $k$ 的响应函数（可能对相同的 HF 意味着不同的行动） - $\theta_k$ = 策略 $k$ 的自由参数（例如，HF 弹性、反应的不对称性等）</p>
+
+<strong>与 V4 的关键区别</strong>：V4 假设只有一个 $f$（即前景理论规定的损失厌恶响应），Branch C 允许有 $K$ 个不同的 $f_k$ 同时存在。
+
+<h3>2.2 策略的定义映射</h3>
+
+<p>候选策略（通过理论驱动，但实证选择）：</p>
+
+<table>
+<tr><td>策略类型</td><td>响应函数 $f_k$</td><td>可观测的特征（如何从数据中&quot;看到&quot;它）</td></tr>
+<tr><th>损失厌恶者（Loss-Averse）</th><th>HF 下降 1 个单位 → 加抵押 USD 增加 X；HF 上升 1 个单位 → 增贷 USD 增加 &lt; X</th><th>当 HF 下降时，行为弹性高；当 HF 上升时，行为弱</th></tr>
+<tr><td>损失追求者（Loss-Chaser）</td><td>HF↓ → <strong>增贷</strong>（赌博翻本）或 提现抵押品</td><td>在 HF 接近 1.0 时借款更多的&quot;鳄口&quot;特征</td></tr>
+<tr><td>惯性持有者（Inertia）</td><td>对 HF 变化几乎没有反应</td><td>总交易频率极低，加抵押^1 欠款几乎为零</td></tr>
+<tr><td>参考跟踪者（Reference-Tracker）</td><td>只对 HF 穿越某个特定值（如 1.5）起反应</td><td>HF 在 1.5 附近行为密集，而在 1.2 或 2.0 附近不密集</td></tr>
+<tr><td>市场择时者（Market-Timer）</td><td>行为与市场涨跌高度同步（而不是以 HF 为条件）</td><td>在牛市中借款更多（理性还是非理性？），在熊市中不反应</td></tr>
+</table>
+
+<h3>2.3 有限混合模型识别</h3>
+
+<p>与 GMM (Gaussian Mixture Model) 不同，有限混合回归模型假设观测到的行为是由多个未观察到的<strong>潜在类</strong>（策略类型）混合产生的。</p>
+
+<strong>模型规范</strong>：
+
+<p>$$y_{i,t} = \begin{cases} \beta_1 X_{i,t} + \epsilon_{i,t}^{(1)} &amp; \text{with probability } \pi_1(\text{type}=1) \\ \beta_2 X_{i,t} + \epsilon_{i,t}^{(2)} &amp; \text{with probability } \pi_2(\text{type}=2) \\ \vdots \\ \beta_K X_{i,t} + \epsilon_{i,t}^{(K)} &amp; \text{with probability } \pi_K(\text{type}=K) \end{cases}$$</p>
+
+<p>其中： - $y_{i,t}$ = 用户 $i$ 在时间 $t$ 的主动行为（加抵押/还债的金额） - $X_{i,t}$ = 协变量（$\text{HF}_{i,t}$, $\Delta\text{HF}_{i,t-1 \to t}$, $\text{MarketState}_t$, 交互项） - $\pi_k$ = 在人群中属于类型 $k$ 的概率 - $\beta_k$ = 类型特定的行为参数</p>
+
+<p>通过 EM（Expectation-Maximization）算法估计，该算法在分配个体到最可能类型的步骤（E步）和重新估计类型特定的参数（M步）之间迭代。</p>
+
+<hr>
+
+<h2>3. 操作化方案</h2>
+
+<h3>3.1 变量构造</h3>
+
+<strong>因变量</strong>：主动行为（加抵押 + 还债金额 USD 的净和，正 = 防御型行动，负 = 风险型行动）
+
+<strong>主预测变量</strong>：
+<p>- <code>Delta_HF</code>：过去 30 天的 HF 变化（负 = HF 下降） - <code>Delta_HF_pos</code>：max(Delta_HF, 0)（HF 上升）— 仅正交互项 - <code>Delta_HF_neg</code>：min(Delta_HF, 0)（HF 下降）— 仅负交互项 - <code>HF_level</code>：当前 HF 水平（可能是非线性的——使用样条函数） - <code>Market_Is_Bull</code>：ETH 的 30 天回报 &gt; 0（二元变量） - 各种交互项：用于区分不同策略类型如何对市场上下文做反应</p>
+
+<strong>分组变量</strong>（GMM 用来分类）：
+<p>- 用户的 HF 弹性的平均值和标准差 - 反应的不对称性（$|\beta_{\text{HF下降}}| - |\beta_{\text{HF上升}}|$）——这是对个体&quot;lambda&quot;的微观测量 - 主动/被动比（主动交易的次数 / 总交互数） - 交易频次的 Gini 系数（是否在短期间歇性活跃 vs 连续活跃）</p>
+
+<h3>3.2 K 的选择</h3>
+
+<p>通过以下标准确定最优策略类型数： 1. <strong>BIC (Bayesian Information Criterion)</strong>：平衡似然值和参数数量——找最小 BIC 2. <strong>ICL-BIC (Integrated Completed Likelihood)</strong>：对数据聚类和模型-separation 的惩罚；在 K-means 等效下趋向于减少虚假类别 3. <strong>最小类规模</strong>：每个类的大小 ≥ 总样本的 10%（避免识别噪声驱动的细小类） 4. <strong>实质可解释性</strong>：每个类的平均行为轮廓是否有经济上的意义？</p>
+
+<strong>典型结果</strong>：通常在 K = 3 到 K = 6 之间找到最佳。
+
+<h3>3.3 类型的信用验证</h3>
+
+<p>识别出类型后，进行以下检验：</p>
+
+<p>1. <strong>清算风险</strong>：使用逻辑回归（预测：0/1 清算指标）检验类型的虚拟变量（K-1 个）联合显著 2. <strong>增量风险</strong>：在控制了传统特征（HF、抵押率）和 BDM 维度后，类型的选择性系数的显著性 3. <strong>类型的异质效应</strong>：受试者操作特征（ROC）曲线按类型分层——函数形状是否不同？</p>
+
+<h3>3.4 演化动态</h3>
+
+<p>识别出类型后，第二阶段分析&quot;演化&quot;：</p>
+
+<p>1. 将用户按月分批，每月冬季计算类型分布 2. 计算切换矩阵 $P$（Markov 转移矩阵），其中 $P_{jk}$ = 从类型 $j$ 转到类型 $k$ 的概率 3. 检验：$P$ 是否偏离单位矩阵（即类型是固定的）？ 4. 如果是随机的（$P \neq I$），类型的<strong>演化适应性</strong>： - 如果类型 A 的平均月利润 &gt; 类型 B 的平均月利润，那么类型 A 的份额是否在随后的月份中增长？ - 这可以通过 Granger 因果检验：<code>type_A_share_t</code> ~ <code>type_A_lagged_profit_t</code></p>
+
+<hr>
+
+<h2>4. 技术工具</h2>
+
+<table>
+<tr><td>工具</td><td>用途</td></tr>
+<tr><th><code>flexmix</code> (R)</th><th>灵活的有限混合模型，支持不同的误差分布</th></tr>
+<tr><td><code>mclust</code> (R)</td><td>基于模型的聚类（GMM），支持不同的协方差结构</td></tr>
+<tr><td><code>depmixS4</code> (R)</td><td>用于因变量的混合 Markov 模型（考虑序列依赖性）</td></tr>
+<tr><td><code>lcmm</code> (R)</td><td>潜类混合模型——包括随机效应和潜类</td></tr>
+<tr><td>EM 自定制 (Python: <code>sklearn.mixture</code>)</td><td>当标准包太受限时，自定义 EM 算法</td></tr>
+</table>
+
+<hr>
+
+<h2>5. 与 Branch A 和 Branch D 的独特性</h2>
+
+<table>
+<tr><td>维度</td><td>A (RAT 轨迹)</td><td>C (HAM 类型)</td></tr>
+<tr><th>分析单位</th><th>序列（时间轨迹）</th><th>响应函数（类型）</th></tr>
+<tr><td>核心问题</td><td>借款人的完整行为历史的特点</td><td>借款人对即时状态的响应</td></tr>
+<tr><td>方法论</td><td>序列分析 + 聚类</td><td>有限混合模型</td></tr>
+<tr><td>如果假设错误</td><td>&quot;行为不需要是类型的——序列本身已有结构&quot;</td><td>&quot;序列不需要——只需状态依赖性&quot;</td></tr>
+<tr><td>两者的互补？</td><td>A 的轨迹类型也可以是 C 中的一种&quot;分类机会&quot;</td><td>C 的类型分配也可以用于 A 的序列生成</td></tr>
+</table>
+
+<p>实际上，A 和 C 两者问相同的问题（&quot;异质性是否存在？&quot;），但用的是不同方法论放大镜： - <strong>A</strong>：通过比较序列形态（序列作为整体）——对&quot;长期行为模式&quot;敏感 - <strong>C</strong>：通过比较即时响应函数——对&quot;当地行为自适应&quot;敏感</p>
+
+<hr>
+
+<h2>6. 失败判据与降级方案</h2>
+
+<table>
+<tr><td>失败场景</td><td>判据</td><td>降级方案</td></tr>
+<tr><th>不存在可解释的类型</th><th>BIC 随 K 单调递减——模型在增加K，但没有实质收敛</th><th>报告：&quot;没有证据支持多种行为类型——单一行为模型（前景理论）可能就足够了&quot;</th></tr>
+<tr><td>存在类型但无信用预测力</td><td>不同类型的清算率无统计差异（F 检验 p &gt; 0.10）</td><td>报告：&quot;虽然行为差异很大，但它们不转化为信用差异&quot;——重要的无结果</td></tr>
+<tr><td>类型的非时间稳定性</td><td>Markov 转换矩阵显示高度可变的类型分配</td><td>类型是&quot;状态依赖&quot;的——接受并重新框架为&quot;响应函数的状态依赖性&quot;（如&quot;参考跟踪&quot;只在HF接近参考点时激活）</td></tr>
+<tr><td>未发现演化适应</td><td>更成功的类型并未在随后的时期增长</td><td>报告：&quot;不支持演化压力——账户保留其行为类型，可能是基于不变的人格或环境因素&quot;</td></tr>
+</table>
+
+<hr>
+
+<h2>7. 期刊定位</h2>
+
+<p>- <strong>主攻</strong>：<em>Journal of Economic Dynamics and Control (JEDC)</em> — HAM 传统的&quot;主场&quot;期刊 - <strong>次选</strong>：<em>Quantitative Finance</em> — 如果强调方法的计量/计算方面；<em>Journal of Economic Behavior and Organization (JEBO)</em> — 如果强调行为</p>
+
+<hr>
+
+<h2>8. 参考文献</h2>
+
+<p>所有引用须通过实际的 <code>paper_search</code> 确认。核心 HAM 参考文献： - Brock &amp; Hommes (1997, <em>Econometrica</em>) - Brock &amp; Hommes (1998, <em>JEDC</em>) - Hommes (2006, <em>Handbook of Computational Economics</em>) - Anufriev &amp; Hommes (2012, <em>AEJ: Microeconomics</em>) - Branch (2004, <em>The Economic Journal</em>) - Dosi, Napoletano, Roventini &amp; Treibich (2020, <em>Economic Inquiry</em>)</p>
+
+  </div>
+</div>
+<div id="doc_2">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-c">Branch C</span><span class="file-path">03_Branch_C_HAM/文献/C2_文献支撑与理论溯源_HAM.md</span>
+    <h1>Branch C 文献支撑与理论溯源：异质代理人模型 × 行为金融 × DeFi</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08
+
+<hr>
+
+<h2>文献支撑体系概览</h2>
+
+<p>Branch C 的文献根植于两个学术传统：(1) 异质代理人模型 (HAM)——提供&quot;为什么异质性重要&quot;以及&quot;如何建模&quot;的理论基础；(2) DeFi 中的借贷行为——提供待研究的数据环境和现有知识。</p>
+
+<hr>
+
+<h2>第一部分：HAM 文献——提供&quot;为什么平均行为是骗人的&quot;</h2>
+
+<h3>1.1 HAM 的经典起源</h3>
+
+<strong>Brock, W.A. &amp; Hommes, C.H. (1997). A Rational Route to Randomness. <em>Econometrica</em>, 65(5), 1059-1095.</strong>
+
+<p>- <strong>核心论点</strong>：提出了异质信念的&quot;适应性信念系统&quot;（Adaptive Belief Systems, ABS）框架——不同类型交易者对市场价格的未来有不同的预测规则，切换规则基于规则的过去预测精度。ABS 内生地产生了从稳定到混沌的资产价格动态。<strong>这是 Branch C 的理论底座</strong>。 - <strong>对 Branch C 的支持</strong>：<strong>直接的类比</strong>。ABS 中的&quot;预测规则&quot;在 Branch C 中变为&quot;行为策略&quot;。虽然 B&amp;H (1997) 是关于<strong>价格形成</strong>，但同样的结构——多个异质规则共存、规则竞争（基于表现）、分布取决于相对表现——可以映射到<strong>信用行为</strong>。如果 K 个行为策略共存于 DeFi 借贷市场中，每种策略有不同清算风险，那么清算风险的分布是由这些策略的竞争决定的——不仅仅是外部的 HF 水平。</p>
+
+<strong>Brock, W.A. &amp; Hommes, C.H. (1998). Heterogeneous Beliefs and Routes to Chaos in a Simple Asset Pricing Model. <em>Journal of Economic Dynamics and Control</em>, 22(8-9), 1235-1274.</strong>
+
+<p>- <strong>核心论点</strong>：进一步探索参数如何影响从稳定走向混沌的路径——通过改变策略选择强度（选择随着相对表现越来越好）的强度，系统可以在稳定（一种信念主导）和复杂动态（多种信念共存，导致波动）之间转换。 - <strong>对 Branch C 的支撑</strong>：为 Branch C 的 RQ4（什么驱动类型分布的转变？）提供了技术框架。如果&quot;选择强度&quot;在 DeFi 中对应于&quot;多强的利润/损失反馈改变借款人的行为规则&quot;，那么牛市中高的选择强度（快速切换到成功策略）可能导致一种类型（如市场择时者）的爆发性增长——而熊市中的选择可能不同。</p>
+
+<h3>1.2 HAM 的实证传统</h3>
+
+<strong>Hommes, C.H. (2006). Heterogeneous Agent Models in Economics and Finance. In <em>Handbook of Computational Economics</em>, Vol. 2, 1109-1186.</strong>
+
+<p>- <strong>核心论点</strong>：系统综述了 HAM 的整个研究纲领——从理论动机、代理人的微观行为证据、到学习、选择和自组织的宏观影响。尤其重要的是，Hommes 指出了实证文献中 HAM 的关键&quot;风格化事实&quot;： 1. 代理人使用简单的启发式规则（不完全是理性的） 2. 代理人是异质的（不同的启发式） 3. 代理人通过选择机制切换规则（演化） - <strong>对 Branch C 的支撑</strong>：将 B&amp;H 的理论路线图映射到 DeFi 的具体上下文——这是一个全新的实证环境（从实验室到现场）。Hommes 学术脉络为 Branch C 提供了 HAM 的&quot;风格化事实&quot;——如果这些事实也适用于 DeFi 中的借款人，Branch C 的假设可被广泛接受。</p>
+
+<strong>Anufriev, M. &amp; Hommes, C.H. (2012). Evolutionary Selection of Individual Expectations and Aggregate Outcomes. <em>American Economic Journal: Microeconomics</em>, 4(4), 35-64.</strong>
+
+<p>- <strong>核心论点</strong>：从实验设置中估计微观层面的预期形成机制。使用数据来区分各种预测规则（朴素预期、适应性预期、趋势外推等），然后观察哪种规则在实验中被参与者更频繁地使用以及这种演化如何影响市场价格。 - <strong>对 Branch C 的支撑</strong>：直接的方法类比——&quot;实验&quot;被替换为&quot;DeFi 现场环境&quot;；&quot;预测规则&quot;被替换为&quot;行为策略&quot;。A&amp;H (2012) 展示了如何通过模拟数据来估计规则类型并统计哪种规则在宏观层面上(市场层面)被更频繁地使用。这为 Branch C 的&quot;演化适应&quot; (RQ4) 提供了实证框架。</p>
+
+<strong>Branch, W.A. (2004). The Theory of Rationally Heterogeneous Expectations: Evidence from the Survey of Professional Forecasters. <em>The Economic Journal</em>, 114(497), 861-884.</strong>
+
+<p>- <strong>核心论点</strong>：使用专业预测者的调查数据，发现代理人之间存在显著的认知异质性——不同的预测者使用不同的预测模型，并且这些异质性对总结果有聚合影响。该文被广泛认为是 HAM 传统的经验支柱。 - <strong>对 Branch C 的支撑</strong>：Branch (2004) 使用调查数据来辨识预测类型的策略——Branch C 使用交易数据来辨识<strong>行为</strong>类型的策略。两者的平行法包括： - 输入数据：调查 vs 链上 - 策略：市场预测规则 vs 行为规则 - 选择机制：规则选择强度（取决于过去表现）vs 清算压力（取决于过去结果）</p>
+
+<h3>1.3 异质代理人在经济/金融中的更新应用</h3>
+
+<strong>Dosi, G., Napoletano, M., Roventini, A. &amp; Treibich, T. (2020). Rational Heuristics? Expectations and Behaviors in Evolving Economies with Heterogeneous Interacting Agents. <em>Economic Inquiry</em>, 58(2), 768-791.</strong>
+
+<p>- <strong>核心论点</strong>：提出了一个框架，其中代理人使用简单的启发式规则（不是充分理性的），但规则可以通过演化学习（如分类器系统）而被改进——这不是一次性完全理性的，而是通过适应性试错学习。引用 Dosi 为 Branch C 提供了 HAM 传统的&quot;启发式版本&quot;。 - <strong>对 Branch C 的支撑</strong>：分支 C 的行为策略可以与该文的&quot;简单启发式&quot;联系起来——借款人可能不是充分优化的理性人，但他们的行为可能是&quot;近理性&quot;的（使用简单的 if-then 规则）。这与&quot;演化学习&quot;（如果一种规则导致损失，就被替代）的框架兼容。</p>
+
+<hr>
+
+<h2>第二部分：行为类型学文献 - 提供DeFi行为策略的类型来源</h2>
+
+<h3>2.1 异质行为类型的理论基础</h3>
+
+<strong>Fagiolo, G. &amp; Roventini, A. (2017). Macroeconomic Policy in DSGE and Agent-Based Models Redux: New Developments and Challenges. <em>Journal of Artificial Societies and Social Simulation (JASSS)</em>, 20(1).</strong>
+
+<p>- <strong>核心论点</strong>：比较了两种宏观建模方法——DSGE（代表性代理人，理性预期，同质）vs ABM（异质代理人，有限理性，基于规则）——的预测精度和政策效用。发现 ABM 在危机预测、异质效应的展示和政策传输机制方面显著优于 DSGE。 - <strong>对 Branch C 的支撑</strong>：该文的方法论比较为 Branch C 提供了&quot;为什么要拒绝同质行为假设&quot;的宏观论证。如果同质假设在宏观政策分析中不成立（因为遗漏了异质性），那么在 DeFi 的微观政策设计中也不应该被接受（因为清算风险可能高度集中在某些行为类型的借款人之中）。</p>
+
+<strong>Sato, Y. &amp; Hommes, C.H. (2014). An Experimental Study of Short-Run and Medium-Run Dynamics in Explaining Asset-Pricing Anomalies. <em>Journal of the European Economic Association</em>, 12(2), 362-401.</strong>
+
+<p>- <strong>核心论点</strong>：在实验资产市场中，发现有两类交易者——“快速切换者”（根据近期回报调整预期）和“慢速切换者”（在更长的时间框架上操作）。这些类型化有助于解释资产价格中的短期和中期动态。 - <strong>对 Branch C 的支撑</strong>：为 Branch C 提供了直接的类比——在 DeFi 借贷中，&quot;慢速切换者&quot;可能是那些只对长期趋势作出响应的借款人，&quot;快速切换者&quot;可能是那些对短期 HF 变化作出高弹性反应的借款人。两者共存意味着需要两种干预政策。</p>
+
+<h3>2.2 金融中的类型识别方法</h3>
+
+<strong>Huang, X., Jin, Q., &amp; Wang, Y. (2016). A Mixture Model Approach to the Anomaly Portfolio Construction. <em>Review of Financial Studies</em> (working).</strong>
+
+<p>- <strong>核心论点</strong>：提出了基于有限混合模型的&quot;异常检测方法&quot;——将股票投资组合按其对异常因子的敏感性分为多个潜在子类，这些子类的收益来源是异质的（某些由动量驱动，另一些由价值驱动）。这比选择所有对相同因子敏感的股票的简单方法要好得多（因为那些同类的股票实际上对因子有不同的负载）。 - <strong>对 Branch C 的支撑</strong>：直接的方法类比——&quot;因子&quot;在 Branch C 中是<strong>行为对 HF 的弹性</strong>；&quot;异常组&quot;是<strong>行为类型</strong>。正如 Huang et al. (2016) 发现不同股票对因子的暴露程度不同，Branch C 考察了不同用户对 HF 变化的暴露程度（高弹性类型 vs 低弹性类型）。</p>
+
+<hr>
+
+<h2>第三部分：DeFi 文献——提供现场环境和行为证据</h2>
+
+<h3>3.1 DeFi 行为中的异质性证据</h3>
+
+<strong>Gadzinski, G. &amp; Liuzzi, D. (2025). Three Essays on DeFi Lending Markets.</strong>
+
+<p>- <strong>核心论点</strong>：(基于早期探索文件) —— 发现清算后的行为恢复存在显著异质性：有的被清算者会重新开仓（&quot;清算后重生&quot;），有的则不会。这本身就提示可能有两种行为类型——被清算后恢复的和那些被清算后就离开的。 - <strong>对 Branch C 的支撑</strong>：这段异质性证据是 Branch C 的类型学（RQ1）的经验基础——&quot;为什么有些被清算者会回来而有些不会？这本身就证明有不同类型！&quot;</p>
+
+<strong>Cornelli, G. et al. (2025). DeFi Lending and Collateral Choices.</strong>
+
+<p>- <strong>核心论点</strong>：(同上) —— 也发现抵押品选择有异质性：有的借款人只使用稳定币（保守），有的在稳定币和波动币之间切换（善于时机选择），有的只使用波动币（冒险/持有）。这种行为类型可能对应于不同的内在抵押品偏好。 - <strong>对 Branch C 的支撑</strong>：为&quot;策略类型&quot;提供了直接的经验支撑——如果有些用户 &quot;保守&quot;，有些&quot;激进&quot;，有些&quot;择时&quot;，那么我们就有了 K≥3 个策略类型。</p>
+
+<hr>
+
+<h2>第四部分：文献在 Branch C 中的角色映射</h2>
+
+<table>
+<tr><td>文献</td><td>支持 Branch C 的哪个主张？</td><td>证明什么？</td></tr>
+<tr><th>Brock &amp; Hommes (1997)</th><th>异质规则共存假设可行</th><th>从理论角度证明可以共存不同策略</th></tr>
+<tr><td>Brock &amp; Hommes (1998)</td><td>选择可以内生动态</td><td>从理论角度显示 K 是内生的(通过演化)</td></tr>
+<tr><td>Hommes (2006)</td><td>HAM 的证据总结</td><td>风格化事实支持异质行为</td></tr>
+<tr><td>Anufriev &amp; Hommes (2012)</td><td>微观的预期形成估计</td><td>如何在数据中区分竞争规则的方法</td></tr>
+<tr><td>Branch (2004)</td><td>同一种数据的经验异质性</td><td>有经验的 HAM 代理人类型的直接前例</td></tr>
+<tr><td>Dosi et al. (2020)</td><td>学习提高规则</td><td>证明异质行为规则可以被演化适应</td></tr>
+<tr><td>Anufriev &amp; Hommes (2012)</td><td>选择压力导致演化</td><td>提供选择如何让某些类型胜出的方法</td></tr>
+<tr><td>Fagiolo &amp; Roventini (2017)</td><td>拒绝同质假设</td><td>从方法论上证明为什么异质性假设必要</td></tr>
+<tr><td>Gadzinski &amp; Liuzzi (2025)</td><td>DeFi 存在行为异质性</td><td>直接在数据中找到的行为差异的初步证据</td></tr>
+<tr><td>Cornelli et al. (2025)</td><td>抵押品选择异质</td><td>在抵押品偏好中的稳定类型</td></tr>
+</table>
+
+<hr>
+
+<em>所有文献在正式引用前需经过 <code>paper_search</code> 确认其真实性和可用性。</em>
+
+  </div>
+</div>
+<div id="doc_3">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-c">Branch C</span><span class="file-path">03_Branch_C_HAM/文献/C3_技术方案_HAM.md</span>
+    <h1>Branch C 技术方案：有限混合模型与演化动力学</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08
+
+<hr>
+
+<h2>1. 数据准备</h2>
+
+<h3>1.1 单位与度量</h3>
+
+<p>- <strong>分析单位</strong>：用户-月（同 V4，保持可比性） - <strong>因变量</strong>（行为）：危机应对行为 USD（加抵押 + 还款的净USD） - <strong>预测变量</strong>： - 核心：HF 变化（ΔHF，测量为过去 30 天的差异，如果本月的平均 HF 与上月不同） - 调节：市场状态（牛市/熊市指标）、波动率（ETH 30 天波动率） - 交互项：ΔHF × MarketBull, ΔHF × HF_pre（状态依赖性） - <strong>分组变量</strong>（用于潜在类别识别）： - 平均 HF 弹性（β_HF）：当月 log 主动行为对 ΔHF 的时间序列回归 - 反应的非对称性：|β_HF下降| - |β_HF上升| - 主动/被动比率 - 时间模式的 Gini 系数</p>
+
+<h3>1.2 样本构造</h3>
+
+<p>- <strong>训练集</strong>：按 spell 的第一年（每个 spell 的前 12 个月）识别行为类型——这确保&quot;类型分配&quot;不会受未来的清算结果污染 - <strong>检验集</strong>（清算预测）：spell 的剩余月（或使用后续的月）——检验类型的预测力 - <strong>稳健性</strong>：使用滚动窗口（如 6 个月）而不是固定窗口进行类型分配</p>
+
+<hr>
+
+<h2>2. 有限混合模型（FMM）——第一阶段：类型识别</h2>
+
+<h3>2.1 模型规范</h3>
+
+<p>使用带有时变截距的有限混合线性模型（因为行为基线水平在类型间可能不同）：</p>
+
+<p>$$y_{it} = \alpha_k + \beta_k \cdot \text{HF_change}_{it} + \gamma_k \cdot X_{it} + \epsilon_{it}^{(k)}$$</p>
+
+<p>其中： - $y_{it}$ = 用户 $i$ 月份 $t$ 的主动行为（USD） - $\text{HF_change}_{it}$ = 用户 $i$ 在时间 $t$ 与 $t-1$ 月间的 HF 变化 - $X_{it}$ = 额外的调节变量（市场状态等） - $\alpha_k$ = 类型特定的基线行为水平（惰性 vs 活跃） - $\beta_k$ = 类型特定的对 HF 的响应（弹性） - $\gamma_k$ = 类型特定的调节效应</p>
+
+<strong>误差项的分布</strong>：可使用 $\epsilon_{it}^{(k)} \sim \mathcal{N}(0, \sigma_k^2)$（同方差同类型）或 $\epsilon_{it}^{(k)} \sim \text{Student-t}(df)$（厚尾，对离群值的稳健性更好）
+
+<h3>2.2 EM 算法的两个步骤</h3>
+
+<strong>E步骤</strong>：计算每个（用户-月）属于每个类型k的后验概率
+<p>$$p(\text{type}_i = k | y_i, X_i) = \frac{\pi_k \cdot \mathcal{L}(y_i | \beta_k, \sigma_k^2)}{\sum_{j=1}^K \pi_j \cdot \mathcal{L}(y_i | \beta_j, \sigma_j^2)}$$</p>
+
+<p>其中 $\mathcal{L}$ 是正态似然，$\pi_k$ 是混合权重。</p>
+
+<strong>M步骤</strong>：使用后验概率作为权重，重新估计每个子模型的参数
+<p>$$\hat{\beta}_k = \left( \sum_i w_{ik} X_i&#x27; X_i \right)^{-1} \left( \sum_i w_{ik} X_i&#x27; y_i \right)$$</p>
+
+<p>其中 $w_{ik} = p(\text{type}_i = k | y_i, X_i)$，更新 $\pi_k = \frac{1}{N} \sum_i w_{ik}$</p>
+
+<h3>2.3 实施考量</h3>
+
+<p>- <strong>起始值</strong>：多次随机启动（10-20次），提取最佳似然值——避免局部最优 - <strong>收敛</strong>：当对数似然的变化 &lt; 0.001 时停止 - <strong>多重共线性</strong>：先进行 VIF 检验</p>
+
+<hr>
+
+<h2>3. 模型选择：K 的最终确定</h2>
+
+<h3>3.1 统计标准</h3>
+
+<table>
+<tr><td>标准</td><td>公式</td><td>目标</td><td>优点</td><td>缺点</td></tr>
+<tr><th>BIC</th><th>-2LL + K×log(N)</th><th>最小化</th><th>易于计算，惩罚添加参数</th><th>趋向于欠拟合（选择简单模型）</th></tr>
+<tr><td>ICL-BIC</td><td>BIC + 2*entropy_of_partition</td><td>最小化</td><td>避免选择聚类结构弱的模型</td><td>偶尔会选择更少的类</td></tr>
+<tr><td>AIC</td><td>-2LL + 2K</td><td>最小化</td><td>逼近真实模型的预测能力</td><td>比 BIC 更容易过拟合</td></tr>
+</table>
+
+<h3>3.2 聚类质量与稳定性</h3>
+
+<p>- <strong>轮廓宽度</strong>（每个后验概率的最高值的平均）——范围为 0-1，接近 1 = 完美的类分离 - <strong>Bootstrapped Jaccard 相似性</strong>（在两个独立样本上计算结果聚类的一致性）——如果聚类不稳定，这个值随变化</p>
+
+<h3>3.3 实质可解释性</h3>
+
+<p>最终 K 的每一类必须有一个可解释的、经济上有意义的轮廓： - 平均 HF 弹性：正（弹性型）vs 负（逆响应型） - 弹性的非对称性：负的非对称性 = 损失厌恶；正的非对称性 = &quot;追求&quot;</p>
+
+<p>最终，通常会选择 3-5 类。</p>
+
+<hr>
+
+<h2>4. 预测建模——第二阶段：类型与清算</h2>
+
+<h3>4.1 模型的比较</h3>
+
+<p>使用逻辑回归（因变量 = 0/1 在随后的 T 个月内被清算）赛马：</p>
+
+<table>
+<tr><td>模型</td><td>特征</td></tr>
+<tr><th>M0</th><th>HF指标（min, mean, sd）+ 抵押率</th></tr>
+<tr><td>M1</td><td>M0 + BDM 五维</td></tr>
+<tr><td>M_trait</td><td>M0 + 类型成员（K 个虚拟变量，K-1 个进入）</td></tr>
+<tr><td>M_trait_all</td><td>M0 + BDM + 类型成员</td></tr>
+</table>
+
+<h3>4.2 关键检验</h3>
+
+<p>1. <strong>类型的增量信息</strong>：对 M_trait 中 K-1 个类型虚拟的 Wald 检验（H0：所有系数=0） 2. <strong>类型是否压倒了 BDM 的信息</strong>：比较 M_trait 的 AUC 对比 M1 的 AUC？谁更高这就是谁的优胜性？ 3. <strong>类型的风险量化</strong>：每个类型的边际效应（从 M_trait 返回的几率比）——&quot;属于损失追求者类型的清算几率是基准类型的 X 倍&quot;。</p>
+
+<h3>4.3 时间稳定性——类型转换</h3>
+
+<strong>转换矩阵</strong>：定义一个 (K × K) 矩阵 $P$，其中 $P_{jk}$ = 用户今天在类型 j 而下期转向类型 k 的概率。从以下经验中估计：
+<p>- 对于每个用户-月，取其类型（由上述 FMM 的后验概率给出）→ 该用户在第 t+1 个月的类型 - 计算 $P_{jk} = \frac{\#\{i: \text{type}_i(t)=j, \text{type}_i(t+1)=k\}}{\#\{i: \text{type}_i(t)=j\}}$</p>
+
+<strong>对角主导检验</strong>：如果 $P_{jj} &lt; 0.7$ 对某个 j，那么类型 j 的成员在期与期之间是不稳定的——类型是临时的并且不是固定的&quot;类型&quot;。
+
+<strong>后果</strong>：如果对角主导不成立（$P_{jj} \ll 0.7$），那么需要使用<strong>隐马尔可夫模型（HMM）</strong>，其中类型不能直接观测，而是一个隐藏的状态。
+
+<h3>4.4 演化适应——类型分布是否有选择压力</h3>
+
+<p>针对每个类型 j 和使用月份 t，计算： 1. 类型 j 的月均利润（mean_profitt_j = 当月类型 j 中所有用户的加权收益的平均值） 2. 下个月（t+1）的类型 j 的比例（share_{j, t+1}）</p>
+
+<p>然后回归： $$\Delta share_{j,t+1} = \alpha + \beta \cdot profit_{j,t} + \epsilon_{j,t+1}$$</p>
+
+<p>如果 β &gt; 0 且统计显著，有证据表明：利润高的类型更可能在接下来的时期扩大份额——演化适应存在。</p>
+
+<strong>替代</strong>：Granger 因果检验。
+
+<hr>
+
+<h2>5. 稳定性与灵敏度</h2>
+
+<table>
+<tr><td>敏感性</td><td>主要规范</td><td>替代规范</td><td>为什么重要</td></tr>
+<tr><th>混合分布</th><th>正态（Gaussian）</th><th>Student-t (df=4) 或偏态正态</th><th>HF 弹性的分布可能是厚尾的（一些用户对 HF 有大反应，大多数无反应）</th></tr>
+<tr><td>K 的选择</td><td>BIC-min</td><td>AIC, ICL-BIC</td><td>确保聚类数不受单一标准驱动</td></tr>
+<tr><td>类型名称</td><td>Iyengar et al. 标签</td><td>交替标记</td><td>确保类型命名不武断</td></tr>
+<tr><td>时间范围</td><td>月度</td><td>双周/季度</td><td>太短的窗口噪音大，太长会失去动态</td></tr>
+<tr><td>市场状态</td><td>拆分牛市/熊市</td><td>合并</td><td>类型分布可能取决于市场状态（不是固有的&quot;类型&quot;）</td></tr>
+</table>
+
+<hr>
+
+<h2>6. 工具与实现</h2>
+
+<p>- <strong>FMM 估计</strong>：R 中的 <code>flexmix</code> 或 <code>mclust</code> 用于参数估计 - <strong>HMM 版本</strong>：如果需要，使用 <code>depmixS4</code> - <strong>逻辑回归</strong>：R 的 <code>glm</code> 或 <code>lme4</code> 如果包含随机效应 - <strong>ROC 对比</strong>：<code>pROC::roc.test</code> 进行 DeLong 检验 - <strong>非参数图</strong>：R 的 <code>ggplot2</code> 用于澄清 K 类间的轮廓差异</p>
+
+<hr>
+
+<em>EM 估计应使用多次随机启动（至少 10-20 次），提取最佳对数似然以避免局部最优解。所有 p 值应用 Bonferroni 校正多重比较。</em>
+
+  </div>
+</div>
+<div id="doc_4">
+
+  <div class="doc-section">
+    <span class="branch-badge badge-c">Branch C</span><span class="file-path">03_Branch_C_HAM/文献/C4_交叉映射_HAM.md</span>
+    <h1>Branch C 理论-技术-主张交叉映射表</h1>
+
+<strong>版本</strong>：v1.0 | <strong>日期</strong>：2026-07-08
+
+<hr>
+
+<h2>核心主张映射</h2>
+
+<h3>主张 C1：DeFi 借款人可分为多个可解释的行为策略类型</h3>
+<strong>简述</strong>：不是所有人都按照前景理论的&quot;损失厌恶&quot;($\lambda&gt;1$)规则行动——存在多个不同的行为规则的混合。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>Brock &amp; Hommes (1997) — 异质规则共存的理论可能性；Hommes (2006) — 风格化事实——启发式、异质性、选择；Cornelli et al. (2025) — 经验异质性证据</th></tr>
+<tr><td><strong>技术操作</strong></td><td>在 user-month 面板数据上运行 GMM(FMM)，用 EM 算法估计 K 个类型的后验概率</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: K=1（即所有借款人共享同一行为规则）</td></tr>
+<tr><td><strong>成功判据</strong></td><td>BIC 在 K≥3 达到最小；所有类的大小 &gt; 10%；类的行为轮廓具有经济意义</td></tr>
+</table>
+
+<h3>主张 C2：行为类型是稳定的</h3>
+<strong>简述</strong>：类型不是临时的，借款人倾向于坚持使用某个规则（即使规则本身是次优的）。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>Branch (2004) — 类型（预期中的）的持久性；Anufriev &amp; Hommes (2012) — 个人在不同试验中保持他们的预测规则</th></tr>
+<tr><td><strong>技术操作</strong></td><td>计算 Markov 转换矩阵的主对角线概率 (P_jj)；如果 P_jj &gt; 0.5，可认为是&quot;逐渐&quot;稳定的</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: P_jj = 0.5（随机游走；类型是随机的）</td></tr>
+<tr><td><strong>成功判据</strong></td><td>测试对角线的单侧 t 检验显著大于 0.5</td></tr>
+</table>
+
+<h3>主张 C3：不同类型的清算风险不同</h3>
+<strong>简述</strong>：属于不同行为类型的借款人有显著不同的清算概率。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>Gadzinski &amp; Liuzzi (2025) — DeFi 的行为异质性与清算结果相关；Cornelli et al. (2024) — 不同类型的借贷结果</th></tr>
+<tr><td><strong>技术操作</strong></td><td>用类型员资格虚拟变量预测违约的逻辑回归（RQ2）</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: β_1 = β_2 = ... = β_{K-1} = 0（类型无关）</td></tr>
+<tr><td><strong>成功判据</strong></td><td>F 检验 p &lt; 0.01；某些类型的个体几率比显著 ≠ 1</td></tr>
+</table>
+
+<h3>主张 C4：行为类型分布演化</h3>
+<strong>简述</strong>：更成功的规则（导致更高利润/更少清算的规则）在随后的时期中增长份额。
+
+<table>
+<tr><td>项目</td><td>内容</td></tr>
+<tr><th><strong>文献支撑</strong></th><th>Anufriev &amp; Hommes (2012) — 选择压力导致更成功规则的份额增长</th></tr>
+<tr><td><strong>技术操作</strong></td><td>回归: Δshare_{j,t+1} ~ profit_{j,t}</td></tr>
+<tr><td><strong>可检验的零假设</strong></td><td>H0: β ≤ 0</td></tr>
+<tr><td><strong>成功判据</strong></td><td>β &gt; 0 具有统计显著性（单侧 t 检验, p&lt;0.05）</td></tr>
+</table>
+
+<hr>
+
+<h2>风险控制映射</h2>
+
+<table>
+<tr><td>风险</td><td>缓解</td></tr>
+<tr><th>GMM 不收敛</th><th>使用更多随机初始值（例如 50 而不是 10-20）或切换到 k-means 聚类</th></tr>
+<tr><td>K 出现在策略上不可解释</td><td>报告&quot;K 的选择受到聚类质量的驱动，但类型本身缺乏经济意义&quot;</td></tr>
+<tr><td>类型不稳定（对角概率 &lt; 0.7）</td><td>过渡到 HMM — 将消费者类型视为隐藏状态并使用 Viterbi 算法估计路径</td></tr>
+<tr><td>演化适应不存在</td><td>报告&quot;没有自然选择——类型可能是由不变的心理特征驱动，而不是由表现反馈驱动&quot;</td></tr>
+</table>
+
+<hr>
+
+<h2>跨分支映射</h2>
+
+<table>
+<tr><td>C 的主张</td><td>与 A(RAT)</td><td>与 B(本体)</td><td>与 D(数据驱动)</td></tr>
+<tr><th>异质类型的存在</th><th>A 使用轨迹而 C 使用函数等同——两者都是识别异质性的平行方法</th><th>B 用本体的概念重新解释&quot;类型&quot;：什么样的债务偿付品德（偿付能力+意愿）</th><th>D 可能也会发现异质性——只不过以因子分数的形式</th></tr>
+<tr><td>类型的稳定性与转换</td><td>A 的轨迹类型通过构造稳定（序列是一次性聚类的），C 的转换矩阵证明系统的不稳定性</td><td>B 认为类型的稳定性是一个&quot;共识问题&quot;——如果协议就什么是好借款人达成一致，类型自然稳定</td><td>D 不关心稳定性——只看预测的净化力</td></tr>
+<tr><td>类型的演化适应性</td><td>A 没有提供演化解释——A 中的什么驱动了错误的轨迹？C 又补了一笔</td><td>B 的进化等价物是——哪种借贷人的信息生产最有效</td><td>D 会做出一个条件： &quot;如果类型变得不能预测新的数据，那就将其丢弃&quot;</td></tr>
+</table>
+
+<hr>
+
+<em>此映射表应随着新文献的发现和新分析结果的产生而更新。</em>
+
+  </div>
+</div>
+</main>
+<script>
+  document.querySelectorAll('#sidebar a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body></html>

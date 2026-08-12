@@ -1,0 +1,42 @@
+%
+% Figure 1: Conceptual Framework
+%
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=1.2cm and 0.6cm,
+  box/.style={rectangle, rounded corners=2pt, draw=#1!60, fill=#1!12, text=#1!80!black, minimum width=2.2cm, minimum height=0.65cm, align=center, font=\scriptsize\sffamily, line width=0.4pt},
+  widebox/.style={rectangle, rounded corners=2pt, draw=#1!60, fill=#1!12, text=#1!80!black, minimum width=9cm, minimum height=0.65cm, align=center, font=\small\sffamily\bfseries, line width=0.4pt},
+  smallbox/.style={rectangle, rounded corners=2pt, draw=#1!60, fill=#1!10, text=#1!80!black, minimum width=1.8cm, minimum height=0.5cm, align=center, font=\tiny\sffamily, line width=0.3pt},
+  arrow/.style={->, >=stealth, line width=0.6pt, draw=black!55},
+  darrow/.style={<->, >=stealth, line width=0.7pt, draw=black!55},
+]
+  % Layer 1: Protocols
+  \node[widebox=blue, label={[font=\footnotesize\sffamily\bfseries]north:Data Sources}] (proto) {Aave (V2/V3) \hspace{0.8cm} Compound (V2/V3) \hspace{0.8cm} MakerDAO};
+
+  % Layer 2: Behavioral variables  
+  \node[widebox=teal, below=0.7cm of proto, label={[font=\footnotesize\sffamily\bfseries]north:Behavioral Process Extraction}] (behave) {\normalsize Borrower Active Adjustment \quad (collateral changes, debt management, response timing)};
+
+  % Layer 3: Two tracks
+  \node[box=violet, below left=1.1cm and -1.2cm of behave, minimum width=3.8cm, font=\scriptsize\sffamily] (rq1) {\textbf{RQ1: Behavioral Layer}\\[2pt]Do borrowers systematically adjust\\as HF $\rightarrow$ 1.0?};
+  \node[box=violet, below right=1.1cm and -1.2cm of behave, minimum width=3.8cm, font=\scriptsize\sffamily] (rq2) {\textbf{RQ2: Credit Layer}\\[2pt]Does adjustment behavior predict\\future liquidations?};
+
+  \node[box=red!80!black, below=0.6cm of rq1, minimum width=3.8cm, font=\scriptsize\sffamily] (out1) {Prospect Theory Validation\\(loss aversion, reference-point)};
+  \node[box=red!80!black, below=0.6cm of rq2, minimum width=3.8cm, font=\scriptsize\sffamily] (out2) {Behavioral Early Warning\\(credit risk signals)};
+
+  % Arrows
+  \draw[arrow, thick] (proto.south) -- (behave.north);
+  \draw[arrow, thick] (behave.south) |- (rq1.north);
+  \draw[arrow, thick] (behave.south) |- (rq2.north);
+  \draw[arrow] (rq1.south) -- (out1.north);
+  \draw[arrow] (rq2.south) -- (out2.north);
+  \draw[darrow, thick] (rq1.east) -- node[above, font=\tiny\sffamily]{H2a: Incremental predictive power?} (rq2.west);
+
+  % Left labels
+  \node[font=\footnotesize\sffamily, text=black!60, rotate=90, above left=0.0cm and -1.8cm of behave, anchor=south] {$\longleftarrow$ Behavioral Finance $\longrightarrow$};
+\end{tikzpicture}%
+}
+\caption{Conceptual framework for studying borrower behavior and credit signals in DeFi lending. The framework proceeds from raw on-chain data (top) through behavioral process variable extraction (center) to the research questions (bottom). RQ1 characterizes how borrowers adjust positions as risk accumulates; RQ2 tests whether these behavioral patterns provide incremental predictive power for future liquidation events beyond conventional risk indicators.}
+\label{fig:framework}
+\end{figure}

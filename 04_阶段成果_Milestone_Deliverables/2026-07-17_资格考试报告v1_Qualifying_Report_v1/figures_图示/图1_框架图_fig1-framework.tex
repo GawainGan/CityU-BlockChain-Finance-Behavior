@@ -1,0 +1,56 @@
+% Figure 1: Conceptual Framework
+% Compile standalone or input into main document
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=1.6cm and 1.2cm,
+  box/.style={rectangle, rounded corners=3pt, draw=#1!70, fill=#1!15, text=#1!80!black, minimum width=2.6cm, minimum height=0.85cm, align=center, font=\footnotesize\sffamily, line width=0.6pt},
+  bigbox/.style={rectangle, rounded corners=3pt, draw=#1!70, fill=#1!15, text=#1!80!black, minimum width=3.6cm, minimum height=0.85cm, align=center, font=\footnotesize\sffamily\bfseries, line width=0.6pt},
+  smallbox/.style={rectangle, rounded corners=2pt, draw=#1!70, fill=#1!10, text=#1!80!black, minimum width=2.0cm, minimum height=0.65cm, align=center, font=\footnotesize\sffamily, line width=0.5pt},
+  arrow/.style={->, >=stealth, line width=0.6pt, draw=black!60},
+  darrow/.style={<->, >=stealth, line width=0.6pt, draw=black!60},
+  bracket/.style={decorate, decoration={brace, amplitude=5pt}, line width=0.8pt},
+]
+  % === TOP LAYER: Data Sources ===
+  \node[box=blue] (aave) {Aave (V2/V3)};
+  \node[box=blue, right=0.3cm of aave] (comp) {Compound (V2/V3)};
+  \node[box=blue, right=0.3cm of comp] (maker) {MakerDAO};
+  \node[font=\footnotesize\sffamily\bfseries, above=0.1cm of aave] {DeFi Lending Protocols};
+
+  % Arrow down
+  \draw[arrow, line width=1pt] ($(comp.south) + (0,-0.1)$) -- node[right, font=\footnotesize]{public on-chain data} ($(comp.south) + (0,-0.7)$);
+
+  % === MIDDLE LAYER: Behavioral Variables ===
+  \node[bigbox=teal, below=1.3cm of comp] (behave) {Borrower Active\\Adjustment Process};
+  
+  \node[smallbox=green, below left=0.8cm and -0.8cm of behave] (collat) {Collateral\\Adjustment};
+  \node[smallbox=amber, below right=0.8cm and -0.8cm of behave] (debt) {Debt\\Management};
+  \node[smallbox=teal2, left=0.2cm of collat] (latency) {Response\\Latency};
+  \node[smallbox=purple, right=0.2cm of debt] (consist) {Behavioral\\Consistency};
+
+  \draw[arrow, black!50] (behave.south) -- (collat.north);
+  \draw[arrow, black!50] (behave.south) -- (debt.north);
+  \draw[arrow, black!50] (behave.south) -- (latency.north);
+  \draw[arrow, black!50] (behave.south) -- (consist.north);
+
+  % === BOTTOM LAYER: Two outcome tracks ===
+  \node[bigbox=violet, below=2.0cm of behave, xshift=-2.0cm] (rq1) {RQ1: Behavioral\\Pattern Detection};
+  \node[bigbox=violet, below=2.0cm of behave, xshift=2.0cm] (rq2) {RQ2: Credit\\Prediction Test};
+  
+  \node[box=red, below=0.8cm of rq1] (out1) {Loss Aversion\\Reference-Point Effects};
+  \node[box=red, below=0.8cm of rq2] (out2) {Liquidation Early\\Warning Signal};
+
+  \draw[arrow, line width=1pt] (behave.south) -- ($(behave.south) + (0,-0.5)$) -- ($(rq1.north) + (0,0.3)$) -- (rq1.north);
+  \draw[arrow, line width=1pt] ($(behave.south) + (0,-0.5)$) -- ($(rq2.north) + (0.3,0.3)$) -- (rq2.north);
+  \draw[arrow] (rq1.south) -- (out1.north);
+  \draw[arrow] (rq2.south) -- (out2.north);
+  
+  \draw[darrow, thick] (rq1.east) -- node[above, font=\footnotesize\sffamily]{Incremental Validity} (rq2.west);
+
+  % Left brace
+  \draw[bracket, black!60] ($(behave.west) - (1.8,0.8)$) -- ($(rq1.south west) - (1.8,-0.5)$) node[midway, left=0.3cm, font=\footnotesize\sffamily, text=black!70, rotate=90] {Behavioral Finance Framework};
+
+\end{tikzpicture}
+\caption{Conceptual framework linking DeFi lending protocol data to borrower-level behavioral analysis. The framework traces the flow from raw on-chain data through behavioral process variable extraction to the two-tier research question structure (RQ1: behavioral description; RQ2: credit prediction), with cross-validation between the two tracks.}
+\label{fig:framework}
+\end{figure}

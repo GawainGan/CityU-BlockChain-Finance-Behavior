@@ -1,0 +1,94 @@
+\section{Research Methodology}
+
+This section describes the proposed research design, including the data sources, sample construction, variable operationalization, and analytical strategy. The methodology is designed to test the falsifiable hypotheses specified in Section~3 within a framework that maximizes internal validity while acknowledging the inherent limitations of observational data from permissionless financial protocols.
+
+\subsection{Data Sources and Protocol Selection}
+
+The proposed study relies exclusively on publicly available on-chain data from Ethereum-based DeFi lending protocols. This choice of data sources is deliberate and relates to an important feature of the research design: because all transactions on the Ethereum blockchain are publicly visible and verifiable, the study can be independently replicated by any researcher with access to blockchain infrastructure, without depending on proprietary datasets, platform partnerships, or commercial data licensing agreements.
+
+The primary data source will be the historical event logs and state data from three major DeFi lending protocols: Aave (V2 and V3), Compound (V2 and V3), and MakerDAO. These three protocols collectively account for the majority of DeFi lending activity on Ethereum and offer complementary data for cross-protocol validation. The specific event types to be extracted include: (i) \texttt{Deposit} and \texttt{Withdraw} events, representing the provision and removal of collateral; (ii) \texttt{Borrow} and \texttt{Repay} events, representing the creation and settlement of loan positions; (iii) \texttt{LiquidationCall} or equivalent events, capturing the triggering of liquidation by third parties; and (iv) \texttt{FlashLoan} events for identifying transactions that may involve complex multi-step strategies rather than simple borrowing behavior.
+
+Data will be extracted using Dune Analytics, a community-maintained blockchain data platform that provides SQL-queryable access to decoded event logs and state data. Price data for the underlying collateral assets will be obtained from on-chain price oracles (Chainlink) to ensure that the price information used in the analysis matches the price information actually available to protocol participants at the time of each event. The study period will span from the genesis of each protocol through the most recent complete month of data availability at the time of analysis, ensuring coverage of multiple market cycles and varying levels of DeFi ecosystem activity.
+
+\subsection{Unit of Analysis and Sample Construction}
+
+The primary unit of analysis is the \textbf{borrower-position-month}—that is, a specific borrowing position held by a specific wallet address during a given calendar month. This choice of analytical unit is motivated by several considerations. First, it allows the study to track the evolution of individual positions over time, capturing the dynamic process of risk accumulation and borrower response that is central to the research questions. Second, it accommodates the fact that a single wallet address may hold multiple independent borrowing positions within and across protocols, and allows the analysis to control for within-address correlation of errors using clustered standard errors at the wallet level. Third, it aligns with the temporal frequency at which most DeFi risk metrics are conventionally reported and consumed.
+
+The sample will include all borrowing positions for which the following criteria are met: (i) the borrowing event occurred during or after the protocol's deployment on Ethereum mainnet and before the data extraction date; (ii) the borrowing position had a non-zero health factor at some point during the observation window; and (iii) the position involved one of the major borrowing assets supported by the protocol (ETH, WBTC, USDC, USDT, DAI). Positions that are exclusively part of leveraged yield farming strategies, identifiable by circular borrowing patterns involving the same asset, will be flagged and analyzed separately to assess robustness.
+
+\subsection{Active vs.\ Passive Classification}
+
+A critical element of the methodology is the operational distinction between active, borrower-initiated actions and passive, externally-driven events. This distinction is essential because the research question concerns borrower behavior, and conflating active borrower decisions with events triggered by third parties or protocol mechanics would severely undermine the validity of the analysis.
+
+The classification will proceed as follows. An on-chain transaction will be classified as an \textbf{active borrower action} if and only if the transaction sender (\texttt{msg.sender}) matches the borrower wallet address. Under this criterion, the following events will be classified as active: (i) depositing additional collateral, (ii) repaying an outstanding loan, (iii) withdrawing collateral (when permitted by the protocol), (iv) borrowing additional assets, and (v) closing a position by fully repaying the outstanding debt and withdrawing all collateral. A transaction will be classified as a \textbf{passive liquidation event} if the transaction sender is an address other than the borrower, regardless of whether that address can be identified as a known liquidation bot.
+
+This classification rule has the important advantage of being fully deterministic and replicable: any researcher with access to the raw transaction data can apply it identically. Its primary limitation is that it cannot distinguish between cases where the borrower is the initiator of the transaction (true active behavior) and cases where the borrower delegates transaction signing to a third-party service, although the analysis can include robustness checks that restrict the sample to addresses where the majority of transactions are self-initiated based on transaction nonce patterns.
+
+\subsection{Position Risk Trajectory Reconstruction}
+
+For each borrowing position, a trajectory of position health will be reconstructed at a daily frequency. The core risk metric is the \textbf{health factor} (HF), defined as:
+
+\begin{equation}
+\text{HF}_t = \frac{\sum_{i} (C_{i,t} \cdot P_{i,t}) \cdot \text{LTV}_i}{D_t}
+\end{equation}
+
+where \(C_{i,t}\) is the quantity of collateral asset \(i\) at time \(t\), \(P_{i,t}\) is its price, \(\text{LTV}_i\) is the protocol-specific loan-to-value parameter for that asset, and \(D_t\) is the total outstanding debt denominated in a common currency unit. The HF equals 1.0 at the liquidation threshold, with lower values indicating higher risk.
+
+The trajectory reconstruction will also compute a set of derived variables that characterize the temporal evolution of the position: (i) the minimum health factor attained over the trailing 7, 14, and 30 days; (ii) the number of days the position spent in various health factor bands (e.g., below 1.2, 1.2--1.5, 1.5--2.0, above 2.0); (iii) the maximum drawdown in health factor over the trailing 30 days; and (iv) the time elapsed since the position entered its current health factor band.
+
+\subsection{Behavioral Process Variables}
+
+The explanatory variables of primary interest capture the borrower's active behavioral response to changes in position risk. The following variables will be constructed for each borrower-position-month:
+
+\begin{description}[leftmargin=*,labelindent=\parindent, itemindent=0pt]
+\item[Active Collateral Adjustment Rate.] The net amount of collateral added or withdrawn by the borrower during the observation month, scaled by the average total collateral value over the same period. Positive values indicate net addition of collateral (risk-reducing) and negative values indicate net withdrawal (risk-increasing).
+
+\item[Active Debt Management Rate.] The net amount of debt repaid or newly borrowed during the observation month, scaled by the average total debt over the same period. Positive values indicate net borrowing and negative values indicate net repayment.
+
+\item[Response Latency.] The number of days between the date on which the health factor first crossed below a given threshold (e.g., 1.5, 1.3, 1.1) and the date of the borrower's first subsequent active collateral addition or debt repayment. Long latencies indicate passive behavior in the face of rising risk.
+
+\item[Adjustment Intensity.] The absolute magnitude of collateral added or debt repaid at the first adjustment following entry into a new risk band, expressed as a proportion of the total position value. This captures whether the borrower made a small, tentative adjustment or a large, decisive one.
+
+\item[Behavioral Consistency.] A measure of how closely the borrower's behavior over time conforms to a rule-based adjustment policy. Borrowers who add collateral predictably as their health factor declines will receive high consistency scores; those whose behavior appears random or reactive to price movements rather than risk will receive low scores.
+\end{description}
+
+\subsection{Control Variables}
+
+To isolate the incremental contribution of behavioral process variables, models will include a comprehensive set of control variables drawn from four domains:
+
+\begin{enumerate}[leftmargin=*,labelindent=\parindent, itemindent=0pt]
+\item \textbf{Current risk state:} The point-in-time health factor, collateral ratio, and the proportion of total collateral held in volatile assets.
+\item \textbf{Account characteristics:} The wallet's age, total number of past transactions across all DeFi protocols, number of distinct protocols interacted with, and total value of historical borrowing.
+\item \textbf{Asset composition:} Dummy variables for the specific assets used as collateral and borrowed, and a Herfindahl-Hirschman Index (HHI) of asset concentration within the position.
+\item \textbf{Market conditions:} The trailing 30-day annualized volatility of the collateral asset, the correlation between collateral and borrowed asset prices, and dummy variables for periods of elevated gas costs that might inhibit active position management.
+\end{enumerate}
+
+\subsection{Analytical Framework}
+
+The analysis will proceed in three stages, corresponding to the hierarchical structure of the research questions.
+
+\input{figures_图示/图2_fig2}
+\vspace{4pt}
+
+\paragraph{Stage 1: Behavioral Description (RQ1).} The objective of this stage is to characterize the empirical relationship between position health and active borrower behavior. The primary analytical tool is the estimation of the following panel regression model:
+
+\begin{equation}
+\text{Action}_{i,t} = \alpha + \beta_1 \text{HF}_{i,t-1} + \beta_2 \text{HF}_{i,t-1}^2 + \gamma_1 \Delta P_{i,t} + \delta \mathbf{X}_{i,t-1} + \eta_i + \tau_t + \varepsilon_{i,t}
+\end{equation}
+
+where \(\text{Action}_{i,t}\) is a measure of active borrower behavior (collateral addition, debt repayment), \(\text{HF}_{i,t-1}\) is the lagged health factor, \(\Delta P_{i,t}\) are contemporaneous price changes, \(\mathbf{X}_{i,t-1}\) is a vector of time-varying controls, \(\eta_i\) captures time-invariant borrower-specific heterogeneity through fixed effects, and \(\tau_t\) captures common time effects. H1a is tested through the sign and significance of \(\beta_1\), which should be negative if borrowers respond to declining health factors (i.e., increasing risk) by taking risk-reducing actions. H1b is tested by comparing the coefficient on health factor declines (loss domain) to the coefficient on health factor increases (gain domain) on the absolute value of borrowing actions. H1c is tested by augmenting the model with an indicator variable for the position being within a narrow band around the liquidation threshold and interacting this indicator with the health factor.
+
+\paragraph{Stage 2: Predictive Framework (RQ2).} The objective of this stage is to test whether behavioral process variables contain incremental predictive power for liquidation events. The analytical framework for this stage is a model comparison, or ``horse race,'' in which progressively richer sets of predictor variables are compared on their ability to predict liquidation events in a held-out test sample. The following models will be estimated:
+
+\begin{itemize}[leftmargin=*,labelindent=\parindent, itemindent=0pt]
+\item \textbf{M0 (Baseline):} A logistic regression model using only the current health factor, collateral ratio, and the interaction between them.
+\item \textbf{M1 (State Variables):} M0 augmented with the set of risk state, account characteristic, and asset composition variables described in Section~4.5.
+\item \textbf{M2 (State + Market Variables):} M1 augmented with market condition variables, including collateral asset volatility and gas price indicators.
+\item \textbf{M3 (Full Model):} M2 augmented with the behavioral process variables described in Section~4.4.
+\end{itemize}
+
+All models will be estimated using gradient-boosted decision trees (XGBoost) rather than logistic regression as the primary specification, with the logistic regression results reported as robustness checks. The choice of tree-based models is motivated by their ability to capture non-linear relationships and complex interactions among predictor variables without requiring explicit specification by the researcher, which is important given the absence of strong theoretical priors about the functional form of the predictive relationships.
+
+Model performance will be evaluated using standard classification metrics—area under the receiver operating characteristic curve (AUC-ROC), precision-recall AUC, and calibration error—computed on a temporally separated hold-out test set using a rolling window evaluation scheme that simulates realistic out-of-sample conditions. Statistical significance of differences in AUC between models will be assessed using DeLong's test. H2a will be supported if M3 achieves significantly higher AUC than M2. It is important to note the stringency of this test: because M3 contains all the variables in M2 plus the behavioral process variables, any observed improvement in predictive performance is directly attributable to the information content of the behavioral variables and cannot be attributed to the inclusion of additional variables per se.
+
+\paragraph{Stage 3: Robustness.} A series of robustness checks will assess the sensitivity of the results to specific methodological choices. These will include: (i) re-estimating all models using logistic regression and comparing results between the tree-based and linear specifications; (ii) varying the prediction horizon (7-day, 30-day, and 90-day ahead liquidation prediction); (iii) restricting the sample to borrowers who have interacted with the protocol for at least a minimum number of days to exclude very new users; (iv) repeating the analysis separately for each protocol to assess cross-protocol generalizability; and (v) conducting a variable importance decomposition to quantify the relative contribution of state variables, market variables, and behavioral process variables to the overall predictive performance of the full model.

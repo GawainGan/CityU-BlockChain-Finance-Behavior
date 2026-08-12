@@ -1,0 +1,75 @@
+%
+% Figure 3: Risk Trajectory / Health Factor Illustration
+%
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  scale=1.0,
+  >=stealth,
+  axisline/.style={->, line width=0.6pt},
+  dataline/.style={line width=0.8pt},
+]
+  % Axes
+  \draw[axisline] (0,0) -- (9.5,0) node[right, font=\footnotesize] {Time $\longrightarrow$};
+  \draw[axisline] (0,0) -- (0,5.2) node[above, font=\footnotesize] {Health Factor};
+  
+  % Labels
+  \node[font=\scriptsize] at (4.5,-0.5) {Observation Window (daily frequency)};
+  
+  % Y-axis labels
+  \draw[dashed, gray!40] (0,0.0) -- (8.5,0.0);
+  \node[font=\scriptsize, left] at (-0.15,0.0) {0};
+  \draw[dashed, gray!40] (0,1.0) -- (8.5,1.0);
+  \node[font=\scriptsize, left] at (0,1.0) {1.0};
+  \node[font=\tiny, red!70!black] at (-0.7, 0.55) {\shortstack{Liq.\\Thresh.}};
+  
+  \draw[dashed, gray!40] (0,2.0) -- (8.5,2.0);
+  \node[font=\scriptsize, left] at (0,2.0) {2.0};
+  \draw[dashed, gray!40] (0,3.0) -- (8.5,3.0);
+  \node[font=\scriptsize, left] at (0,3.0) {3.0};
+  \draw[dashed, gray!40] (0,4.0) -- (8.5,4.0);
+  \node[font=\scriptsize, left] at (0,4.0) {4.0};
+  
+  % Risk bands (shaded)
+  \fill[red!8] (0,1.0) rectangle (8.5,0.0);
+  \fill[orange!8] (0,2.0) rectangle (8.5,1.0);
+  \fill[yellow!8] (0,3.0) rectangle (8.5,2.0);
+  \fill[green!8] (0,5.0) rectangle (8.5,3.0);
+  
+  \node[font=\tiny\sffamily, text=red!50!black, opacity=0.6] at (1.2,0.5) {Liquidation Zone};
+  \node[font=\tiny\sffamily, text=orange!50!black, opacity=0.6] at (1.2,1.5) {High Risk (HF $<$ 2)};
+  \node[font=\tiny\sffamily, text=yellow!50!black, opacity=0.6] at (1.2,2.5) {Moderate Risk};
+  \node[font=\tiny\sffamily, text=green!50!black, opacity=0.6] at (1.2,4.0) {Safe Zone (HF $>$ 3)};
+  
+  % Simulated HF trajectory
+  \draw[dataline, blue!60, line width=1.2pt] plot[smooth] coordinates {
+    (0,3.5) (0.35,3.3) (0.7,3.1) (1.0,2.8) (1.4,2.5) (1.7,2.3) 
+    (2.1,2.0) (2.3,1.7) (2.4,1.5) (2.55,1.25) 
+  };
+  
+  % Active adjustment events (stars)
+  \node[star, star points=5, star point ratio=2.25, draw=green!70!black, fill=green!60, minimum size=2mm, inner sep=0pt] at (1.4,2.5) {};
+  \draw[->, green!60!black, line width=0.5pt] (1.4,2.9) -- (1.4,2.5) node[pos=0, above, font=\tiny] {+collateral};
+  
+  \node[star, star points=5, star point ratio=2.25, draw=green!70!black, fill=green!60, minimum size=2mm, inner sep=0pt] at (2.1,2.0) {};
+  \draw[->, green!60!black, line width=0.5pt] (2.1,2.4) -- (2.1,2.0) node[pos=0, above, font=\tiny] {repay debt};
+  
+  % Liquidation event
+  \node[circle, draw=red!80!black, fill=red!60, minimum size=2.5mm, inner sep=0pt] at (2.55,1.25) {\tiny\color{white}\textbf{!}};
+  \draw[->, red!80!black, line width=0.5pt] (2.9,1.25) -- (2.65,1.25) node[pos=0, right, font=\tiny] {liquidation};
+  
+  % Legend (inside plot area, top right)
+  \node[font=\tiny, draw=black!30, fill=white, rounded corners=2pt, inner sep=3pt] at (6.8,4.5) {
+    \shortstack[l]{
+      \tikz{\draw[blue!60, line width=1.1pt] (0,0)--(0.4,0);} \, HF trajectory\\
+      \tikz{\node[star, star points=5, star point ratio=2.25, fill=green!60, minimum size=1.3mm, inner sep=0pt] at (0,0) {};} \, Active adjustment\\
+      \tikz{\node[circle, fill=red!60, minimum size=1.3mm, inner sep=0pt] at (0,0) {};} \, Liquidation event
+    }
+  };
+
+\end{tikzpicture}%
+}
+\caption{Illustrative health factor (HF) trajectory and behavioral response. A borrowing position's HF declines toward the liquidation threshold (HF = 1.0) as collateral value decreases. Active borrower adjustments (green stars) represent collateral additions or debt repayment. The central empirical question is whether the pattern of these adjustments—their timing, magnitude, and frequency—provides predictive information about eventual liquidation beyond what is captured by the HF itself.}
+\label{fig:trajectory}
+\end{figure}

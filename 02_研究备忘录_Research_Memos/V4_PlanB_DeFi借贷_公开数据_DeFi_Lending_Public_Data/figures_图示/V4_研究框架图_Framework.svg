@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" font-family="'PingFang SC','Microsoft YaHei','Helvetica Neue',Arial,sans-serif">
+  <defs>
+    <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#475569"/>
+    </marker>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#db2777"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .t{font-size:13px;fill:#0f172a;font-weight:600}
+    .s{font-size:11px;fill:#475569}
+    .m{font-size:10px;fill:#64748b;font-family:ui-monospace,Consolas,monospace}
+    .b{fill:#ffffff;stroke:#cbd5e1;stroke-width:1.2}
+    .bh{fill:#f5f3ff;stroke:#7c3aed;stroke-width:1.4}
+    .bg{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.4}
+    .bo{fill:#fff7ed;stroke:#ea580c;stroke-width:1.4}
+    .br{fill:#fef2f2;stroke:#dc2626;stroke-width:1.4}
+    .ln{fill:none;stroke:#475569;stroke-width:1.4}
+    .tlt{font-size:15px;fill:#0f172a;font-weight:700}
+  </style>
+
+  <text x="490" y="28" text-anchor="middle" class="tlt">Plan B · V4 研究框架：DeFi 借贷清算阈值附近的前景理论行为检验与行为偏差信用信号</text>
+  <line x1="40" y1="42" x2="940" y2="42" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Theory anchor -->
+  <rect x="40" y="62" width="180" height="50" rx="8" class="bh"/>
+  <text x="130" y="84" text-anchor="middle" class="t">前景理论</text>
+  <text x="130" y="100" text-anchor="middle" class="s">Kahneman &amp; Tversky 1979</text>
+
+  <!-- Reference point -->
+  <rect x="260" y="62" width="170" height="50" rx="8" class="bo"/>
+  <text x="345" y="84" text-anchor="middle" class="t">HF = 1.0 外生参考点</text>
+  <text x="345" y="100" text-anchor="middle" class="s">智能合约硬编码 · 全用户同一</text>
+
+  <path d="M220,87 L258,87" class="ln" marker-end="url(#ar2)"/>
+
+  <!-- 3 predictions -->
+  <rect x="470" y="50" width="160" height="34" rx="6" class="bg"/>
+  <text x="550" y="66" text-anchor="middle" class="t">H1a 损失厌恶</text>
+  <text x="550" y="79" text-anchor="middle" class="m">λ&gt;1 · 补救&gt;增险</text>
+  <rect x="470" y="92" width="160" height="34" rx="6" class="bg"/>
+  <text x="550" y="108" text-anchor="middle" class="t">H1b 参考点效应</text>
+  <text x="550" y="121" text-anchor="middle" class="m">HF=1 附近非线性加速</text>
+  <rect x="470" y="134" width="160" height="34" rx="6" class="bg"/>
+  <text x="550" y="150" text-anchor="middle" class="t">H1c 递减敏感性</text>
+  <text x="550" y="163" text-anchor="middle" class="m">二阶导 &lt; 0</text>
+
+  <path d="M430,80 L450,67 L468,67" class="ln" marker-end="url(#ar2)"/>
+  <path d="M430,87 L468,109" class="ln" marker-end="url(#ar2)"/>
+  <path d="M430,95 L450,151 L468,151" class="ln" marker-end="url(#ar2)"/>
+
+  <!-- Active/passive classification -->
+  <rect x="680" y="50" width="240" height="118" rx="8" class="br"/>
+  <text x="800" y="70" text-anchor="middle" class="tlt" fill="#dc2626">主动/被动分类决策树</text>
+  <text x="695" y="90" class="s">A1-A5 主动补救（tx.from=借款人）</text>
+  <text x="695" y="106" class="s">B1-B2 被动清算（清算人触发）</text>
+  <text x="695" y="122" class="s">C1-C2 清算后修复（24h/30d）</text>
+  <text x="695" y="142" class="m">只有 A 类进入前景理论检验</text>
+  <text x="695" y="158" class="m">Safe 多签 → 限 EOA 范围</text>
+
+  <path d="M630,67 L660,67 L660,90 L678,90" class="ln" marker-end="url(#ar2)" stroke-dasharray="4 3"/>
+
+  <!-- Data layer -->
+  <rect x="40" y="190" width="430" height="64" rx="8" class="bh"/>
+  <text x="55" y="212" class="tlt" fill="#7c3aed">公开链上数据（任何人可复现）</text>
+  <text x="55" y="232" class="s">Aave V2/V3 · Dune Analytics · lending.borrow / lending.supply / ethereum.transactions</text>
+  <text x="55" y="248" class="s">LiquidationCall 事件 · prices.usd · HF 自计算管道 · Flipside/Subgraph 交叉验证</text>
+
+  <!-- BDM construct -->
+  <rect x="500" y="190" width="420" height="64" rx="8" fill="url(#g2)" stroke="#7c3aed"/>
+  <text x="710" y="212" text-anchor="middle" class="t" fill="#ffffff">BDM 行为偏差指数（5 维度）</text>
+  <text x="710" y="230" text-anchor="middle" class="s" fill="#fbcfe8">补救超配 · 参考点跳变 · </text>
+  <text x="710" y="246" text-anchor="middle" class="s" fill="#fbcfe8">抵押品切换方向★DeFi独有 · 清算后恢复 · 风险窗口非行动</text>
+
+  <path d="M470,222 L498,222" class="ln" marker-end="url(#ar2)"/>
+
+  <!-- RQ structure -->
+  <rect x="40" y="284" width="290" height="80" rx="8" class="bg"/>
+  <text x="185" y="306" text-anchor="middle" class="tlt" fill="#16a34a">RQ1 · 行为结构</text>
+  <text x="55" y="326" class="s">清算阈值附近主动行为是否</text>
+  <text x="55" y="342" class="s">呈现前景理论三项预测</text>
+  <text x="55" y="358" class="m">失败 → 描述性模式 / 改窗口</text>
+
+  <rect x="345" y="284" width="290" height="80" rx="8" class="bo"/>
+  <text x="490" y="306" text-anchor="middle" class="tlt" fill="#ea580c">RQ2 · 信用与福利</text>
+  <text x="360" y="326" class="s">BDM 在 HF 动态/活跃度/链上信用</text>
+  <text x="360" y="342" class="s">基线之外是否有增量预测力</text>
+  <text x="360" y="358" class="m">ΔAUC → ΔW 净福利量化</text>
+
+  <rect x="650" y="284" width="270" height="80" rx="8" class="br"/>
+  <text x="785" y="306" text-anchor="middle" class="tlt" fill="#dc2626">RQ3 · 条件性扩展</text>
+  <text x="665" y="326" class="s">跨协议行为一致性是否有</text>
+  <text x="665" y="342" class="s">超越单协议的信用增量</text>
+  <text x="665" y="358" class="m">仅 RQ1/RQ2 + 多协议可比时进入</text>
+
+  <path d="M185,254 L185,282" class="ln" marker-end="url(#ar2)"/>
+  <path d="M490,254 L490,282" class="ln" marker-end="url(#ar2)"/>
+  <path d="M785,254 L785,282" class="ln" marker-end="url(#ar2)" stroke-dasharray="4 3"/>
+
+  <path d="M330,324 L343,324" class="ln" marker-end="url(#ar2)"/>
+  <text x="337" y="318" text-anchor="middle" class="m" fill="#ea580c">conditions</text>
+  <path d="M635,324 L648,324" class="ln" marker-end="url(#ar2)" stroke-dasharray="4 3"/>
+  <text x="642" y="318" text-anchor="middle" class="m" fill="#dc2626">gated</text>
+
+  <!-- PoC gates -->
+  <rect x="40" y="388" width="880" height="86" rx="10" fill="#fefce8" stroke="#ca8a04" stroke-width="1.4"/>
+  <text x="480" y="412" text-anchor="middle" class="tlt" fill="#a16207">PoC 三道范围闸门（不再是工程附录）</text>
+  <g font-size="11" fill="#475569">
+    <text x="60" y="436"><tspan font-weight="700" fill="#dc2626">测量闸门</tspan> HF 能否稳定重建 + 主动/被动/清算后能否区分</text>
+    <text x="60" y="456"><tspan font-weight="700" fill="#ea580c">外部效度闸门</tspan> Safe/合约钱包占比 → EOA 散户 or DeFi 整体</text>
+    <text x="500" y="436"><tspan font-weight="700" fill="#0891b2">时间窗口闸门</tspan> 闪电贷/机器人速度 → 最后时刻 or 清算前 7 天</text>
+    <text x="500" y="456"><tspan font-weight="700" fill="#7c3aed">跨协议闸门</tspan> Compound/MakerDAO 变量可比性 → RQ3 是否保留</text>
+  </g>
+
+  <!-- Contribution & target -->
+  <rect x="40" y="495" width="430" height="50" rx="8" class="bh"/>
+  <text x="55" y="515" class="tlt" fill="#7c3aed">预期贡献</text>
+  <text x="55" y="533" class="s">DeFi 借贷前景理论三预测首检 + BDM 增量信用 + 福利量化</text>
+
+  <rect x="510" y="495" width="430" height="50" rx="8" class="bo"/>
+  <text x="525" y="515" class="tlt" fill="#ea580c">定位与诚实边界</text>
+  <text x="525" y="533" class="s">行为金融实证 · 完全可复现 · 主论文 RQ1+RQ2，RQ3 条件扩展</text>
+</svg>
