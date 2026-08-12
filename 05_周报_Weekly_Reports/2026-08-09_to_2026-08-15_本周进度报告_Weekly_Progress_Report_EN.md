@@ -22,7 +22,7 @@ The work originated from a conversation on August 9 with an industry contact (re
 
 ## 2. Detailed Description of This Week's Work
 
-### 2.1 Starting Point: Semantic Problems Discovered Through Communication
+### 2.1 Starting Point: Semantic Problems Discovered Through Communication with an Industry Contact
 
 On August 9, during a conversation with an industry contact about the blockchain payment dilemma, we discussed the conceptual boundaries between on-chain Transfer, Payment, and Settlement. This discussion made me realize a deeper issue: **multiple core concepts used in Report v1 suffer from semantic confusion — not as isolated typos, but as a systematic construct validity problem.**
 
