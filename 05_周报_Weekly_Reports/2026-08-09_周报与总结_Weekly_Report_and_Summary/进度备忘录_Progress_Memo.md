@@ -1,7 +1,5 @@
 # Progress Memo
-
-**To**: Professor Qiao Xiao  
-**From**: Yiwei Gan (59765200)  
+ 
 **Date**: August 12, 2026  
 **Subject**: Construct Validity Review of Qualifying Report v1 — Progress and Next Steps
 
