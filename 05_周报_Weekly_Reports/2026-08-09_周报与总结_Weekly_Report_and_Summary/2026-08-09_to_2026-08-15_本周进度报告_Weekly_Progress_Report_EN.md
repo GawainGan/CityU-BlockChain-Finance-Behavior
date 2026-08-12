@@ -7,9 +7,9 @@
 
 ## 1. Overview of This Week's Work
 
-The core work this week was: **conducting a systematic construct validity review of Paper 1 ([Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf)), identifying and correcting 11 problems, verifying the feasibility of data required for the research, and producing a comprehensive revision report.**
+The core work this week was: **conducting a systematic construct validity review of Paper 1 ([Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格报告v1_Qualifying_Report_v1/main.pdf)), identifying and correcting 11 problems, verifying the feasibility of data required for the research, and producing a comprehensive revision report.**
 
-The work originated from a conversation on August 9 with an industry contact (regarding the blockchain payment dilemma), which revealed deep semantic and conceptual problems in [Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf). The central question that guided all subsequent work was: *"How can we ensure that our research claims remain consistent with our data capabilities?"* Four major tasks were completed around this question:
+The work originated from a conversation on August 9 with an industry contact (regarding the blockchain payment dilemma), which revealed deep semantic and conceptual problems in [Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格报告v1_Qualifying_Report_v1/main.pdf). The central question that guided all subsequent work was: *"How can we ensure that our research claims remain consistent with our data capabilities?"* Four major tasks were completed around this question:
 
 | # | Task | Output | File Location |
 |---|------|--------|---------------|
@@ -170,7 +170,7 @@ All output files are organized under the [2026-08-11_构念效度审查与数据
 
 ## 4. Overall Changes After Revision
 
-| Dimension | [Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf) | After Revision |
+| Dimension | [Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格报告v1_Qualifying_Report_v1/main.pdf) | After Revision |
 |-----------|---------|--------|
 | Core claim | "Borrower behavior provides credit signals" | "Protocol-observable position management behavior provides incremental information on liquidation propensity" |
 | Theoretical positioning | Prospect Theory as confirmed theory anchor | Prospect Theory as a compelling competing explanation (HF=1.0 is both a psychological reference point and a mechanical protocol discontinuity) |

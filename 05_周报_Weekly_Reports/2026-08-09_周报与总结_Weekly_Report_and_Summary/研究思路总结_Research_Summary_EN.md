@@ -7,7 +7,7 @@
 
 ## 1. Starting Point: Semantic Confusion Revealed a Knowledge Gap
 
-While writing [Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf), I used concepts such as "Credit Signals," "Liquidation," and "Complete Observability" to describe the research problem. However, during a discussion on August 9 with an industry contact about the blockchain payment dilemma, I realized that I did not have a clear understanding of the boundaries between on-chain Transfer, Payment, and Settlement.
+While writing [Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格报告v1_Qualifying_Report_v1/main.pdf), I used concepts such as "Credit Signals," "Liquidation," and "Complete Observability" to describe the research problem. However, during a discussion on August 9 with an industry contact about the blockchain payment dilemma, I realized that I did not have a clear understanding of the boundaries between on-chain Transfer, Payment, and Settlement.
 
 This discussion made me realize a deeper problem: **my understanding of blockchain platforms, protocol mechanisms, and data structures was not deep enough, leading to systematic semantic confusion in the concepts and terminology I used in Qualifying Report v1.** These were not isolated typos — they reflected an insufficient grasp of the underlying technical details to support my research claims.
 
@@ -41,7 +41,7 @@ See: [Six Layer Matrix Paper1](../../04_阶段成果_Milestone_Deliverables/2026
 
 ## 3. Step Two: Diagnosing Qualifying Report v1 Using the Constraint Framework
 
-Under the constraints of the Six-Layer Matrix, I conducted a per-concept review of [Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格考试报告v1_Qualifying_Report_v1/main.pdf) and identified 11 problems, classified into three categories:
+Under the constraints of the Six-Layer Matrix, I conducted a per-concept review of [Qualifying Report v1](../../04_阶段成果_Milestone_Deliverables/2026-07-17_资格报告v1_Qualifying_Report_v1/main.pdf) and identified 11 problems, classified into three categories:
 
 - **3 Technical Errors**: HF formula using LTV instead of LT, oversimplified active/passive classification, and equating Supply with Collateral. These were "I got the protocol mechanism wrong" problems.
 - **5 Over-Claims**: Complete observability, Credit Layer naming, Prospect Theory positioned too strongly, Liquidation/Default conflation, and Collateral/Credit conflation. These were "I claimed more than the data can support" problems.
