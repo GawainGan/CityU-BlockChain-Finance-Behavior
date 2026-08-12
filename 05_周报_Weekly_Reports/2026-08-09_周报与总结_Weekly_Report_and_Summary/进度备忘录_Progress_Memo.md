@@ -27,13 +27,13 @@ Each problem has a dedicated diagnosis file with the original text quote, error 
 
 **Complete Revision Report (~2,080 lines).** All of the above was consolidated into a comprehensive revision report with before/after comparisons, literature change lists, and terminology change lists.
 
-## 2. What Do You Want to Do Next?
+## 2. What Do I Want to Do Next?
 
 1. **Verify terminology accuracy.** Further cross-check all terminology used in the six-layer matrix and diagnosis files against actual protocol mechanisms, eliminating any residual semantic confusion.
 2. **Verify whether protocol scope affects data requirements.** The current design uses Aave V3 as the primary protocol with Compound/MakerDAO analyzed separately. I need to confirm whether this scope setting affects the completeness and availability of data needed for the research, and assess whether the protocol coverage range needs adjustment.
 3. **Literature search and reading.** Around the revised research questions (position management behavior and liquidation propensity), continue searching for and reading the latest literature on DeFi lending borrower behavior, liquidation prediction, and risk signals.
 
-## 3. What Issues or Difficulties Are You Having?
+## 3. What Issues or Difficulties Am I Having?
 
 - **Prospect Theory identification challenge.** HF=1.0 serves as both a psychological reference point (per Prospect Theory) and a mechanical protocol discontinuity (liquidation threshold). These two explanations are observationally equivalent in the data — I cannot separate them without a special identification strategy. I have downgraded PT from "confirmed anchor" to "compelling competing explanation," but I am unsure whether this is the right treatment or whether a sharper identification approach exists.
 
@@ -41,7 +41,7 @@ Each problem has a dedicated diagnosis file with the original text quote, error 
 
 - **Protocol scope uncertainty.** I revised the scope from "three protocols pooled" to "Aave V3 primary, Compound/MakerDAO separate," but I have not yet confirmed whether Compound III and MakerDAO have the same level of decoded table availability and event granularity on Dune as Aave V3. If they do not, the external validity checks may be limited.
 
-## 4. Anything Else You Need Feedback On?
+## 4. Anything Else I Need Feedback On?
 
 1. **Is the six-layer matrix framework the right level of rigor?** It is quite granular (13 concepts × 6 layers). Is this over-engineering for a qualifying report, or is this the level of construct validity scrutiny expected at this stage?
 
